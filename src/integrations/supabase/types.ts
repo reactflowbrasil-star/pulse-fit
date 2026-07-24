@@ -231,10 +231,13 @@ export type Database = {
           fitness_level: string | null
           full_name: string | null
           id: string
+          nome: string | null
           onboarded: boolean
           preferences: Json
           updated_at: string
           weekly_frequency: number | null
+          whatsapp: string | null
+          whatsapp_verificado: boolean
         }
         Insert: {
           available_equipment?: string[]
@@ -245,10 +248,13 @@ export type Database = {
           fitness_level?: string | null
           full_name?: string | null
           id?: string
+          nome?: string | null
           onboarded?: boolean
           preferences?: Json
           updated_at?: string
           weekly_frequency?: number | null
+          whatsapp?: string | null
+          whatsapp_verificado?: boolean
         }
         Update: {
           available_equipment?: string[]
@@ -259,10 +265,13 @@ export type Database = {
           fitness_level?: string | null
           full_name?: string | null
           id?: string
+          nome?: string | null
           onboarded?: boolean
           preferences?: Json
           updated_at?: string
           weekly_frequency?: number | null
+          whatsapp?: string | null
+          whatsapp_verificado?: boolean
         }
         Relationships: []
       }
