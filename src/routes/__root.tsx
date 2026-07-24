@@ -128,7 +128,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <SplashGate>
+        <Outlet />
+      </SplashGate>
     </QueryClientProvider>
   );
 }
+
