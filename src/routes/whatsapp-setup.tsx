@@ -7,11 +7,11 @@ import { MobileFrame } from "@/components/MobileFrame";
 import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useAuth } from "@/hooks/useAuth";
+import { getMe } from "@/lib/auth.functions";
 import {
-  getMe,
-  requestWhatsappVerification,
-  confirmWhatsappVerification,
-} from "@/lib/auth.functions";
+  enviarCodigoWhatsapp,
+  verificarCodigoWhatsapp,
+} from "@/lib/wa-link.functions";
 
 export const Route = createFileRoute("/whatsapp-setup")({
   head: () => ({
