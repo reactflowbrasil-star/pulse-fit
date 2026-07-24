@@ -162,7 +162,7 @@ function SessionPage() {
         />
       </div>
 
-      {/* 3D stage */}
+      {/* Trainer stage — photorealistic video → GLB → procedural 3D */}
       <div className="relative mx-4 mt-3 aspect-square overflow-hidden rounded-3xl bg-surface-dark ring-1 ring-white/5">
         <Suspense
           fallback={
@@ -171,12 +171,13 @@ function SessionPage() {
             </div>
           }
         >
-          <Trainer3DViewer
+          <TrainerCoach
             animationId={catalogItem.animation_id as AnimationId}
             cameraAngle={angle}
             paused={paused}
           />
         </Suspense>
+
 
         <div className="absolute top-3 right-3 flex flex-col gap-2">
           {(["frontal", "lateral", "angulo_45"] as CameraAngle[]).map((a) => (
