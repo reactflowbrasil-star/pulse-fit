@@ -18,7 +18,7 @@ import {
 } from "@/lib/coach.functions";
 import type { WorkoutContext } from "@/lib/exercise-catalog";
 
-export const Route = createFileRoute("/coach")({
+export const Route = createFileRoute("/coach/")({
   head: () => ({
     meta: [
       { title: "Treino com IA — Pulse Fit" },
