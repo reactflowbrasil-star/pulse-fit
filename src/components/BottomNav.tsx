@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, UtensilsCrossed, BarChart3, Trophy, Plus } from "lucide-react";
+import { Home, UtensilsCrossed, BarChart3, MessageCircle, Plus } from "lucide-react";
 
 const items = [
-  { to: "/", icon: Home, label: "Home" },
-  { to: "/meal", icon: UtensilsCrossed, label: "Meal" },
-  { to: "/stats", icon: BarChart3, label: "Stats" },
-  { to: "/rewards", icon: Trophy, label: "Rewards" },
+  { to: "/", icon: Home, label: "Início" },
+  { to: "/meal", icon: UtensilsCrossed, label: "Dieta" },
+  { to: "/stats", icon: BarChart3, label: "Progresso" },
+  { to: "/whatsapp", icon: MessageCircle, label: "WhatsApp" },
 ] as const;
 
 export function BottomNav() {
@@ -20,7 +20,7 @@ export function BottomNav() {
 
         <Link
           to="/browse"
-          aria-label="Start workout"
+          aria-label="Iniciar treino"
           className="relative -mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform active:scale-95"
         >
           <Plus className="h-7 w-7" strokeWidth={2.6} />
