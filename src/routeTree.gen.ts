@@ -21,6 +21,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlayerRouteImport } from './routes/player'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MealRouteImport } from './routes/meal'
+import { Route as LiveRouteImport } from './routes/live'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DoneRouteImport } from './routes/done'
 import { Route as CoachRouteImport } from './routes/coach'
@@ -29,6 +30,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
+import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
@@ -94,6 +96,11 @@ const MealRoute = MealRouteImport.update({
   path: '/meal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -134,6 +141,11 @@ const ApiTtsRoute = ApiTtsRouteImport.update({
   path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLiveCoachRoute = ApiLiveCoachRouteImport.update({
+  id: '/api/live-coach',
+  path: '/api/live-coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoachSummarySessionIdRoute = CoachSummarySessionIdRouteImport.update({
   id: '/summary/$sessionId',
   path: '/summary/$sessionId',
@@ -162,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
+  '/live': typeof LiveRoute
   '/meal': typeof MealRoute
   '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
@@ -174,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
@@ -188,6 +202,7 @@ export interface FileRoutesByTo {
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
+  '/live': typeof LiveRoute
   '/meal': typeof MealRoute
   '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
@@ -200,6 +215,7 @@ export interface FileRoutesByTo {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
@@ -215,6 +231,7 @@ export interface FileRoutesById {
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
+  '/live': typeof LiveRoute
   '/meal': typeof MealRoute
   '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
@@ -227,6 +244,7 @@ export interface FileRoutesById {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
@@ -243,6 +261,7 @@ export interface FileRouteTypes {
     | '/coach'
     | '/done'
     | '/history'
+    | '/live'
     | '/meal'
     | '/onboarding'
     | '/player'
@@ -255,6 +274,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
@@ -269,6 +289,7 @@ export interface FileRouteTypes {
     | '/coach'
     | '/done'
     | '/history'
+    | '/live'
     | '/meal'
     | '/onboarding'
     | '/player'
@@ -281,6 +302,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
@@ -295,6 +317,7 @@ export interface FileRouteTypes {
     | '/coach'
     | '/done'
     | '/history'
+    | '/live'
     | '/meal'
     | '/onboarding'
     | '/player'
@@ -307,6 +330,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
@@ -322,6 +346,7 @@ export interface RootRouteChildren {
   CoachRoute: typeof CoachRouteWithChildren
   DoneRoute: typeof DoneRoute
   HistoryRoute: typeof HistoryRoute
+  LiveRoute: typeof LiveRoute
   MealRoute: typeof MealRoute
   OnboardingRoute: typeof OnboardingRoute
   PlayerRoute: typeof PlayerRoute
@@ -334,6 +359,7 @@ export interface RootRouteChildren {
   StatsRoute: typeof StatsRoute
   TrainersRoute: typeof TrainersRoute
   WhatsappRoute: typeof WhatsappRoute
+  ApiLiveCoachRoute: typeof ApiLiveCoachRoute
   ApiTtsRoute: typeof ApiTtsRoute
   TrainerIdRoute: typeof TrainerIdRoute
   WorkoutIdRoute: typeof WorkoutIdRoute
@@ -427,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MealRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history': {
       id: '/history'
       path: '/history'
@@ -483,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/live-coach': {
+      id: '/api/live-coach'
+      path: '/api/live-coach'
+      fullPath: '/api/live-coach'
+      preLoaderRoute: typeof ApiLiveCoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coach/summary/$sessionId': {
       id: '/coach/summary/$sessionId'
       path: '/summary/$sessionId'
@@ -532,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoachRoute: CoachRouteWithChildren,
   DoneRoute: DoneRoute,
   HistoryRoute: HistoryRoute,
+  LiveRoute: LiveRoute,
   MealRoute: MealRoute,
   OnboardingRoute: OnboardingRoute,
   PlayerRoute: PlayerRoute,
@@ -544,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatsRoute: StatsRoute,
   TrainersRoute: TrainersRoute,
   WhatsappRoute: WhatsappRoute,
+  ApiLiveCoachRoute: ApiLiveCoachRoute,
   ApiTtsRoute: ApiTtsRoute,
   TrainerIdRoute: TrainerIdRoute,
   WorkoutIdRoute: WorkoutIdRoute,
