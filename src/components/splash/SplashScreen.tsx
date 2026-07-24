@@ -68,6 +68,88 @@ export function SplashScreen({
     return () => window.clearTimeout(t);
   }, [barStartMs, barDurationMs]);
 
+  // Voice narration — fetch from server and play. Try immediately; on autoplay
+  // block, expose an unmute button.
+  useEffect(() => {
+    if (!narrationEnabled || typeof narration !== "string") return;
+    let cancelled = false;
+    let objectUrl: string | null = null;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: narration, voice: narrationVoice }),
+        });
+        if (!res.ok || cancelled) return;
+        const blob = await res.blob();
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        const audio = new Audio(objectUrl);
+        audio.preload = "auto";
+        audioRef.current = audio;
+        try {
+          await audio.play();
+        } catch {
+          if (!cancelled) setNeedsUnmute(true);
+        }
+      } catch (err) {
+        if (import.meta.env.DEV) console.warn("[splash] narration failed", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      const a = audioRef.current;
+      if (a) {
+        a.pause();
+        a.src = "";
+      }
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [narrationEnabled, narration, narrationVoice]);
+
+  // Fade out narration when splash exits
+  useEffect(() => {
+    if (!exiting) return;
+    const a = audioRef.current;
+    if (!a) return;
+    const start = a.volume;
+    const steps = 10;
+    let i = 0;
+    const id = window.setInterval(() => {
+      i += 1;
+      a.volume = Math.max(0, start * (1 - i / steps));
+      if (i >= steps) {
+        window.clearInterval(id);
+        a.pause();
+      }
+    }, 40);
+    return () => window.clearInterval(id);
+  }, [exiting]);
+
+  const handleUnmute = useCallback(async () => {
+    const a = audioRef.current;
+    if (!a) return;
+    try {
+      a.muted = false;
+      setMuted(false);
+      await a.play();
+      setNeedsUnmute(false);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    a.muted = !a.muted;
+    setMuted(a.muted);
+  }, []);
+
+
   return (
     <AnimatePresence>
       {!exiting && (
