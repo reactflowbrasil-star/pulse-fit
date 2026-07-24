@@ -183,7 +183,24 @@ export function SplashScreen({
             }}
           />
 
+          {/* Mute / unmute narration control */}
+          {narrationEnabled && (audioRef.current || needsUnmute) && (
+            <button
+              type="button"
+              onClick={needsUnmute ? handleUnmute : toggleMute}
+              aria-label={needsUnmute || muted ? "Ativar som" : "Silenciar"}
+              className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-10 grid h-10 w-10 place-items-center rounded-full bg-white/8 text-white ring-1 ring-white/10 backdrop-blur transition-colors hover:bg-white/12"
+            >
+              {needsUnmute || muted ? (
+                <VolumeX className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </button>
+          )}
+
           <div className="relative mx-auto flex h-full max-w-md flex-col items-center justify-between px-6 py-10 sm:py-16">
+
             <div className="h-4 shrink-0" />
 
             {/* Center block */}
