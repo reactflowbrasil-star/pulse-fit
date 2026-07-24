@@ -56,7 +56,7 @@ function OnboardingWhatsappPage() {
   }, [me.data]);
 
   const requestMut = useMutation({
-    mutationFn: (p: string) => requestFn({ data: { telefone: p } }),
+    mutationFn: (p: string) => requestFn({ data: { whatsapp: p } }),
     onSuccess: (res) => {
       if (res.ok) { setStep("code"); setError(null); }
       else setError(res.error);
@@ -65,7 +65,7 @@ function OnboardingWhatsappPage() {
   });
 
   const confirmMut = useMutation({
-    mutationFn: (c: string) => confirmFn({ data: { telefone: phone.trim(), codigo: c } }),
+    mutationFn: (c: string) => confirmFn({ data: { whatsapp: phone.trim(), codigo: c } }),
     onSuccess: (res) => {
       if (res.ok) { setStep("done"); setError(null); me.refetch(); }
       else setError(res.error);

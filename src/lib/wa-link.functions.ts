@@ -3,18 +3,14 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
- * Substitui as Edge Functions `enviar-codigo-whatsapp` e `verificar-codigo-whatsapp`
- * por server functions do TanStack Start (equivalente e mais seguro nesta stack).
- *
- * Secrets usados (server-only, injetados via process.env):
- *  - BOT_URL   → base do bot externo (ex: https://bot.cloudhost.run.place)
- *  - BOT_TOKEN → enviado em `Authorization: Bearer <token>`
+ * Vinculação de WhatsApp via bot externo.
+ * Secrets (server-only): BOT_URL, BOT_TOKEN.
  */
 
-const telefoneSchema = z
+const whatsappSchema = z
   .string()
   .trim()
-  .regex(/^\d{10,15}$/, "Telefone inválido. Use formato internacional, só dígitos (ex: 5562999999999).");
+  .regex(/^\d{10,15}$/, "WhatsApp inválido. Use formato internacional, só dígitos (ex: 5562999999999).");
 
 const codigoSchema = z.string().trim().regex(/^\d{6}$/, "Código deve ter 6 dígitos.");
 
@@ -25,8 +21,8 @@ function gerarCodigo(): string {
 // --------- enviar-codigo-whatsapp ---------
 export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { telefone: string }) =>
-    z.object({ telefone: telefoneSchema }).parse(input),
+  .inputValidator((input: { whatsapp: string }) =>
+    z.object({ whatsapp: whatsappSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const BOT_URL = process.env.BOT_URL;
@@ -42,7 +38,7 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
 
     const { error: insErr } = await supabase.from("whatsapp_verifications").insert({
       user_id: userId,
-      telefone: data.telefone,
+      whatsapp: data.whatsapp,
       codigo,
       expira_em: expiraEm,
     });
@@ -59,7 +55,7 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
           Authorization: `Bearer ${BOT_TOKEN}`,
         },
-        body: JSON.stringify({ telefone: data.telefone, codigo }),
+        body: JSON.stringify({ whatsapp: data.whatsapp, codigo }),
       });
       if (!res.ok) {
         const body = await res.text().catch(() => "");
@@ -78,8 +74,8 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
 // --------- verificar-codigo-whatsapp ---------
 export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { telefone: string; codigo: string }) =>
-    z.object({ telefone: telefoneSchema, codigo: codigoSchema }).parse(input),
+  .inputValidator((input: { whatsapp: string; codigo: string }) =>
+    z.object({ whatsapp: whatsappSchema, codigo: codigoSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -88,21 +84,20 @@ export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
       .from("whatsapp_verifications")
       .select("id, codigo, expira_em, usado")
       .eq("user_id", userId)
-      .eq("telefone", data.telefone)
+      .eq("whatsapp", data.whatsapp)
+      .eq("codigo", data.codigo)
       .eq("usado", false)
       .order("created_at", { ascending: false })
       .limit(1);
 
     if (error) {
       console.error("[wa-link] busca falhou:", error.message);
-      return { ok: false as const, error: "Erro ao validar o código." };
+      return { ok: false as const, error: "Código inválido ou expirado" };
     }
     const row = rows?.[0];
-    if (!row) return { ok: false as const, error: "Nenhum código pendente para este número." };
-    if (new Date(row.expira_em).getTime() < Date.now())
-      return { ok: false as const, error: "Código expirado. Solicite um novo." };
-    if (row.codigo !== data.codigo)
-      return { ok: false as const, error: "Código incorreto." };
+    if (!row || new Date(row.expira_em).getTime() < Date.now()) {
+      return { ok: false as const, error: "Código inválido ou expirado" };
+    }
 
     const { error: upVerErr } = await supabase
       .from("whatsapp_verifications")
@@ -113,15 +108,21 @@ export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Erro ao confirmar o código." };
     }
 
-    // Atualiza app_users (equivalente a profiles.whatsapp / whatsapp_verificado neste projeto).
-    const { error: upUserErr } = await supabase
-      .from("app_users")
-      .update({ whatsapp_number: data.telefone, whatsapp_verified: true })
-      .eq("user_id", userId);
-    if (upUserErr) {
-      console.error("[wa-link] update app_users falhou:", upUserErr.message);
+    // Atualiza profiles (schema oficial da spec).
+    const { error: upProfileErr } = await supabase
+      .from("profiles")
+      .update({ whatsapp: data.whatsapp, whatsapp_verificado: true })
+      .eq("id", userId);
+    if (upProfileErr) {
+      console.error("[wa-link] update profiles falhou:", upProfileErr.message);
       return { ok: false as const, error: "Não foi possível salvar o WhatsApp no perfil." };
     }
+
+    // Compat: mantém app_users em sincronia (usado em várias telas do app).
+    await supabase
+      .from("app_users")
+      .update({ whatsapp_number: data.whatsapp, whatsapp_verified: true })
+      .eq("user_id", userId);
 
     return { ok: true as const };
   });
