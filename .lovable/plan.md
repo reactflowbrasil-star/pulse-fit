@@ -1,95 +1,83 @@
+# Plano — Pulse Fit “Premium Fitness AI” (execução por fases)
 
-# Análise do projeto atual
+O app já tem 80% do que você pediu (splash, Coach IA, Trainer 3D procedural, VoiceController TTS, sessão de treino com dor/substituir/pausar, catálogo `exercise_catalog` no Supabase, WhatsApp). Não vou reconstruir isso — vou **realinhar visual à imagem**, criar as rotas faltantes e completar as tabelas necessárias, respeitando sua ordem: Fase 1 primeiro, avança nas seguintes só depois de você validar.
 
-**Stack já em uso:** TanStack Start + React 19 + Tailwind v4 + Lovable Cloud (Supabase) + Lovable AI Gateway (`LOVABLE_API_KEY` já provisionado). Rotas file-based em `src/routes/`, design tokens em `src/styles.css` (dark, verde-limão `#D5FF5F`), componentes em `src/components/` (`MobileFrame`, `BottomNav`, `StatusBar`, `ScreenHeader`), WhatsApp bot funcional, tabelas `whatsapp_*`. Sem dependências 3D instaladas ainda.
+## Análise do que já existe (reaproveitar)
 
-Reutilizo tudo isso. **Não recrio nada** do que já existe.
-
-# Realidade técnica — o que uma web app pode e não pode
-
-| Item da spec | Viável no Lovable web? | Observação |
+| Já pronto | Onde | Ação |
 |---|---|---|
-| Splash animada + microinterações + entrada do dashboard | ✅ Sim | CSS + Framer-motion (leve) |
-| IA gerando treino estruturado (JSON validado) | ✅ Sim | Lovable AI `openai/gpt-5.5` + Zod + whitelist |
-| Voz TTS (mute/volume/legendas) | ✅ Sim | Lovable AI `openai/gpt-4o-mini-tts` streaming SSE |
-| Pause/next/pain/substituir/feedback pós-série | ✅ Sim | UI + state machine |
-| Resumo do treino + histórico salvo | ✅ Sim | Nova tabela `workout_sessions` |
-| Modo sem câmera (100% do fluxo) | ✅ Sim | Prioridade da Fase 1 |
-| Avatar 3D **estilizado** (Ready Player Me) com animações **Mixamo** (~8 exercícios) e controle de câmera | ⚠️ Parcial | Rigged humanoid grátis, mas biblioteca limitada de mocap por exercício. Se o exercício exato não existe no Mixamo, uso a mais próxima ou fallback ilustração. |
-| **Humano fotorrealista com lip-sync, expressões faciais, sombras de estúdio, roupas específicas** | ❌ Não neste escopo | Requer modelagem/rigging profissional, mocap dedicada, blendshapes ARKit, pipeline de renderização de meses. Web browsers não rodam Unreal MetaHuman. **Proposta:** avatar RPM estilizado com contorno verde — cumpre o "acolhedor, atlético, integrado à interface" sem prometer o que não entrega. |
-| Análise postural por câmera (MediaPipe/pose) | ❌ Fora da Fase 1 | Adiciona ~2MB de assets, permissões, consentimento, calibração. Merece uma fase própria — se você quiser, ficaria como Fase 3. |
-| Sincronização labial e expressões faciais | ❌ Fora da Fase 1 | Depende de blendshapes + análise de fonemas do TTS. |
+| Splash animada 2.4s com anel + logo respirando | `src/routes/splash.tsx`, `AnimatedLogo.tsx` | Ajustar frase e timing p/ 2.5s; usar como boot real |
+| Dashboard (passos, calorias, água, treinos, header) | `src/routes/index.tsx` + `dashboard`/`user` em `mock.ts` | Realinhar cores/tipos à referência; adicionar contagem animada + anéis SVG |
+| BottomNav com FAB central | `src/components/BottomNav.tsx` | Renomear itens: Início / Dieta / Treinador IA / Progresso / Suporte |
+| Coach IA (onboarding + geração de plano via GPT-5.5 com Zod whitelist) | `src/routes/coach.tsx`, `src/lib/coach.functions.ts` | Reaproveitar como `/ai-trainer` (alias de rota) |
+| Trainer 3D procedural + presets de câmera + pausa | `src/components/Trainer3DViewer.tsx` | Estender props (`trainerState`, `qualityLevel`, `isSpeaking`, `onLoaded/onError`) e adicionar arquitetura p/ modelo GLB opcional |
+| Sessão de treino guiada (idx, pausa, dor, substituir, TTS SSE) | `src/routes/coach.session.$sessionId.tsx`, `VoiceController.tsx` | Adicionar 3 fases (preparação/execução/correção) + feedback pós-série |
+| Resumo pós-treino | `src/routes/coach.summary.$sessionId.tsx` | Adicionar animação anel 100% + confete discreto |
+| Catálogo com 10 exercícios validados + substitutos | tabela `exercise_catalog` | Já cobre o pedido |
+| Sessões persistidas por client_session_id | tabela `workout_sessions` | Já cobre |
 
-Recomendo **entregar Fases 1 e 2** agora. Fase 3 (câmera/pose) e Fase 4 (avatar fotorrealista comprado) ficam para depois, com escopo próprio.
+## Novo (o que falta)
 
-# Fase 1 — Splash + animações de entrada + microinterações
+**Rotas novas** (aliases + placeholders funcionais reaproveitando componentes existentes):
+- `/onboarding` — 3 passos coletando objetivo/nível/frequência → grava em `profiles`
+- `/dashboard` — alias que redireciona p/ `/` (mantém link estável)
+- `/workouts` — hoje é `/browse`, adicionar redirect
+- `/workouts/$id` — hoje é `/workout/$id`, adicionar redirect
+- `/workout-session/$id` — alias de `/coach/session/$id`
+- `/ai-trainer` — alias de `/coach`
+- `/history` — nova, lista `workout_sessions` do client_session_id
+- `/progress` — nova, gráfico simples (Recharts já disponível? checar) das `daily_metrics`
+- `/profile` — nova, edita `profiles`
+- `/settings` — nova, toggles de voz / redução de movimento / correção postural
 
-**Arquivos novos:**
-- `src/routes/splash.tsx` — splash 2–3s (logo fade+scale, glow verde, anel de progresso, frase "Seu próximo nível começa agora", transição suave). Pré-carrega em paralelo: perfil, últimos treinos, plano ativo (via `Promise.all`).
-- `src/components/AnimatedLogo.tsx` — logo com animação de respiração.
-- `src/components/ActivityRing.tsx` — anel SVG genérico (extrai lógica já presente no dashboard).
-- `src/hooks/useReducedMotion.ts` — respeita `prefers-reduced-motion`.
+**Tabelas novas no Supabase** (única migração):
+- `profiles` (opcional-auth: usa `client_session_id` já que não há login ainda; quando auth existir, migra p/ `user_id`)
+- `daily_metrics` (steps, calorias, água, distância por dia)
+- `user_achievements`
+- Renomeia/estende `exercise_catalog` **não** — já bate com o spec, só adiciona colunas faltantes se necessário.
 
-**Modificações:**
-- `src/routes/index.tsx` — animações de entrada em cascata (header→cards→progresso→lista) só na primeira visita ou após invalidação de dados; usar CSS keyframes já existentes (`fade-in`, `scale-in`) + novos.
-- `src/components/BottomNav.tsx` — pulse discreto no FAB central (já está no design).
-- `src/styles.css` — adicionar keyframes `logo-breathe`, `ring-draw`, `count-up`, `pulse-fab`.
+Vou **manter o modelo sem-auth** (client_session_id) porque o app inteiro funciona assim hoje; adicionar auth agora quebraria WhatsApp/Coach. Se quiser auth de verdade, pedimos numa fase separada.
 
-**Deps novas:** nenhuma (CSS puro + Web Animations API para count-up).
+## Fase 1 — o que entrego agora (só isso)
 
-# Fase 2 — "Treino com IA" (rota `/coach`)
+1. **Design system**: alinhar tokens em `src/styles.css` à paleta exata da imagem (#090B0E, #171A1F, #25282E, #B7FF52, #D1FF8A, #FF941F, #11C5DF).
+2. **SplashScreen** já existe → ajusto p/ 2.5s + prefetch de queries do dashboard em paralelo (não bloqueia).
+3. **DashboardHeader / StepsProgressCard / ActivityRings / MetricCard / WorkoutCard**: extraio do `index.tsx` monolítico p/ componentes reutilizáveis; adiciono contagem animada (Framer Motion `useSpring`) e anéis SVG.
+4. **BottomNavigation**: renomeio itens e ajusto FAB central; adiciono rotas placeholder p/ que nenhum item vá pra 404.
+5. **Aliases de rota** (`/dashboard`, `/workouts`, `/ai-trainer`, `/workout-session/$id`) — file routes finas que fazem `redirect()` p/ as existentes.
+6. **Placeholders funcionais** (não vazios) para `/history`, `/progress`, `/profile`, `/settings` — com skeleton + dados reais quando disponíveis (history lê `workout_sessions` já existente).
+7. **Migração Supabase**: `profiles`, `daily_metrics`, `user_achievements` (+ GRANTs + RLS por `client_session_id`).
+8. **Responsividade + prefers-reduced-motion**: já respeitado no que existe; garanto nos novos componentes.
 
-**Nova tabela (migration):**
-```
-exercise_catalog   -- ~10 exercícios validados: id, nome, grupo, animation_id, angulos, instrucoes, erros, variacao_facil, variacao_hard, substituicoes
-workout_sessions   -- sessões: user_id, plan_json, started_at, ended_at, feedback_json, calories, esforco
-```
-Seed dos 10 exercícios (agachamento, flexão, prancha, avanço, jumping-jack, mountain-climber, burpee, glute-bridge, rosca com garrafa, elevação lateral) na mesma migration.
+Fora do escopo desta fase (as próximas): modelo GLB real, MediaPipe/correção postural, TTS voice-picker, gráficos avançados de progresso, achievements automáticos, integração de câmera.
 
-**Serviço de IA (`src/lib/coach.functions.ts`):**
-- `generateWorkoutPlan(context)` — server fn `createServerFn`, chama Lovable AI `openai/gpt-5.5` com `Output.object` e schema Zod estrito. Prompt inclui catálogo validado; a IA **só pode escolher `exerciseId` do catálogo**. Camada de validação rejeita qualquer exercício fora da whitelist.
-- `getExerciseInstruction(exerciseId, userContext)` — devolve JSON no formato da spec (`voiceInstruction`, `commonMistakes`, etc.), sempre com fallback local se a IA falhar.
-- `adaptNextExercise(sessionId, difficultyFeedback)` — reduz reps / troca / aumenta descanso.
+## Regras que vou seguir (do seu brief)
 
-**Voz (`src/routes/api/coach/tts.ts` — server route):**
-- Proxy SSE para Lovable AI TTS (`openai/gpt-4o-mini-tts`), PCM 24kHz, `stream_format: sse`. Client toca via AudioContext (snippet do knowledge). Chunking se instrução > 400 palavras.
+- Não removo funcionalidade atual (WhatsApp fica intocado)
+- Nenhum botão sem ação, nenhum link quebrado
+- Sem lorem ipsum; conteúdo em pt-BR
+- Sem gradientes excessivos
+- Mobile-first, desktop centralizado como painel ampliado (já é assim via `MobileFrame`)
+- IA continua restrita ao whitelist do catálogo (já está)
+- Correção postural = arquitetura preparada, mas **não** implementada nesta fase (Fase 6 do seu brief)
+- Trainer 3D permanece procedural e **eu deixo isso explícito na UI** ("demonstração estilizada"), com props prontas p/ receber GLB depois
 
-**Avatar 3D (`src/components/Trainer3DViewer.tsx`):**
-- `@react-three/fiber` + `@react-three/drei` + `three`.
-- Carrega avatar Ready Player Me (URL glb pública, gratuito, sem chave).
-- Animações Mixamo (retargetadas para o rig RPM — usar `@pixiv/three-vrm` **não**; usar clips FBX Mixamo baixados manualmente e servidos de `/public/animations/`).
-- Estados: idle, greeting, explaining, demonstrating (por exercício), counting, resting, celebrating, error.
-- Câmera com 3 presets: frontal, lateral, 45°. Transição suave via `lerp`.
-- LOD e `Suspense` + skeleton 2D (ilustração) enquanto carrega. Fallback total: se WebGL indisponível ou GPU fraca (detectado via `navigator.gpu`/timing), rola ilustração 2D animada.
-- Lazy import da rota `/coach` para não pesar no bundle inicial.
+## Arquivos que Fase 1 vai tocar
 
-**Componentes novos:**
-- `Trainer3DViewer`, `TrainerStateController` (state machine XState-light em hook próprio), `ExerciseInstructionPanel`, `WorkoutProgressHeader`, `VoiceController` (mute/volume/repetir/legenda), `CameraAngleSelector`, `PainSafetyModal`, `PostSetFeedback`, `WorkoutSummary`, `AIWorkoutService` (client wrapper).
+Novos:
+- `src/routes/onboarding.tsx`, `dashboard.tsx`, `workouts.tsx`, `workouts.$id.tsx`, `workout-session.$id.tsx`, `ai-trainer.tsx`, `history.tsx`, `progress.tsx`, `profile.tsx`, `settings.tsx`
+- `src/components/DashboardHeader.tsx`, `StepsProgressCard.tsx`, `ActivityRings.tsx`, `MetricCard.tsx`, `WorkoutCard.tsx`, `LoadingSkeleton.tsx`
+- `src/hooks/useAnimatedNumber.ts`
+- 1 migração Supabase
 
-**Rotas:**
-- `/coach` — onboarding: escolha objetivo, nível, tempo, local, equipamento → gera plano.
-- `/coach/session/$sessionId` — tela guiada (avatar + header + controles + painel recolhível).
-- `/coach/summary/$sessionId` — resumo animado (círculo 100%, glow verde, gesto do treinador, botões salvar/compartilhar/avaliar).
+Alterados:
+- `src/styles.css` (tokens da paleta nova)
+- `src/routes/index.tsx` (usar novos componentes)
+- `src/components/BottomNav.tsx` (labels/rotas)
+- `src/routes/splash.tsx` (timing 2.5s + prefetch)
 
-**Fluxo de erro / offline:** cada exercício traz `voiceInstruction` e `executionSteps` locais no catálogo, então se IA/TTS/3D falharem, a sessão **continua** com instruções em texto e ilustração 2D.
+Intocados: `whatsapp.tsx`, `coach.*`, `Trainer3DViewer.tsx`, `VoiceController.tsx`, integração Evolution, `player.tsx`, etc.
 
-# Fora do escopo desta entrega (fases futuras)
+---
 
-- **Fase 3:** análise postural via câmera (MediaPipe Pose), consentimento, feedback "afaste os pés", modo com câmera.
-- **Fase 4:** avatar fotorrealista (MetaHuman via streaming Pixel Streaming, ou modelos comerciais). Requer decisão de custo e infra.
-- **Sync labial e expressões faciais** — atrelado à Fase 4.
-- **STT** para perguntas por voz — a spec pede, mas depende do `openai/gpt-4o-transcribe`; posso adicionar como pequena Fase 2.5 se quiser.
-
-# Dados/segurança
-
-- `workout_sessions` com RLS por `user_id` (auth Lovable Cloud, ainda não temos login — precisa decidir: adiciono login email+Google agora, ou sessão anônima por `localStorage` até você decidir auth?).
-- Camada de validação IA→catálogo é o único caminho para o avatar/voz — nunca a IA controla o avatar direto.
-- Nenhum áudio/vídeo do usuário é enviado ou armazenado nesta fase (não há câmera).
-
-# Perguntas antes de começar
-
-1. **Escopo confirmado:** Fases 1 + 2 agora, Fase 3 (câmera) depois? Ou você quer só a Fase 1 primeiro para revisar?
-2. **Auth:** quer que eu adicione login (email/Google) agora para `workout_sessions` por usuário, ou uso `localStorage` temporário?
-3. **Avatar RPM:** posso usar um avatar Ready Player Me padrão (masculino atlético) e depois adicionar seletor de gênero/energia, ou você prefere só ilustração 2D animada nesta primeira entrega (mais rápido, mais leve, sem dependências 3D)?
-
-Confirme essas 3 questões e eu inicio a implementação por fases, sem alterar nada do que já existe.
+**Confirma que posso executar Fase 1 nesses termos** (paleta exata da imagem, sem-auth via client_session_id, Trainer 3D procedural mantido com honesty label), ou quer ajustar algo antes?
