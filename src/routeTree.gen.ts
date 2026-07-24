@@ -25,10 +25,13 @@ import { Route as LiveRouteImport } from './routes/live'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DoneRouteImport } from './routes/done'
 import { Route as BrowseRouteImport } from './routes/browse'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
+import { Route as OnboardingWhatsappRouteImport } from './routes/onboarding.whatsapp'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
@@ -116,6 +119,16 @@ const BrowseRoute = BrowseRouteImport.update({
   path: '/browse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -135,6 +148,11 @@ const TrainerIdRoute = TrainerIdRouteImport.update({
   id: '/trainer/$id',
   path: '/trainer/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingWhatsappRoute = OnboardingWhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => OnboardingRoute,
 } as any)
 const ApiTtsRoute = ApiTtsRouteImport.update({
   id: '/api/tts',
@@ -170,12 +188,14 @@ const ApiPublicWhatsappWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/meal': typeof MealRoute
-  '/onboarding': typeof OnboardingRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
   '/player': typeof PlayerRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -188,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/whatsapp': typeof WhatsappRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/onboarding/whatsapp': typeof OnboardingWhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
@@ -198,12 +219,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/meal': typeof MealRoute
-  '/onboarding': typeof OnboardingRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
   '/player': typeof PlayerRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -216,6 +239,7 @@ export interface FileRoutesByTo {
   '/whatsapp': typeof WhatsappRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/onboarding/whatsapp': typeof OnboardingWhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach': typeof CoachIndexRoute
@@ -227,12 +251,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/meal': typeof MealRoute
-  '/onboarding': typeof OnboardingRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
   '/player': typeof PlayerRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -245,6 +271,7 @@ export interface FileRoutesById {
   '/whatsapp': typeof WhatsappRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/onboarding/whatsapp': typeof OnboardingWhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
@@ -257,6 +284,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/auth'
     | '/browse'
     | '/done'
     | '/history'
@@ -275,6 +304,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/api/live-coach'
     | '/api/tts'
+    | '/onboarding/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
@@ -285,6 +315,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
+    | '/auth'
     | '/browse'
     | '/done'
     | '/history'
@@ -303,6 +335,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/api/live-coach'
     | '/api/tts'
+    | '/onboarding/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach'
@@ -313,6 +346,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/auth'
     | '/browse'
     | '/done'
     | '/history'
@@ -331,6 +366,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/api/live-coach'
     | '/api/tts'
+    | '/onboarding/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
@@ -342,12 +378,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
   DoneRoute: typeof DoneRoute
   HistoryRoute: typeof HistoryRoute
   LiveRoute: typeof LiveRoute
   MealRoute: typeof MealRoute
-  OnboardingRoute: typeof OnboardingRoute
+  OnboardingRoute: typeof OnboardingRouteWithChildren
   PlayerRoute: typeof PlayerRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -483,6 +521,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrowseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -510,6 +562,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trainer/$id'
       preLoaderRoute: typeof TrainerIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/whatsapp': {
+      id: '/onboarding/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/onboarding/whatsapp'
+      preLoaderRoute: typeof OnboardingWhatsappRouteImport
+      parentRoute: typeof OnboardingRoute
     }
     '/api/tts': {
       id: '/api/tts'
@@ -556,14 +615,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface OnboardingRouteChildren {
+  OnboardingWhatsappRoute: typeof OnboardingWhatsappRoute
+}
+
+const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingWhatsappRoute: OnboardingWhatsappRoute,
+}
+
+const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
+  OnboardingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
   DoneRoute: DoneRoute,
   HistoryRoute: HistoryRoute,
   LiveRoute: LiveRoute,
   MealRoute: MealRoute,
-  OnboardingRoute: OnboardingRoute,
+  OnboardingRoute: OnboardingRouteWithChildren,
   PlayerRoute: PlayerRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
