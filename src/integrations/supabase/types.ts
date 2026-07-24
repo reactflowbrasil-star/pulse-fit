@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_metrics: {
+        Row: {
+          active_minutes: number
+          calories: number
+          client_session_id: string
+          created_at: string
+          date: string
+          distance_km: number
+          id: string
+          steps: number
+          updated_at: string
+          water_liters: number
+        }
+        Insert: {
+          active_minutes?: number
+          calories?: number
+          client_session_id: string
+          created_at?: string
+          date: string
+          distance_km?: number
+          id?: string
+          steps?: number
+          updated_at?: string
+          water_liters?: number
+        }
+        Update: {
+          active_minutes?: number
+          calories?: number
+          client_session_id?: string
+          created_at?: string
+          date?: string
+          distance_km?: number
+          id?: string
+          steps?: number
+          updated_at?: string
+          water_liters?: number
+        }
+        Relationships: []
+      }
       exercise_catalog: {
         Row: {
           allowed_camera_angles: string[]
@@ -86,6 +125,75 @@ export type Database = {
           name?: string
           safety_warnings?: string[]
           substitute_exercise_ids?: string[]
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          available_equipment: string[]
+          avatar_url: string | null
+          client_session_id: string
+          created_at: string
+          fitness_goal: string | null
+          fitness_level: string | null
+          full_name: string | null
+          id: string
+          onboarded: boolean
+          preferences: Json
+          updated_at: string
+          weekly_frequency: number | null
+        }
+        Insert: {
+          available_equipment?: string[]
+          avatar_url?: string | null
+          client_session_id: string
+          created_at?: string
+          fitness_goal?: string | null
+          fitness_level?: string | null
+          full_name?: string | null
+          id?: string
+          onboarded?: boolean
+          preferences?: Json
+          updated_at?: string
+          weekly_frequency?: number | null
+        }
+        Update: {
+          available_equipment?: string[]
+          avatar_url?: string | null
+          client_session_id?: string
+          created_at?: string
+          fitness_goal?: string | null
+          fitness_level?: string | null
+          full_name?: string | null
+          id?: string
+          onboarded?: boolean
+          preferences?: Json
+          updated_at?: string
+          weekly_frequency?: number | null
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_key: string
+          client_session_id: string
+          id: string
+          metadata: Json
+          unlocked_at: string
+        }
+        Insert: {
+          achievement_key: string
+          client_session_id: string
+          id?: string
+          metadata?: Json
+          unlocked_at?: string
+        }
+        Update: {
+          achievement_key?: string
+          client_session_id?: string
+          id?: string
+          metadata?: Json
+          unlocked_at?: string
         }
         Relationships: []
       }

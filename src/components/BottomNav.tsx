@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, UtensilsCrossed, BarChart3, MessageCircle, Plus } from "lucide-react";
+import { Home, UtensilsCrossed, BarChart3, MessageCircle, Sparkles } from "lucide-react";
 
 const items = [
   { to: "/", icon: Home, label: "Início" },
   { to: "/meal", icon: UtensilsCrossed, label: "Dieta" },
   { to: "/stats", icon: BarChart3, label: "Progresso" },
-  { to: "/whatsapp", icon: MessageCircle, label: "WhatsApp" },
+  { to: "/whatsapp", icon: MessageCircle, label: "Suporte" },
 ] as const;
 
 export function BottomNav() {
@@ -20,10 +20,10 @@ export function BottomNav() {
 
         <Link
           to="/coach"
-          aria-label="Treino com IA"
+          aria-label="Treinador IA"
           className="relative -mt-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform animate-[pulse-fab_2.4s_ease-out_infinite] active:scale-95"
         >
-          <Plus className="h-7 w-7" strokeWidth={2.6} />
+          <Sparkles className="h-7 w-7" strokeWidth={2.4} />
         </Link>
 
         {items.slice(2).map((item) => (

@@ -13,10 +13,15 @@ import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SplashRouteImport } from './routes/splash'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ReadyRouteImport } from './routes/ready'
+import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlayerRouteImport } from './routes/player'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MealRouteImport } from './routes/meal'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DoneRouteImport } from './routes/done'
 import { Route as CoachRouteImport } from './routes/coach'
 import { Route as BrowseRouteImport } from './routes/browse'
@@ -48,6 +53,11 @@ const SplashRoute = SplashRouteImport.update({
   path: '/splash',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
@@ -58,14 +68,34 @@ const ReadyRoute = ReadyRouteImport.update({
   path: '/ready',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayerRoute = PlayerRouteImport.update({
   id: '/player',
   path: '/player',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MealRoute = MealRouteImport.update({
   id: '/meal',
   path: '/meal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DoneRoute = DoneRouteImport.update({
@@ -125,10 +155,15 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
+  '/history': typeof HistoryRoute
   '/meal': typeof MealRoute
+  '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
@@ -145,10 +180,15 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
+  '/history': typeof HistoryRoute
   '/meal': typeof MealRoute
+  '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
@@ -166,10 +206,15 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
+  '/history': typeof HistoryRoute
   '/meal': typeof MealRoute
+  '/onboarding': typeof OnboardingRoute
   '/player': typeof PlayerRoute
+  '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
@@ -188,10 +233,15 @@ export interface FileRouteTypes {
     | '/browse'
     | '/coach'
     | '/done'
+    | '/history'
     | '/meal'
+    | '/onboarding'
     | '/player'
+    | '/profile'
+    | '/progress'
     | '/ready'
     | '/rewards'
+    | '/settings'
     | '/splash'
     | '/stats'
     | '/trainers'
@@ -208,10 +258,15 @@ export interface FileRouteTypes {
     | '/browse'
     | '/coach'
     | '/done'
+    | '/history'
     | '/meal'
+    | '/onboarding'
     | '/player'
+    | '/profile'
+    | '/progress'
     | '/ready'
     | '/rewards'
+    | '/settings'
     | '/splash'
     | '/stats'
     | '/trainers'
@@ -228,10 +283,15 @@ export interface FileRouteTypes {
     | '/browse'
     | '/coach'
     | '/done'
+    | '/history'
     | '/meal'
+    | '/onboarding'
     | '/player'
+    | '/profile'
+    | '/progress'
     | '/ready'
     | '/rewards'
+    | '/settings'
     | '/splash'
     | '/stats'
     | '/trainers'
@@ -249,10 +309,15 @@ export interface RootRouteChildren {
   BrowseRoute: typeof BrowseRoute
   CoachRoute: typeof CoachRouteWithChildren
   DoneRoute: typeof DoneRoute
+  HistoryRoute: typeof HistoryRoute
   MealRoute: typeof MealRoute
+  OnboardingRoute: typeof OnboardingRoute
   PlayerRoute: typeof PlayerRoute
+  ProfileRoute: typeof ProfileRoute
+  ProgressRoute: typeof ProgressRoute
   ReadyRoute: typeof ReadyRoute
   RewardsRoute: typeof RewardsRoute
+  SettingsRoute: typeof SettingsRoute
   SplashRoute: typeof SplashRoute
   StatsRoute: typeof StatsRoute
   TrainersRoute: typeof TrainersRoute
@@ -293,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SplashRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rewards': {
       id: '/rewards'
       path: '/rewards'
@@ -307,6 +379,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/player': {
       id: '/player'
       path: '/player'
@@ -314,11 +400,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meal': {
       id: '/meal'
       path: '/meal'
       fullPath: '/meal'
       preLoaderRoute: typeof MealRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/done': {
@@ -411,10 +511,15 @@ const rootRouteChildren: RootRouteChildren = {
   BrowseRoute: BrowseRoute,
   CoachRoute: CoachRouteWithChildren,
   DoneRoute: DoneRoute,
+  HistoryRoute: HistoryRoute,
   MealRoute: MealRoute,
+  OnboardingRoute: OnboardingRoute,
   PlayerRoute: PlayerRoute,
+  ProfileRoute: ProfileRoute,
+  ProgressRoute: ProgressRoute,
   ReadyRoute: ReadyRoute,
   RewardsRoute: RewardsRoute,
+  SettingsRoute: SettingsRoute,
   SplashRoute: SplashRoute,
   StatsRoute: StatsRoute,
   TrainersRoute: TrainersRoute,

@@ -20,7 +20,7 @@ function SplashPage() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const duration = reduced ? 400 : 2400;
+    const duration = reduced ? 400 : 2500;
     const start = performance.now();
     let raf = 0;
     const tick = (t: number) => {
