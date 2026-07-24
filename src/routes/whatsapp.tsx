@@ -149,11 +149,11 @@ function WebhookCard({ webhookUrl }: { webhookUrl: string }) {
       <p className="mt-1 text-xs text-text-tertiary">
         Configure este endereço no painel da Evolution, acrescentando <code className="text-primary">?token=SEU_TOKEN</code> ao final ou enviando o header <code className="text-primary">x-evolution-token</code>.
       </p>
-      <div className="mt-3 flex items-center gap-2 rounded-2xl bg-surface-elevated p-3">
-        <code className="flex-1 truncate text-xs text-foreground">{webhookUrl || "…"}</code>
+      <div className="mt-3 flex flex-wrap items-center gap-2 rounded-2xl bg-surface-elevated p-3">
+        <code className="min-w-0 flex-1 break-all text-xs text-foreground">{webhookUrl || "…"}</code>
         <button
           onClick={copy}
-          className="flex h-8 items-center gap-1 rounded-full bg-primary px-3 text-[11px] font-bold text-primary-foreground"
+          className="flex h-8 shrink-0 items-center gap-1 rounded-full bg-primary px-3 text-[11px] font-bold text-primary-foreground"
         >
           <Copy className="h-3 w-3" /> {copied ? "Copiado" : "Copiar"}
         </button>
