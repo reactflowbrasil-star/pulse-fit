@@ -13,7 +13,7 @@ import {
   confirmWhatsappVerification,
 } from "@/lib/auth.functions";
 
-export const Route = createFileRoute("/onboarding/whatsapp")({
+export const Route = createFileRoute("/whatsapp-setup")({
   head: () => ({
     meta: [
       { title: "Confirmar WhatsApp — Pulse Fit" },

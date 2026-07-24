@@ -27,10 +27,10 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/onboarding/whatsapp" });
+      if (data.session) navigate({ to: "/whatsapp-setup" });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
-      if (evt === "SIGNED_IN" && session) navigate({ to: "/onboarding/whatsapp" });
+      if (evt === "SIGNED_IN" && session) navigate({ to: "/whatsapp-setup" });
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);

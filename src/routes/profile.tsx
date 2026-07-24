@@ -65,7 +65,7 @@ function ProfilePage() {
                 </p>
               </div>
               <Link
-                to="/onboarding/whatsapp"
+                to="/whatsapp-setup"
                 className="rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-primary-foreground"
               >
                 {whatsappOk ? "Alterar" : "Confirmar"}
