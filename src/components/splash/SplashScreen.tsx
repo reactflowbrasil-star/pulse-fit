@@ -28,9 +28,17 @@ export function SplashScreen({
   onAnimationComplete,
   error = null,
   reducedMotion,
+  narration = "Pulse Fit. Seu próximo nível começa agora.",
+  narrationVoice = "alloy",
 }: SplashScreenProps) {
   const framerReduced = useFramerReducedMotion();
   const reduced = reducedMotion ?? framerReduced ?? false;
+  const narrationEnabled = narration !== false && !reduced;
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [needsUnmute, setNeedsUnmute] = useState(false);
+  const [muted, setMuted] = useState(false);
+
 
   const [exiting, setExiting] = useState(false);
   const [barDone, setBarDone] = useState(false);
