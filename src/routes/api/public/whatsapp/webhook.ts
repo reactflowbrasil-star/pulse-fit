@@ -89,6 +89,17 @@ async function handleEvent(payload: unknown, db: SupabaseAdmin) {
           },
           { onConflict: "remote_jid" },
         );
+
+      // Bot: gera resposta e envia via Evolution
+      if (remoteJid !== "unknown" && messageContent) {
+        try {
+          const { resolverBot, botReply } = await import("@/lib/wa-bot.server");
+          const reply = await resolverBot(db, remoteJid, messageContent);
+          await botReply(db, remoteJid, reply);
+        } catch (err) {
+          console.error("[wa-webhook] bot falhou:", err);
+        }
+      }
     }
     return;
   }
