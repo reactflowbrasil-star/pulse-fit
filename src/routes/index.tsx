@@ -8,16 +8,16 @@ import { dashboard, user } from "@/data/mock";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pulse Fit — Seu painel diário de treino" },
+      { title: "AirFlow — Seu painel diário de treino" },
       {
         name: "description",
         content:
           "Acompanhe passos, treinos, calorias e mantenha seu ritmo com o painel do Pulse Fit.",
       },
-      { property: "og:title", content: "Pulse Fit — Painel diário de treino" },
+      { property: "og:title", content: "AirFlow — Seu painel diário de treino" },
       {
         property: "og:description",
-        content: "Passos, treinos e atividade diária em uma visão dark e focada.",
+        content: "Acompanhe passos, treinos, calorias e mantenha seu ritmo com o painel do Pulse Fit.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
