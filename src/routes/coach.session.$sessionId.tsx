@@ -10,9 +10,10 @@ import {
   HeartPulse,
   Replace,
 } from "lucide-react";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { VoiceController } from "@/components/VoiceController";
+import { TrainerCoach } from "@/components/TrainerCoach";
 import {
   finishWorkoutSession,
   getWorkoutSession,
@@ -25,11 +26,6 @@ import type {
   WorkoutPlan,
 } from "@/lib/exercise-catalog";
 
-const Trainer3DViewer = lazy(() =>
-  import("@/components/Trainer3DViewer").then((m) => ({
-    default: m.Trainer3DViewer,
-  })),
-);
 
 export const Route = createFileRoute("/coach/session/$sessionId")({
   head: () => ({
