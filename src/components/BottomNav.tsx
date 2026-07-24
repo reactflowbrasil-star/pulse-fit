@@ -19,9 +19,9 @@ export function BottomNav() {
         ))}
 
         <Link
-          to="/browse"
-          aria-label="Iniciar treino"
-          className="relative -mt-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform active:scale-95"
+          to="/coach"
+          aria-label="Treino com IA"
+          className="relative -mt-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform animate-[pulse-fab_2.4s_ease-out_infinite] active:scale-95"
         >
           <Plus className="h-7 w-7" strokeWidth={2.6} />
         </Link>

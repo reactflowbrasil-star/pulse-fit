@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trophy, ArrowUpRight, Footprints, Flame, Droplets } from "lucide-react";
+import { Trophy, ArrowUpRight, Footprints, Flame, Droplets, Sparkles } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
@@ -79,6 +79,22 @@ function DashboardPage() {
             <div className="mt-2 text-sm font-bold">{stepsPct}%</div>
           </div>
         </section>
+        <Link
+          to="/coach"
+          className="flex items-center justify-between rounded-[28px] bg-gradient-to-r from-primary/25 via-surface to-surface p-4 ring-1 ring-primary/25 transition-transform active:scale-[0.98]"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground">
+              <Sparkles className="h-6 w-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">Coach IA</p>
+              <p className="truncate text-sm font-black">Treinador 3D com IA e voz</p>
+            </div>
+          </div>
+          <ArrowUpRight className="h-5 w-5 shrink-0 text-primary" />
+        </Link>
+
 
         <section className="rounded-[28px] bg-surface p-5">
           <div className="flex items-center justify-between">

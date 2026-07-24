@@ -12,15 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as StatsRouteImport } from './routes/stats'
+import { Route as SplashRouteImport } from './routes/splash'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ReadyRouteImport } from './routes/ready'
 import { Route as PlayerRouteImport } from './routes/player'
 import { Route as MealRouteImport } from './routes/meal'
 import { Route as DoneRouteImport } from './routes/done'
+import { Route as CoachRouteImport } from './routes/coach'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
+import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
+import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
+import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
 
 const WhatsappRoute = WhatsappRouteImport.update({
@@ -36,6 +41,11 @@ const TrainersRoute = TrainersRouteImport.update({
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
   path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplashRoute = SplashRouteImport.update({
+  id: '/splash',
+  path: '/splash',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RewardsRoute = RewardsRouteImport.update({
@@ -63,6 +73,11 @@ const DoneRoute = DoneRouteImport.update({
   path: '/done',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachRoute = CoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
@@ -83,6 +98,21 @@ const TrainerIdRoute = TrainerIdRouteImport.update({
   path: '/trainer/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachSummarySessionIdRoute = CoachSummarySessionIdRouteImport.update({
+  id: '/summary/$sessionId',
+  path: '/summary/$sessionId',
+  getParentRoute: () => CoachRoute,
+} as any)
+const CoachSessionSessionIdRoute = CoachSessionSessionIdRouteImport.update({
+  id: '/session/$sessionId',
+  path: '/session/$sessionId',
+  getParentRoute: () => CoachRoute,
+} as any)
+const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
+  id: '/api/coach/tts',
+  path: '/api/coach/tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWhatsappWebhookRoute =
   ApiPublicWhatsappWebhookRouteImport.update({
     id: '/api/public/whatsapp/webhook',
@@ -93,47 +123,62 @@ const ApiPublicWhatsappWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/meal': typeof MealRoute
   '/player': typeof PlayerRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
+  '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
+  '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/meal': typeof MealRoute
   '/player': typeof PlayerRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
+  '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
+  '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/coach': typeof CoachRouteWithChildren
   '/done': typeof DoneRoute
   '/meal': typeof MealRoute
   '/player': typeof PlayerRoute
   '/ready': typeof ReadyRoute
   '/rewards': typeof RewardsRoute
+  '/splash': typeof SplashRoute
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
+  '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
+  '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRouteTypes {
@@ -141,62 +186,80 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/browse'
+    | '/coach'
     | '/done'
     | '/meal'
     | '/player'
     | '/ready'
     | '/rewards'
+    | '/splash'
     | '/stats'
     | '/trainers'
     | '/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
+    | '/api/coach/tts'
+    | '/coach/session/$sessionId'
+    | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/browse'
+    | '/coach'
     | '/done'
     | '/meal'
     | '/player'
     | '/ready'
     | '/rewards'
+    | '/splash'
     | '/stats'
     | '/trainers'
     | '/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
+    | '/api/coach/tts'
+    | '/coach/session/$sessionId'
+    | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
   id:
     | '__root__'
     | '/'
     | '/browse'
+    | '/coach'
     | '/done'
     | '/meal'
     | '/player'
     | '/ready'
     | '/rewards'
+    | '/splash'
     | '/stats'
     | '/trainers'
     | '/whatsapp'
     | '/trainer/$id'
     | '/workout/$id'
+    | '/api/coach/tts'
+    | '/coach/session/$sessionId'
+    | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BrowseRoute: typeof BrowseRoute
+  CoachRoute: typeof CoachRouteWithChildren
   DoneRoute: typeof DoneRoute
   MealRoute: typeof MealRoute
   PlayerRoute: typeof PlayerRoute
   ReadyRoute: typeof ReadyRoute
   RewardsRoute: typeof RewardsRoute
+  SplashRoute: typeof SplashRoute
   StatsRoute: typeof StatsRoute
   TrainersRoute: typeof TrainersRoute
   WhatsappRoute: typeof WhatsappRoute
   TrainerIdRoute: typeof TrainerIdRoute
   WorkoutIdRoute: typeof WorkoutIdRoute
+  ApiCoachTtsRoute: typeof ApiCoachTtsRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
 }
 
@@ -221,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/stats'
       fullPath: '/stats'
       preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/splash': {
+      id: '/splash'
+      path: '/splash'
+      fullPath: '/splash'
+      preLoaderRoute: typeof SplashRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rewards': {
@@ -258,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoneRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coach': {
+      id: '/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof CoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/browse': {
       id: '/browse'
       path: '/browse'
@@ -286,6 +363,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coach/summary/$sessionId': {
+      id: '/coach/summary/$sessionId'
+      path: '/summary/$sessionId'
+      fullPath: '/coach/summary/$sessionId'
+      preLoaderRoute: typeof CoachSummarySessionIdRouteImport
+      parentRoute: typeof CoachRoute
+    }
+    '/coach/session/$sessionId': {
+      id: '/coach/session/$sessionId'
+      path: '/session/$sessionId'
+      fullPath: '/coach/session/$sessionId'
+      preLoaderRoute: typeof CoachSessionSessionIdRouteImport
+      parentRoute: typeof CoachRoute
+    }
+    '/api/coach/tts': {
+      id: '/api/coach/tts'
+      path: '/api/coach/tts'
+      fullPath: '/api/coach/tts'
+      preLoaderRoute: typeof ApiCoachTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/whatsapp/webhook': {
       id: '/api/public/whatsapp/webhook'
       path: '/api/public/whatsapp/webhook'
@@ -296,19 +394,34 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CoachRouteChildren {
+  CoachSessionSessionIdRoute: typeof CoachSessionSessionIdRoute
+  CoachSummarySessionIdRoute: typeof CoachSummarySessionIdRoute
+}
+
+const CoachRouteChildren: CoachRouteChildren = {
+  CoachSessionSessionIdRoute: CoachSessionSessionIdRoute,
+  CoachSummarySessionIdRoute: CoachSummarySessionIdRoute,
+}
+
+const CoachRouteWithChildren = CoachRoute._addFileChildren(CoachRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BrowseRoute: BrowseRoute,
+  CoachRoute: CoachRouteWithChildren,
   DoneRoute: DoneRoute,
   MealRoute: MealRoute,
   PlayerRoute: PlayerRoute,
   ReadyRoute: ReadyRoute,
   RewardsRoute: RewardsRoute,
+  SplashRoute: SplashRoute,
   StatsRoute: StatsRoute,
   TrainersRoute: TrainersRoute,
   WhatsappRoute: WhatsappRoute,
   TrainerIdRoute: TrainerIdRoute,
   WorkoutIdRoute: WorkoutIdRoute,
+  ApiCoachTtsRoute: ApiCoachTtsRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
 }
 export const routeTree = rootRouteImport
