@@ -133,6 +133,8 @@ export const dashboard = {
   steps: { current: 11000, goal: 16000 },
   calories: { current: 440, goal: 680 },
   water: { current: 1.8, goal: 2.5 },
+  activeMinutes: { current: 42, goal: 60 },
+  distanceKm: { current: 6.3, goal: 8 },
   activities: [
     { id: "walk", name: "Caminhada Indoor", distance: "2,44 km", when: "Hoje" },
     { id: "run", name: "Corrida Matinal", distance: "3,88 km", when: "Hoje" },
