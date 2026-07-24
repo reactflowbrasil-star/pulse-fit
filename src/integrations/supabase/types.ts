@@ -55,53 +55,53 @@ export type Database = {
       }
       atividades_diarias: {
         Row: {
-          agua_litros: number
-          agua_meta: number
-          ativo_meta: number
-          ativo_min: number
+          agua_ml: number
           calorias: number
-          calorias_meta: number
           created_at: string
           data: string
           distancia_km: number
-          distancia_meta: number
           id: string
+          meta_agua_ml: number
+          meta_calorias: number
+          meta_distancia_km: number
+          meta_minutos: number
+          meta_passos: number
+          minutos_ativo: number
           passos: number
-          passos_meta: number
           updated_at: string
           user_id: string
         }
         Insert: {
-          agua_litros?: number
-          agua_meta?: number
-          ativo_meta?: number
-          ativo_min?: number
+          agua_ml?: number
           calorias?: number
-          calorias_meta?: number
           created_at?: string
           data?: string
           distancia_km?: number
-          distancia_meta?: number
           id?: string
+          meta_agua_ml?: number
+          meta_calorias?: number
+          meta_distancia_km?: number
+          meta_minutos?: number
+          meta_passos?: number
+          minutos_ativo?: number
           passos?: number
-          passos_meta?: number
           updated_at?: string
           user_id: string
         }
         Update: {
-          agua_litros?: number
-          agua_meta?: number
-          ativo_meta?: number
-          ativo_min?: number
+          agua_ml?: number
           calorias?: number
-          calorias_meta?: number
           created_at?: string
           data?: string
           distancia_km?: number
-          distancia_meta?: number
           id?: string
+          meta_agua_ml?: number
+          meta_calorias?: number
+          meta_distancia_km?: number
+          meta_minutos?: number
+          meta_passos?: number
+          minutos_ativo?: number
           passos?: number
-          passos_meta?: number
           updated_at?: string
           user_id?: string
         }
@@ -458,27 +458,27 @@ export type Database = {
           created_at: string
           expira_em: string
           id: string
-          telefone: string
           usado: boolean
           user_id: string
+          whatsapp: string
         }
         Insert: {
           codigo: string
           created_at?: string
           expira_em: string
           id?: string
-          telefone: string
           usado?: boolean
           user_id: string
+          whatsapp: string
         }
         Update: {
           codigo?: string
           created_at?: string
           expira_em?: string
           id?: string
-          telefone?: string
           usado?: boolean
           user_id?: string
+          whatsapp?: string
         }
         Relationships: []
       }
