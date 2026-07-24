@@ -1,6 +1,7 @@
 import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } from "framer-motion";
-import { Sparkles, Zap } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Sparkles, Volume2, VolumeX, Zap } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+
 
 export type SplashScreenProps = {
   appName?: string;
