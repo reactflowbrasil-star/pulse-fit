@@ -57,7 +57,7 @@ function SessionPage() {
     queryFn: () => getCatalog(),
   });
 
-  const plan = sessionQuery.data?.plan as WorkoutPlan | undefined;
+  const serverPlan = sessionQuery.data?.plan as WorkoutPlan | undefined;
   const catalog: ExerciseCatalogItem[] = catalogQuery.data ?? [];
 
   const [idx, setIdx] = useState(0);
@@ -66,6 +66,9 @@ function SessionPage() {
   const [pain, setPain] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [startedAt] = useState(() => Date.now());
+  // Override local para substituição de exercícios sem persistir no servidor.
+  const [planOverride, setPlanOverride] = useState<WorkoutPlan | null>(null);
+  const plan = planOverride ?? serverPlan;
 
   useEffect(() => {
     const id = setInterval(() => setElapsed((s) => s + 1), 1000);
