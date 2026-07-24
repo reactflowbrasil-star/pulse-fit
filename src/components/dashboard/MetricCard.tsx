@@ -9,6 +9,7 @@ export function MetricCard({
   goal,
   accent = "primary",
   decimals = 0,
+  size = "sm",
 }: {
   icon: ReactNode;
   label: string;
@@ -17,6 +18,7 @@ export function MetricCard({
   goal?: number;
   accent?: "primary" | "orange" | "blue";
   decimals?: number;
+  size?: "sm" | "lg";
 }) {
   const animated = useAnimatedNumber(value, { duration: 900 });
   const pct = goal ? Math.min(100, (value / goal) * 100) : null;
@@ -36,27 +38,52 @@ export function MetricCard({
     : Math.round(animated).toLocaleString("pt-BR");
 
   return (
-    <div className="rounded-2xl bg-surface-elevated p-4 animate-[card-in_500ms_ease-out]">
-      <div className="flex items-center justify-between">
+    <div
+      className={`relative overflow-hidden rounded-[24px] bg-surface p-4 ring-1 ring-white/5 transition-transform animate-[card-in_500ms_ease-out] hover:-translate-y-0.5 ${
+        size === "lg" ? "min-h-[148px]" : ""
+      }`}
+    >
+      <div
+        className="absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-15 blur-xl"
+        style={{ backgroundColor: accentColor }}
+      />
+      <div className="relative flex items-center justify-between">
         <div
-          className="grid h-8 w-8 place-items-center rounded-xl"
-          style={{ backgroundColor: `color-mix(in oklab, ${accentColor} 18%, transparent)`, color: accentColor }}
+          className="grid h-9 w-9 place-items-center rounded-xl"
+          style={{
+            backgroundColor: `color-mix(in oklab, ${accentColor} 22%, transparent)`,
+            color: accentColor,
+          }}
         >
           {icon}
         </div>
         {pct !== null && (
-          <span className="text-[10px] font-bold text-text-tertiary tabular-nums">
+          <span
+            className="rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums"
+            style={{
+              backgroundColor: `color-mix(in oklab, ${accentColor} 18%, transparent)`,
+              color: accentColor,
+            }}
+          >
             {Math.round(pct)}%
           </span>
         )}
       </div>
-      <p className="mt-3 text-xs text-text-tertiary">{label}</p>
-      <div className="mt-0.5 flex items-baseline gap-1">
-        <span className="text-2xl font-black tabular-nums">{formatted}</span>
-        {unit && <span className="text-xs text-text-tertiary">{unit}</span>}
+      <p className="relative mt-3 text-[11px] font-semibold uppercase tracking-widest text-text-tertiary">
+        {label}
+      </p>
+      <div className="relative mt-1 flex items-baseline gap-1">
+        <span className="font-display text-3xl leading-none tabular-nums">
+          {formatted}
+        </span>
+        {unit && (
+          <span className="text-[11px] font-semibold text-text-tertiary">
+            {unit}
+          </span>
+        )}
       </div>
       {pct !== null && (
-        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/5">
+        <div className="relative mt-3 h-1 w-full overflow-hidden rounded-full bg-white/5">
           <div
             className="h-full rounded-full transition-[width] duration-1000 ease-out"
             style={{ width: `${pct}%`, backgroundColor: accentColor }}
