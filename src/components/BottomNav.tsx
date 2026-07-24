@@ -12,8 +12,8 @@ export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background-deep via-background-deep to-transparent pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-      <div className="relative mx-3 flex h-[72px] items-center justify-around gap-1 rounded-full bg-surface px-2 shadow-elevated ring-1 ring-white/5 sm:mx-4">
+    <div className="sticky bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background-deep via-background-deep/95 to-transparent pt-6 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="relative mx-3 flex h-[68px] items-center justify-around gap-1 rounded-[28px] bg-surface/95 px-2 shadow-elevated ring-1 ring-white/8 backdrop-blur-xl sm:mx-4">
         {items.slice(0, 2).map((item) => (
           <NavItem key={item.to} {...item} active={pathname === item.to} />
         ))}
@@ -21,7 +21,7 @@ export function BottomNav() {
         <Link
           to="/coach"
           aria-label="Treinador IA"
-          className="relative -mt-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform animate-[pulse-fab_2.4s_ease-out_infinite] active:scale-95"
+          className="relative -mt-9 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-4 ring-background-deep transition-transform animate-[pulse-fab_2.4s_ease-out_infinite] active:scale-95"
         >
           <Sparkles className="h-7 w-7" strokeWidth={2.4} />
         </Link>
@@ -48,8 +48,8 @@ function NavItem({
   return (
     <Link
       to={to}
-      className={`flex min-w-0 flex-1 flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
-        active ? "text-foreground" : "text-text-tertiary"
+      className={`flex min-w-0 flex-1 flex-col items-center gap-1 font-display text-[11px] uppercase tracking-widest transition-colors ${
+        active ? "text-primary" : "text-text-tertiary"
       }`}
     >
       <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />

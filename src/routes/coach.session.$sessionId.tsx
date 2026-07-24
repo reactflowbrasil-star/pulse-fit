@@ -141,7 +141,7 @@ function SessionPage() {
         <button
           onClick={() => navigate({ to: "/coach" })}
           aria-label="Voltar"
-          className="grid h-10 w-10 place-items-center rounded-full bg-surface"
+          className="grid h-11 w-11 place-items-center rounded-2xl bg-surface ring-1 ring-white/5"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -149,9 +149,11 @@ function SessionPage() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
             Exercício {idx + 1} / {totalSteps}
           </p>
-          <p className="text-sm font-black">{plan.title}</p>
+          <p className="font-display text-base uppercase tracking-wide">
+            {plan.title}
+          </p>
         </div>
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-surface text-xs font-black text-primary">
+        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/15 font-display text-xs tabular-nums tracking-wider text-primary">
           {formatTime(elapsed)}
         </div>
       </header>
@@ -159,13 +161,13 @@ function SessionPage() {
       {/* Progress */}
       <div className="mx-4 h-1.5 overflow-hidden rounded-full bg-surface">
         <div
-          className="h-full rounded-full bg-primary transition-all duration-500"
+          className="h-full rounded-full bg-primary shadow-glow transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
 
       {/* 3D stage */}
-      <div className="relative mt-3 aspect-square w-full overflow-hidden rounded-3xl bg-surface-dark">
+      <div className="relative mx-4 mt-3 aspect-square overflow-hidden rounded-3xl bg-surface-dark ring-1 ring-white/5">
         <Suspense
           fallback={
             <div className="grid h-full w-full place-items-center text-text-tertiary">
@@ -187,7 +189,7 @@ function SessionPage() {
               onClick={() => setAngle(a)}
               className={`grid h-9 w-9 place-items-center rounded-full text-[10px] font-black ring-1 ring-white/10 backdrop-blur ${
                 angle === a
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground shadow-glow"
                   : "bg-surface/80 text-foreground"
               }`}
               aria-label={`Câmera ${a}`}
@@ -199,20 +201,21 @@ function SessionPage() {
       </div>
 
       {/* Info panel */}
-      <section className="mt-3 flex-1 rounded-t-[28px] bg-surface px-5 pt-5 pb-4">
+      <section className="mt-3 flex-1 rounded-t-[32px] bg-surface px-5 pt-5 pb-4 ring-1 ring-white/5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
               {catalogItem.muscle_group}
             </p>
-            <h1 className="mt-1 truncate text-2xl font-black">
+            <h1 className="mt-1 truncate font-display text-3xl uppercase tracking-wide">
               {catalogItem.name}
             </h1>
-            <p className="mt-1 text-sm text-text-secondary">
-              {current.sets}x{current.reps}
-              {current.durationSeconds
-                ? ` · ${current.durationSeconds}s`
-                : ""} · descanso {current.restSeconds}s
+            <p className="mt-1 text-sm font-semibold text-text-secondary">
+              <span className="font-display text-base text-foreground">
+                {current.sets}×{current.reps}
+              </span>
+              {current.durationSeconds ? ` · ${current.durationSeconds}s` : ""} ·
+              descanso {current.restSeconds}s
             </p>
           </div>
           <VoiceController text={current.voiceInstruction} />
@@ -221,15 +224,19 @@ function SessionPage() {
         <ul className="mt-4 space-y-1.5 text-sm text-text-secondary">
           {catalogItem.execution_steps.map((s, i) => (
             <li key={i} className="flex gap-2">
-              <span className="text-primary">•</span>
+              <span className="mt-0.5 font-display text-primary">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               <span>{s}</span>
             </li>
           ))}
         </ul>
 
         {catalogItem.breathing ? (
-          <p className="mt-3 text-xs text-text-tertiary">
-            <strong className="text-foreground">Respiração:</strong>{" "}
+          <p className="mt-3 rounded-2xl bg-surface-elevated p-3 text-xs text-text-tertiary">
+            <strong className="font-display text-sm uppercase tracking-wide text-foreground">
+              Respiração:
+            </strong>{" "}
             {catalogItem.breathing}
           </p>
         ) : null}
@@ -238,26 +245,27 @@ function SessionPage() {
         <div className="mt-5 grid grid-cols-3 gap-2">
           <button
             onClick={() => setPain(true)}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-surface-elevated p-3 text-xs font-semibold text-destructive active:scale-95"
+            className="flex flex-col items-center gap-1 rounded-2xl bg-surface-elevated p-3 font-display text-xs uppercase tracking-wider text-destructive ring-1 ring-destructive/20 active:scale-95"
           >
             <HeartPulse className="h-5 w-5" />
             Dor
           </button>
           <button
             onClick={() => setPaused((p) => !p)}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-primary p-3 text-xs font-black text-primary-foreground active:scale-95"
+            className="flex flex-col items-center gap-1 rounded-2xl bg-primary p-3 font-display text-xs uppercase tracking-wider text-primary-foreground shadow-glow active:scale-95"
           >
             {paused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
             {paused ? "Continuar" : "Pausar"}
           </button>
           <button
             onClick={advance}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-surface-elevated p-3 text-xs font-semibold active:scale-95"
+            className="flex flex-col items-center gap-1 rounded-2xl bg-surface-elevated p-3 font-display text-xs uppercase tracking-wider ring-1 ring-white/5 active:scale-95"
           >
             <SkipForward className="h-5 w-5" />
             Próximo
           </button>
         </div>
+
 
         {catalogItem.substitute_exercise_ids.length > 0 ? (
           <button

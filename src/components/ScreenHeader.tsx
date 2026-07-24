@@ -17,12 +17,12 @@ export function ScreenHeader({
       <button
         onClick={onBack ?? (() => router.history.back())}
         aria-label="Voltar"
-        className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-foreground transition-transform active:scale-95"
+        className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-foreground ring-1 ring-white/5 transition-transform active:scale-95"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
       {title ? (
-        <h1 className="text-base font-bold tracking-tight">{title}</h1>
+        <h1 className="font-display text-2xl uppercase tracking-wide">{title}</h1>
       ) : (
         <span />
       )}
