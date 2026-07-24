@@ -13,15 +13,21 @@ export function VoiceController({ text, autoPlay = true, onEnd }: Props) {
   const [playing, setPlaying] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const ctxRef = useRef<AudioContext | null>(null);
+  const endTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
   const stop = useCallback(() => {
     abortRef.current?.abort();
     abortRef.current = null;
+    if (endTimerRef.current) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = null;
+    }
     if (ctxRef.current) {
       ctxRef.current.close().catch(() => {});
       ctxRef.current = null;
     }
-    setPlaying(false);
+    if (mountedRef.current) setPlaying(false);
   }, []);
 
   const play = useCallback(
@@ -105,22 +111,31 @@ export function VoiceController({ text, autoPlay = true, onEnd }: Props) {
             }
           }
         }
-        // wait roughly for playback
+        // aguarda aproximadamente o término da fila de áudio
         const remaining = Math.max(0, playhead - ctx.currentTime);
-        setTimeout(() => {
+        endTimerRef.current = setTimeout(() => {
+          endTimerRef.current = null;
+          if (!mountedRef.current) return;
           setPlaying(false);
           onEnd?.();
         }, remaining * 1000);
       } catch {
-        setPlaying(false);
+        if (mountedRef.current) setPlaying(false);
       }
     },
     [enabled, onEnd, stop],
   );
 
+  // marca desmontagem para evitar setState em componente desmontado
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     if (autoPlay && enabled && text) {
-      // small delay to let UI settle
       const id = setTimeout(() => play(text), 250);
       return () => {
         clearTimeout(id);

@@ -1,6 +1,7 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
+
 import * as THREE from "three";
 
 import type { AnimationId, CameraAngle } from "@/lib/exercise-catalog";
@@ -249,16 +250,32 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
   );
 }
 
-export function Trainer3DViewer({ animationId, cameraAngle, paused }: Props) {
-  const camPos = cameraPresets[cameraAngle];
+/**
+ * Move a câmera de forma controlada quando o preset muda.
+ * Necessário porque a prop `camera` do <Canvas> só é usada na inicialização;
+ * alterá-la depois não move a câmera. OrbitControls reorienta automaticamente
+ * ao target no próximo frame.
+ */
+function CameraRig({ angle }: { angle: CameraAngle }) {
+  const { camera } = useThree();
+  useEffect(() => {
+    const [x, y, z] = cameraPresets[angle];
+    camera.position.set(x, y, z);
+    camera.lookAt(0, 1.1, 0);
+    camera.updateProjectionMatrix();
+  }, [angle, camera]);
+  return null;
+}
 
+export function Trainer3DViewer({ animationId, cameraAngle, paused }: Props) {
   return (
     <Canvas
       shadows
       dpr={[1, 1.5]}
-      camera={{ position: camPos, fov: 40 }}
+      camera={{ position: cameraPresets.frontal, fov: 40 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
+      <CameraRig angle={cameraAngle} />
       <color attach="background" args={["#0f1015"]} />
       <fog attach="fog" args={["#0f1015", 6, 12]} />
       <ambientLight intensity={0.35} />
@@ -291,3 +308,4 @@ export function Trainer3DViewer({ animationId, cameraAngle, paused }: Props) {
     </Canvas>
   );
 }
+

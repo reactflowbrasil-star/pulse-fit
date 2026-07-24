@@ -21,6 +21,16 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/06a41eb4-2831-45bf-ad6c-91cfc47e481e/id-preview-d7162385--098b7ea2-536d-465c-90ab-17053513cb5a.lovable.app-1784861650238.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/06a41eb4-2831-45bf-ad6c-91cfc47e481e/id-preview-d7162385--098b7ea2-536d-465c-90ab-17053513cb5a.lovable.app-1784861650238.png",
+      },
     ],
   }),
   component: DashboardPage,

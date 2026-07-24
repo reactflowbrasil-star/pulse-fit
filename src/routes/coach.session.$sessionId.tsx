@@ -57,7 +57,7 @@ function SessionPage() {
     queryFn: () => getCatalog(),
   });
 
-  const plan = sessionQuery.data?.plan as WorkoutPlan | undefined;
+  const serverPlan = sessionQuery.data?.plan as WorkoutPlan | undefined;
   const catalog: ExerciseCatalogItem[] = catalogQuery.data ?? [];
 
   const [idx, setIdx] = useState(0);
@@ -66,6 +66,9 @@ function SessionPage() {
   const [pain, setPain] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [startedAt] = useState(() => Date.now());
+  // Override local para substituição de exercícios sem persistir no servidor.
+  const [planOverride, setPlanOverride] = useState<WorkoutPlan | null>(null);
+  const plan = planOverride ?? serverPlan;
 
   useEffect(() => {
     const id = setInterval(() => setElapsed((s) => s + 1), 1000);
@@ -259,18 +262,19 @@ function SessionPage() {
         {catalogItem.substitute_exercise_ids.length > 0 ? (
           <button
             onClick={() => {
-              // rotate through substitutes
-              const sub = catalog.find(
-                (c) => c.id === catalogItem.substitute_exercise_ids[0],
-              );
-              if (sub && plan) {
-                const copy = { ...plan };
-                copy.exercises = plan.exercises.map((ex, i) =>
+              // Rotaciona pelos substitutos definidos no catálogo.
+              const subs = catalogItem.substitute_exercise_ids;
+              if (subs.length === 0 || !plan) return;
+              const currentSubIdx = subs.indexOf(current.exerciseId);
+              const nextSubId = subs[(currentSubIdx + 1) % subs.length] ?? subs[0];
+              const sub = catalog.find((c) => c.id === nextSubId);
+              if (!sub) return;
+              setPlanOverride({
+                ...plan,
+                exercises: plan.exercises.map((ex, i) =>
                   i === idx ? { ...ex, exerciseId: sub.id } : ex,
-                );
-                // simple in-memory swap — plan reload not persisted
-                sessionQuery.refetch();
-              }
+                ),
+              });
             }}
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-surface-elevated py-3 text-sm font-semibold active:scale-[0.98]"
           >
