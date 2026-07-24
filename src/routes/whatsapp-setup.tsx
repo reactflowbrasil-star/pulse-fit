@@ -7,11 +7,11 @@ import { MobileFrame } from "@/components/MobileFrame";
 import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useAuth } from "@/hooks/useAuth";
+import { getMe } from "@/lib/auth.functions";
 import {
-  getMe,
-  requestWhatsappVerification,
-  confirmWhatsappVerification,
-} from "@/lib/auth.functions";
+  enviarCodigoWhatsapp,
+  verificarCodigoWhatsapp,
+} from "@/lib/wa-link.functions";
 
 export const Route = createFileRoute("/whatsapp-setup")({
   head: () => ({
@@ -40,8 +40,8 @@ function OnboardingWhatsappPage() {
     enabled: !!session,
   });
 
-  const requestFn = useServerFn(requestWhatsappVerification);
-  const confirmFn = useServerFn(confirmWhatsappVerification);
+  const requestFn = useServerFn(enviarCodigoWhatsapp);
+  const confirmFn = useServerFn(verificarCodigoWhatsapp);
 
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -56,19 +56,21 @@ function OnboardingWhatsappPage() {
   }, [me.data]);
 
   const requestMut = useMutation({
-    mutationFn: (p: string) => requestFn({ data: { phone: p } }),
+    mutationFn: (p: string) => requestFn({ data: { telefone: p } }),
     onSuccess: (res) => {
       if (res.ok) { setStep("code"); setError(null); }
       else setError(res.error);
     },
+    onError: (err: Error) => setError(err.message),
   });
 
   const confirmMut = useMutation({
-    mutationFn: (c: string) => confirmFn({ data: { code: c } }),
+    mutationFn: (c: string) => confirmFn({ data: { telefone: phone.trim(), codigo: c } }),
     onSuccess: (res) => {
       if (res.ok) { setStep("done"); setError(null); me.refetch(); }
       else setError(res.error);
     },
+    onError: (err: Error) => setError(err.message),
   });
 
   if (loading || !session) {

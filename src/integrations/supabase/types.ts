@@ -53,6 +53,60 @@ export type Database = {
         }
         Relationships: []
       }
+      atividades_diarias: {
+        Row: {
+          agua_litros: number
+          agua_meta: number
+          ativo_meta: number
+          ativo_min: number
+          calorias: number
+          calorias_meta: number
+          created_at: string
+          data: string
+          distancia_km: number
+          distancia_meta: number
+          id: string
+          passos: number
+          passos_meta: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agua_litros?: number
+          agua_meta?: number
+          ativo_meta?: number
+          ativo_min?: number
+          calorias?: number
+          calorias_meta?: number
+          created_at?: string
+          data?: string
+          distancia_km?: number
+          distancia_meta?: number
+          id?: string
+          passos?: number
+          passos_meta?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agua_litros?: number
+          agua_meta?: number
+          ativo_meta?: number
+          ativo_min?: number
+          calorias?: number
+          calorias_meta?: number
+          created_at?: string
+          data?: string
+          distancia_km?: number
+          distancia_meta?: number
+          id?: string
+          passos?: number
+          passos_meta?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_metrics: {
         Row: {
           active_minutes: number
@@ -212,6 +266,33 @@ export type Database = {
         }
         Relationships: []
       }
+      treinos: {
+        Row: {
+          created_at: string
+          data: string
+          distancia_km: number
+          id: string
+          nome: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: string
+          distancia_km?: number
+          id?: string
+          nome: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          distancia_km?: number
+          id?: string
+          nome?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_key: string
@@ -359,6 +440,36 @@ export type Database = {
           last_message_at?: string | null
           remote_jid?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      whatsapp_verifications: {
+        Row: {
+          codigo: string
+          created_at: string
+          expira_em: string
+          id: string
+          telefone: string
+          usado: boolean
+          user_id: string
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          expira_em: string
+          id?: string
+          telefone: string
+          usado?: boolean
+          user_id: string
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          expira_em?: string
+          id?: string
+          telefone?: string
+          usado?: boolean
+          user_id?: string
         }
         Relationships: []
       }
