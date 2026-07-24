@@ -210,9 +210,9 @@ function SendCard() {
     <section className="rounded-3xl bg-surface p-5">
       <h2 className="text-sm font-bold">Enviar mensagem</h2>
       <form onSubmit={onSubmit} className="mt-3 space-y-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:grid-cols-2">
           <input
-            className="rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
+            className="w-full rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
             placeholder="Telefone (ex: 5511999998888)"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -220,7 +220,7 @@ function SendCard() {
             maxLength={32}
           />
           <input
-            className="rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
+            className="w-full rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
             placeholder="Nome do aluno (opcional)"
             value={name}
             onChange={(e) => setName(e.target.value)}
