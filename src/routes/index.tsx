@@ -237,19 +237,10 @@ function WhatsappGate({ phone }: { phone?: string | null }) {
 type WorkoutRow = {
   id: string;
   started_at: string | null;
-  completed_at: string | null;
+  ended_at: string | null;
   status: string | null;
-  focus: string | null;
-  duration_minutes: number | null;
-};
-
-type MetricRow = {
-  date: string;
-  steps: number | null;
-  calories: number | null;
-  active_minutes: number | null;
-  water_ml: number | null;
-  distance_km: number | null;
+  duration_seconds: number | null;
+  plan: unknown;
 };
 
 function StudentDashboard() {
@@ -259,34 +250,17 @@ function StudentDashboard() {
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe() });
 
   const [workouts, setWorkouts] = useState<WorkoutRow[]>([]);
-  const [metric, setMetric] = useState<MetricRow | null>(null);
-  const [achievements, setAchievements] = useState<number>(0);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [w, m, a] = await Promise.all([
-        supabase
-          .from("workout_sessions")
-          .select("id, started_at, completed_at, status, focus, duration_minutes")
-          .eq("user_id", user.id)
-          .order("started_at", { ascending: false })
-          .limit(5),
-        supabase
-          .from("daily_metrics")
-          .select("date, steps, calories, active_minutes, water_ml, distance_km")
-          .eq("user_id", user.id)
-          .order("date", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        supabase
-          .from("user_achievements")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id),
-      ]);
+      const w = await supabase
+        .from("workout_sessions")
+        .select("id, started_at, ended_at, status, duration_seconds, plan")
+        .eq("user_id", user.id)
+        .order("started_at", { ascending: false })
+        .limit(5);
       setWorkouts((w.data as WorkoutRow[] | null) ?? []);
-      setMetric((m.data as MetricRow | null) ?? null);
-      setAchievements(a.count ?? 0);
     })();
   }, [user]);
 
@@ -300,14 +274,13 @@ function StudentDashboard() {
     ? String(profile.whatsapp_number).replace(/@.*/, "")
     : null;
 
-  const steps = metric?.steps ?? dashboard.steps.current;
+  const steps = dashboard.steps.current;
   const stepsGoal = dashboard.steps.goal;
-  const calories = metric?.calories ?? dashboard.calories.current;
-  const activeMin = metric?.active_minutes ?? dashboard.activeMinutes.current;
-  const waterL = metric?.water_ml
-    ? metric.water_ml / 1000
-    : dashboard.water.current;
-  const distanceKm = metric?.distance_km ?? dashboard.distanceKm.current;
+  const calories = dashboard.calories.current;
+  const activeMin = dashboard.activeMinutes.current;
+  const waterL = dashboard.water.current;
+  const distanceKm = dashboard.distanceKm.current;
+  const achievements = workouts.filter((w) => w.status === "completed").length;
 
   const rings: [
     { label: string; pct: number; color: string },
