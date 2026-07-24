@@ -76,9 +76,39 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Normaliza um número BR para o JID esperado pela Evolution. */
+/** Normaliza um número BR para o JID esperado pela Evolution.
+ *  - Remove tudo que não for dígito
+ *  - Se vier sem DDI, prepende 55 (Brasil) para números de 10 ou 11 dígitos (DDD + fixo/celular)
+ */
 export function toJid(phone: string): string {
   if (phone.includes("@")) return phone;
-  const digits = phone.replace(/\D+/g, "");
+  let digits = phone.replace(/\D+/g, "");
+  // Remove zeros iniciais / prefixo internacional "00"
+  digits = digits.replace(/^0+/, "");
+  // 10 dígitos (DDD + fixo) ou 11 (DDD + celular com 9): faltando DDI Brasil
+  if (digits.length === 10 || digits.length === 11) {
+    digits = `55${digits}`;
+  }
   return `${digits}@s.whatsapp.net`;
+}
+
+/** Extrai uma mensagem amigável de erros da Evolution API. */
+export function friendlyEvolutionError(err: unknown): string {
+  if (!(err instanceof EvolutionError)) {
+    return err instanceof Error ? err.message : "Falha desconhecida";
+  }
+  const payload = err.payload as
+    | { response?: { message?: Array<{ exists?: boolean; number?: string; jid?: string }> | string } }
+    | null;
+  const msg = payload?.response?.message;
+  if (Array.isArray(msg)) {
+    const notFound = msg.find((m) => m && m.exists === false);
+    if (notFound) {
+      const num = (notFound.number || notFound.jid || "").split("@")[0];
+      return `O número ${num || "informado"} não possui WhatsApp ativo. Confira DDI (55 para Brasil), DDD e o dígito 9.`;
+    }
+    return msg.map((m) => (typeof m === "string" ? m : JSON.stringify(m))).join("; ");
+  }
+  if (typeof msg === "string") return msg;
+  return err.message;
 }
