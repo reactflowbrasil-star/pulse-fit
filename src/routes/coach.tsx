@@ -196,7 +196,7 @@ function ChipGroup<T extends string>({
 }) {
   return (
     <section>
-      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-text-tertiary">
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
         {label}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -206,10 +206,10 @@ function ChipGroup<T extends string>({
             <button
               key={o.id}
               onClick={() => onChange(o.id)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-4 py-2.5 font-display text-sm uppercase tracking-wider transition-all ${
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface text-text-secondary"
+                  ? "bg-primary text-primary-foreground shadow-glow"
+                  : "bg-surface text-text-secondary ring-1 ring-white/5"
               }`}
             >
               {o.label}
@@ -220,3 +220,4 @@ function ChipGroup<T extends string>({
     </section>
   );
 }
+
