@@ -13,15 +13,21 @@ export function VoiceController({ text, autoPlay = true, onEnd }: Props) {
   const [playing, setPlaying] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const ctxRef = useRef<AudioContext | null>(null);
+  const endTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
   const stop = useCallback(() => {
     abortRef.current?.abort();
     abortRef.current = null;
+    if (endTimerRef.current) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = null;
+    }
     if (ctxRef.current) {
       ctxRef.current.close().catch(() => {});
       ctxRef.current = null;
     }
-    setPlaying(false);
+    if (mountedRef.current) setPlaying(false);
   }, []);
 
   const play = useCallback(
