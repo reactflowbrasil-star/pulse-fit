@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      whatsapp_config: {
+        Row: {
+          api_url: string | null
+          id: string
+          instance_name: string | null
+          singleton: boolean
+          updated_at: string
+          webhook_token: string | null
+        }
+        Insert: {
+          api_url?: string | null
+          id?: string
+          instance_name?: string | null
+          singleton?: boolean
+          updated_at?: string
+          webhook_token?: string | null
+        }
+        Update: {
+          api_url?: string | null
+          id?: string
+          instance_name?: string | null
+          singleton?: boolean
+          updated_at?: string
+          webhook_token?: string | null
+        }
+        Relationships: []
+      }
+      whatsapp_messages: {
+        Row: {
+          content: string | null
+          created_at: string
+          direction: string
+          error: string | null
+          id: string
+          media_type: string | null
+          media_url: string | null
+          message_id: string | null
+          raw: Json | null
+          remote_jid: string
+          status: string
+          template_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          direction: string
+          error?: string | null
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          message_id?: string | null
+          raw?: Json | null
+          remote_jid: string
+          status?: string
+          template_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          direction?: string
+          error?: string | null
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          message_id?: string | null
+          raw?: Json | null
+          remote_jid?: string
+          status?: string
+          template_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      whatsapp_sessions: {
+        Row: {
+          context: Json
+          created_at: string
+          display_name: string | null
+          id: string
+          last_message_at: string | null
+          remote_jid: string
+          updated_at: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          last_message_at?: string | null
+          remote_jid: string
+          updated_at?: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          last_message_at?: string | null
+          remote_jid?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
