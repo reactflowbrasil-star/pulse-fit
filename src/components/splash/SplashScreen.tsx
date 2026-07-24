@@ -1,6 +1,7 @@
 import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } from "framer-motion";
-import { Sparkles, Zap } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Sparkles, Volume2, VolumeX, Zap } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+
 
 export type SplashScreenProps = {
   appName?: string;
@@ -11,7 +12,10 @@ export type SplashScreenProps = {
   onAnimationComplete?: (destination?: string) => void;
   error?: Error | null;
   reducedMotion?: boolean;
+  narration?: string | false;
+  narrationVoice?: string;
 };
+
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -24,9 +28,17 @@ export function SplashScreen({
   onAnimationComplete,
   error = null,
   reducedMotion,
+  narration = "Pulse Fit. Seu próximo nível começa agora.",
+  narrationVoice = "alloy",
 }: SplashScreenProps) {
   const framerReduced = useFramerReducedMotion();
   const reduced = reducedMotion ?? framerReduced ?? false;
+  const narrationEnabled = narration !== false && !reduced;
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [needsUnmute, setNeedsUnmute] = useState(false);
+  const [muted, setMuted] = useState(false);
+
 
   const [exiting, setExiting] = useState(false);
   const [barDone, setBarDone] = useState(false);
@@ -55,6 +67,88 @@ export function SplashScreen({
     const t = window.setTimeout(() => setBarDone(true), barStartMs + barDurationMs + 50);
     return () => window.clearTimeout(t);
   }, [barStartMs, barDurationMs]);
+
+  // Voice narration — fetch from server and play. Try immediately; on autoplay
+  // block, expose an unmute button.
+  useEffect(() => {
+    if (!narrationEnabled || typeof narration !== "string") return;
+    let cancelled = false;
+    let objectUrl: string | null = null;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: narration, voice: narrationVoice }),
+        });
+        if (!res.ok || cancelled) return;
+        const blob = await res.blob();
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        const audio = new Audio(objectUrl);
+        audio.preload = "auto";
+        audioRef.current = audio;
+        try {
+          await audio.play();
+        } catch {
+          if (!cancelled) setNeedsUnmute(true);
+        }
+      } catch (err) {
+        if (import.meta.env.DEV) console.warn("[splash] narration failed", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      const a = audioRef.current;
+      if (a) {
+        a.pause();
+        a.src = "";
+      }
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [narrationEnabled, narration, narrationVoice]);
+
+  // Fade out narration when splash exits
+  useEffect(() => {
+    if (!exiting) return;
+    const a = audioRef.current;
+    if (!a) return;
+    const start = a.volume;
+    const steps = 10;
+    let i = 0;
+    const id = window.setInterval(() => {
+      i += 1;
+      a.volume = Math.max(0, start * (1 - i / steps));
+      if (i >= steps) {
+        window.clearInterval(id);
+        a.pause();
+      }
+    }, 40);
+    return () => window.clearInterval(id);
+  }, [exiting]);
+
+  const handleUnmute = useCallback(async () => {
+    const a = audioRef.current;
+    if (!a) return;
+    try {
+      a.muted = false;
+      setMuted(false);
+      await a.play();
+      setNeedsUnmute(false);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    a.muted = !a.muted;
+    setMuted(a.muted);
+  }, []);
+
 
   return (
     <AnimatePresence>
@@ -89,7 +183,24 @@ export function SplashScreen({
             }}
           />
 
+          {/* Mute / unmute narration control */}
+          {narrationEnabled && (audioRef.current || needsUnmute) && (
+            <button
+              type="button"
+              onClick={needsUnmute ? handleUnmute : toggleMute}
+              aria-label={needsUnmute || muted ? "Ativar som" : "Silenciar"}
+              className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-10 grid h-10 w-10 place-items-center rounded-full bg-white/8 text-white ring-1 ring-white/10 backdrop-blur transition-colors hover:bg-white/12"
+            >
+              {needsUnmute || muted ? (
+                <VolumeX className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </button>
+          )}
+
           <div className="relative mx-auto flex h-full max-w-md flex-col items-center justify-between px-6 py-10 sm:py-16">
+
             <div className="h-4 shrink-0" />
 
             {/* Center block */}
