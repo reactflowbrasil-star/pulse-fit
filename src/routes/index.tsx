@@ -573,11 +573,11 @@ function StudentDashboard() {
                     </div>
                     <div>
                       <p className="font-display text-base uppercase tracking-wide">
-                        {w.focus ?? "Treino"}
+                        Treino
                       </p>
                       <p className="text-xs text-text-tertiary">
-                        {w.duration_minutes
-                          ? `${w.duration_minutes} min · `
+                        {w.duration_seconds
+                          ? `${Math.round(w.duration_seconds / 60)} min · `
                           : ""}
                         {w.started_at
                           ? new Date(w.started_at).toLocaleDateString("pt-BR")
