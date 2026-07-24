@@ -28,6 +28,7 @@ import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
+import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
@@ -128,6 +129,11 @@ const TrainerIdRoute = TrainerIdRouteImport.update({
   path: '/trainer/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTtsRoute = ApiTtsRouteImport.update({
+  id: '/api/tts',
+  path: '/api/tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoachSummarySessionIdRoute = CoachSummarySessionIdRouteImport.update({
   id: '/summary/$sessionId',
   path: '/summary/$sessionId',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/stats': typeof StatsRoute
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
+  '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
     | '/api/coach/tts'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
     | '/api/coach/tts'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/trainers'
     | '/whatsapp'
+    | '/api/tts'
     | '/trainer/$id'
     | '/workout/$id'
     | '/api/coach/tts'
@@ -322,6 +334,7 @@ export interface RootRouteChildren {
   StatsRoute: typeof StatsRoute
   TrainersRoute: typeof TrainersRoute
   WhatsappRoute: typeof WhatsappRoute
+  ApiTtsRoute: typeof ApiTtsRoute
   TrainerIdRoute: typeof TrainerIdRoute
   WorkoutIdRoute: typeof WorkoutIdRoute
   ApiCoachTtsRoute: typeof ApiCoachTtsRoute
@@ -463,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tts': {
+      id: '/api/tts'
+      path: '/api/tts'
+      fullPath: '/api/tts'
+      preLoaderRoute: typeof ApiTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coach/summary/$sessionId': {
       id: '/coach/summary/$sessionId'
       path: '/summary/$sessionId'
@@ -524,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatsRoute: StatsRoute,
   TrainersRoute: TrainersRoute,
   WhatsappRoute: WhatsappRoute,
+  ApiTtsRoute: ApiTtsRoute,
   TrainerIdRoute: TrainerIdRoute,
   WorkoutIdRoute: WorkoutIdRoute,
   ApiCoachTtsRoute: ApiCoachTtsRoute,
