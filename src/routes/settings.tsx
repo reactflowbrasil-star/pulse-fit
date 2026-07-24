@@ -29,7 +29,7 @@ function SettingsPage() {
   return (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Configurações" backTo="/profile" />
+      <ScreenHeader title="Configurações" onBack={() => window.history.back()} />
       <main className="flex-1 space-y-2 px-5 py-4">
         {items.map((it, i) => (
           <Link

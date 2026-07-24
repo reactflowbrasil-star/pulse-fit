@@ -24,7 +24,7 @@ function ProfilePage() {
   return (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Perfil" backTo="/" />
+      <ScreenHeader title="Perfil" onBack={() => window.history.back()} />
       <main className="flex-1 space-y-4 px-5 py-4">
         <section className="flex items-center gap-4 rounded-3xl bg-surface p-5">
           <img

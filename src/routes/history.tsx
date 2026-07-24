@@ -22,7 +22,7 @@ function HistoryPage() {
   return (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Histórico" backTo="/" />
+      <ScreenHeader title="Histórico" onBack={() => window.history.back()} />
       <main className="flex-1 px-5 py-4">
         <p className="rounded-2xl bg-surface p-5 text-sm text-text-tertiary">
           Seu histórico completo de treinos aparecerá aqui assim que você concluir sua primeira sessão com o Coach IA.
