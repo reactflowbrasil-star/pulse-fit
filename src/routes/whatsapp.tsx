@@ -149,11 +149,11 @@ function WebhookCard({ webhookUrl }: { webhookUrl: string }) {
       <p className="mt-1 text-xs text-text-tertiary">
         Configure este endereço no painel da Evolution, acrescentando <code className="text-primary">?token=SEU_TOKEN</code> ao final ou enviando o header <code className="text-primary">x-evolution-token</code>.
       </p>
-      <div className="mt-3 flex items-center gap-2 rounded-2xl bg-surface-elevated p-3">
-        <code className="flex-1 truncate text-xs text-foreground">{webhookUrl || "…"}</code>
+      <div className="mt-3 flex flex-wrap items-center gap-2 rounded-2xl bg-surface-elevated p-3">
+        <code className="min-w-0 flex-1 break-all text-xs text-foreground">{webhookUrl || "…"}</code>
         <button
           onClick={copy}
-          className="flex h-8 items-center gap-1 rounded-full bg-primary px-3 text-[11px] font-bold text-primary-foreground"
+          className="flex h-8 shrink-0 items-center gap-1 rounded-full bg-primary px-3 text-[11px] font-bold text-primary-foreground"
         >
           <Copy className="h-3 w-3" /> {copied ? "Copiado" : "Copiar"}
         </button>
@@ -210,9 +210,9 @@ function SendCard() {
     <section className="rounded-3xl bg-surface p-5">
       <h2 className="text-sm font-bold">Enviar mensagem</h2>
       <form onSubmit={onSubmit} className="mt-3 space-y-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:grid-cols-2">
           <input
-            className="rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
+            className="w-full rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
             placeholder="Telefone (ex: 5511999998888)"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -220,7 +220,7 @@ function SendCard() {
             maxLength={32}
           />
           <input
-            className="rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
+            className="w-full rounded-2xl bg-surface-elevated px-3 py-2.5 text-sm outline-none placeholder:text-text-tertiary"
             placeholder="Nome do aluno (opcional)"
             value={name}
             onChange={(e) => setName(e.target.value)}
