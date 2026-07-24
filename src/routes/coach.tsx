@@ -94,10 +94,18 @@ function CoachOnboardingPage() {
       <ScreenHeader title="Treino com IA" />
 
       <main className="flex-1 space-y-5 px-5 pb-6">
-        <section className="grain-noise relative overflow-hidden rounded-[32px] bg-gradient-to-br from-primary via-primary to-primary-dark p-6 text-primary-foreground shadow-neon">
+        <section className="grain-noise relative overflow-hidden rounded-[32px] p-6 text-primary-foreground shadow-neon">
+          <img
+            src={coachHero}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-primary-dark/90 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/60 via-transparent to-transparent" />
           <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-primary-foreground/10 blur-2xl" />
           <div className="relative flex items-center gap-3">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary-foreground/15 text-primary-foreground backdrop-blur">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary-foreground/20 text-primary-foreground backdrop-blur">
               <Sparkles className="h-7 w-7" strokeWidth={2.4} />
             </div>
             <div className="min-w-0">
@@ -111,9 +119,10 @@ function CoachOnboardingPage() {
           </div>
           <p className="relative mt-3 text-sm opacity-90">
             Responda 4 perguntas rápidas. A IA escolhe exercícios validados e um
-            treinador 3D demonstra em vídeo, com voz.
+            treinador demonstra em vídeo fotorreal, com voz.
           </p>
         </section>
+
 
         <ChipGroup
           label="Objetivo"
