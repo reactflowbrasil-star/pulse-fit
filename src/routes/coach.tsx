@@ -4,6 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { Sparkles, Loader2 } from "lucide-react";
 import { useState } from "react";
 
+import coachHero from "@/assets/coach-hero.jpg";
+
+
 import { BottomNav } from "@/components/BottomNav";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
