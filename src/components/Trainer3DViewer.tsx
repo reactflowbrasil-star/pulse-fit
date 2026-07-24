@@ -1,6 +1,7 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
+
 import * as THREE from "three";
 
 import type { AnimationId, CameraAngle } from "@/lib/exercise-catalog";
