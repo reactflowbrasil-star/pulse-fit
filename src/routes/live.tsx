@@ -150,7 +150,7 @@ function LivePage() {
 
   return (
     <MobileFrame>
-      <ScreenHeader title="Coach ao Vivo" subtitle="IA reagindo aos seus sensores" />
+      <ScreenHeader title="Coach ao Vivo" />
 
       <div className="flex flex-1 flex-col gap-3 overflow-hidden px-4">
         {/* HUD de sensores */}
