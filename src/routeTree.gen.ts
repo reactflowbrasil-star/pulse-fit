@@ -9,38 +9,228 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrainersRouteImport } from './routes/trainers'
+import { Route as StatsRouteImport } from './routes/stats'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ReadyRouteImport } from './routes/ready'
+import { Route as PlayerRouteImport } from './routes/player'
+import { Route as MealRouteImport } from './routes/meal'
+import { Route as DoneRouteImport } from './routes/done'
+import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
+import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
 
+const TrainersRoute = TrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadyRoute = ReadyRouteImport.update({
+  id: '/ready',
+  path: '/ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerRoute = PlayerRouteImport.update({
+  id: '/player',
+  path: '/player',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealRoute = MealRouteImport.update({
+  id: '/meal',
+  path: '/meal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoneRoute = DoneRouteImport.update({
+  id: '/done',
+  path: '/done',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrowseRoute = BrowseRouteImport.update({
+  id: '/browse',
+  path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkoutIdRoute = WorkoutIdRouteImport.update({
+  id: '/workout/$id',
+  path: '/workout/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainerIdRoute = TrainerIdRouteImport.update({
+  id: '/trainer/$id',
+  path: '/trainer/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/browse': typeof BrowseRoute
+  '/done': typeof DoneRoute
+  '/meal': typeof MealRoute
+  '/player': typeof PlayerRoute
+  '/ready': typeof ReadyRoute
+  '/rewards': typeof RewardsRoute
+  '/stats': typeof StatsRoute
+  '/trainers': typeof TrainersRoute
+  '/trainer/$id': typeof TrainerIdRoute
+  '/workout/$id': typeof WorkoutIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/browse': typeof BrowseRoute
+  '/done': typeof DoneRoute
+  '/meal': typeof MealRoute
+  '/player': typeof PlayerRoute
+  '/ready': typeof ReadyRoute
+  '/rewards': typeof RewardsRoute
+  '/stats': typeof StatsRoute
+  '/trainers': typeof TrainersRoute
+  '/trainer/$id': typeof TrainerIdRoute
+  '/workout/$id': typeof WorkoutIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/browse': typeof BrowseRoute
+  '/done': typeof DoneRoute
+  '/meal': typeof MealRoute
+  '/player': typeof PlayerRoute
+  '/ready': typeof ReadyRoute
+  '/rewards': typeof RewardsRoute
+  '/stats': typeof StatsRoute
+  '/trainers': typeof TrainersRoute
+  '/trainer/$id': typeof TrainerIdRoute
+  '/workout/$id': typeof WorkoutIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/browse'
+    | '/done'
+    | '/meal'
+    | '/player'
+    | '/ready'
+    | '/rewards'
+    | '/stats'
+    | '/trainers'
+    | '/trainer/$id'
+    | '/workout/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/browse'
+    | '/done'
+    | '/meal'
+    | '/player'
+    | '/ready'
+    | '/rewards'
+    | '/stats'
+    | '/trainers'
+    | '/trainer/$id'
+    | '/workout/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/browse'
+    | '/done'
+    | '/meal'
+    | '/player'
+    | '/ready'
+    | '/rewards'
+    | '/stats'
+    | '/trainers'
+    | '/trainer/$id'
+    | '/workout/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BrowseRoute: typeof BrowseRoute
+  DoneRoute: typeof DoneRoute
+  MealRoute: typeof MealRoute
+  PlayerRoute: typeof PlayerRoute
+  ReadyRoute: typeof ReadyRoute
+  RewardsRoute: typeof RewardsRoute
+  StatsRoute: typeof StatsRoute
+  TrainersRoute: typeof TrainersRoute
+  TrainerIdRoute: typeof TrainerIdRoute
+  WorkoutIdRoute: typeof WorkoutIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trainers': {
+      id: '/trainers'
+      path: '/trainers'
+      fullPath: '/trainers'
+      preLoaderRoute: typeof TrainersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ready': {
+      id: '/ready'
+      path: '/ready'
+      fullPath: '/ready'
+      preLoaderRoute: typeof ReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player': {
+      id: '/player'
+      path: '/player'
+      fullPath: '/player'
+      preLoaderRoute: typeof PlayerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meal': {
+      id: '/meal'
+      path: '/meal'
+      fullPath: '/meal'
+      preLoaderRoute: typeof MealRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/done': {
+      id: '/done'
+      path: '/done'
+      fullPath: '/done'
+      preLoaderRoute: typeof DoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/browse': {
+      id: '/browse'
+      path: '/browse'
+      fullPath: '/browse'
+      preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +238,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workout/$id': {
+      id: '/workout/$id'
+      path: '/workout/$id'
+      fullPath: '/workout/$id'
+      preLoaderRoute: typeof WorkoutIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trainer/$id': {
+      id: '/trainer/$id'
+      path: '/trainer/$id'
+      fullPath: '/trainer/$id'
+      preLoaderRoute: typeof TrainerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BrowseRoute: BrowseRoute,
+  DoneRoute: DoneRoute,
+  MealRoute: MealRoute,
+  PlayerRoute: PlayerRoute,
+  ReadyRoute: ReadyRoute,
+  RewardsRoute: RewardsRoute,
+  StatsRoute: StatsRoute,
+  TrainersRoute: TrainersRoute,
+  TrainerIdRoute: TrainerIdRoute,
+  WorkoutIdRoute: WorkoutIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
