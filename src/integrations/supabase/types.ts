@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      exercise_catalog: {
+        Row: {
+          allowed_camera_angles: string[]
+          animation_id: string
+          breathing: string | null
+          category: string
+          common_mistakes: string[]
+          created_at: string
+          default_duration_s: number | null
+          default_reps: string
+          default_rest_s: number
+          default_sets: number
+          default_voice_instruction: string | null
+          easier_variation: string | null
+          equipment: string[]
+          execution_steps: string[]
+          harder_variation: string | null
+          id: string
+          initial_position: string[]
+          level: string
+          muscle_group: string
+          name: string
+          safety_warnings: string[]
+          substitute_exercise_ids: string[]
+        }
+        Insert: {
+          allowed_camera_angles?: string[]
+          animation_id: string
+          breathing?: string | null
+          category: string
+          common_mistakes?: string[]
+          created_at?: string
+          default_duration_s?: number | null
+          default_reps?: string
+          default_rest_s?: number
+          default_sets?: number
+          default_voice_instruction?: string | null
+          easier_variation?: string | null
+          equipment?: string[]
+          execution_steps?: string[]
+          harder_variation?: string | null
+          id: string
+          initial_position?: string[]
+          level: string
+          muscle_group: string
+          name: string
+          safety_warnings?: string[]
+          substitute_exercise_ids?: string[]
+        }
+        Update: {
+          allowed_camera_angles?: string[]
+          animation_id?: string
+          breathing?: string | null
+          category?: string
+          common_mistakes?: string[]
+          created_at?: string
+          default_duration_s?: number | null
+          default_reps?: string
+          default_rest_s?: number
+          default_sets?: number
+          default_voice_instruction?: string | null
+          easier_variation?: string | null
+          equipment?: string[]
+          execution_steps?: string[]
+          harder_variation?: string | null
+          id?: string
+          initial_position?: string[]
+          level?: string
+          muscle_group?: string
+          name?: string
+          safety_warnings?: string[]
+          substitute_exercise_ids?: string[]
+        }
+        Relationships: []
+      }
       whatsapp_config: {
         Row: {
           api_url: string | null
@@ -116,6 +191,57 @@ export type Database = {
           last_message_at?: string | null
           remote_jid?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      workout_sessions: {
+        Row: {
+          calories_estimate: number
+          client_session_id: string
+          context: Json
+          created_at: string
+          duration_seconds: number
+          effort_level: number | null
+          ended_at: string | null
+          feedback: Json
+          id: string
+          plan: Json
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          calories_estimate?: number
+          client_session_id: string
+          context?: Json
+          created_at?: string
+          duration_seconds?: number
+          effort_level?: number | null
+          ended_at?: string | null
+          feedback?: Json
+          id?: string
+          plan?: Json
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          calories_estimate?: number
+          client_session_id?: string
+          context?: Json
+          created_at?: string
+          duration_seconds?: number
+          effort_level?: number | null
+          ended_at?: string | null
+          feedback?: Json
+          id?: string
+          plan?: Json
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
