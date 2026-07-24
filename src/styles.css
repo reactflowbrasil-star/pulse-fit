@@ -152,7 +152,13 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.005em;
+    font-weight: 400;
   }
 
   img,
@@ -164,6 +170,12 @@
   }
 }
 
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
 @utility text-balance {
   text-wrap: balance;
 }
@@ -173,6 +185,36 @@
     display: none;
   }
   scrollbar-width: none;
+}
+
+@utility bento-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background: var(--color-surface);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@utility bento-tile-neon {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--primary-foreground);
+  box-shadow: var(--shadow-neon);
+}
+
+@utility grain-noise {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: radial-gradient(oklch(1 0 0 / 0.6) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
 }
 
 @keyframes count-pop {
