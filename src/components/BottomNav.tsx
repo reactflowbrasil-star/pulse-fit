@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, UtensilsCrossed, BarChart3, MessageCircle, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 const items = [
   { to: "/", icon: Home, label: "Início" },
@@ -8,18 +9,28 @@ const items = [
   { to: "/whatsapp", icon: MessageCircle, label: "Suporte" },
 ] as const;
 
+const spring = { type: "spring" as const, stiffness: 380, damping: 26, mass: 0.7 };
+
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <>
-      {/* Spacer to prevent content from being hidden behind the fixed nav */}
-      <div aria-hidden="true" className="h-[112px] shrink-0" />
+      {/* Spacer prevents content from being hidden behind the fixed nav (includes home-bar safe area) */}
+      <div
+        aria-hidden="true"
+        className="shrink-0"
+        style={{ height: "calc(112px + env(safe-area-inset-bottom))" }}
+      />
 
       {/* Floating nav — always visible at viewport bottom, aligned to frame */}
-      <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-6"
+      <motion.div
+        initial={{ y: 120, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ ...spring, delay: 0.05 }}
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pt-6"
         style={{
+          paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
           background:
             "linear-gradient(to top, var(--background-deep) 40%, color-mix(in oklab, var(--background-deep) 80%, transparent) 75%, transparent)",
         }}
@@ -29,19 +40,21 @@ export function BottomNav() {
             <NavItem key={item.to} {...item} active={pathname === item.to} />
           ))}
 
-          <Link
-            to="/coach"
-            aria-label="Treinador IA"
-            className="relative -mt-9 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-4 ring-background-deep transition-transform animate-[pulse-fab_2.4s_ease-out_infinite] active:scale-95"
-          >
-            <Sparkles className="h-7 w-7" strokeWidth={2.4} />
-          </Link>
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={spring} className="-mt-9">
+            <Link
+              to="/coach"
+              aria-label="Treinador IA"
+              className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-4 ring-background-deep animate-[pulse-fab_2.4s_ease-out_infinite]"
+            >
+              <Sparkles className="h-7 w-7" strokeWidth={2.4} />
+            </Link>
+          </motion.div>
 
           {items.slice(2).map((item) => (
             <NavItem key={item.to} {...item} active={pathname === item.to} />
           ))}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
@@ -60,12 +73,25 @@ function NavItem({
   return (
     <Link
       to={to}
-      className={`flex min-w-0 flex-1 flex-col items-center gap-1 font-display text-[11px] uppercase tracking-widest transition-colors ${
+      className={`group relative flex min-w-0 flex-1 flex-col items-center gap-1 font-display text-[11px] uppercase tracking-widest transition-colors ${
         active ? "text-primary" : "text-text-tertiary"
       }`}
     >
-      <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
-      <span className="max-w-full truncate">{label}</span>
+      {active && (
+        <motion.span
+          layoutId="navPill"
+          transition={spring}
+          className="absolute inset-x-2 top-1 h-1 rounded-full bg-primary/80"
+        />
+      )}
+      <motion.span
+        whileTap={{ scale: 0.85 }}
+        transition={spring}
+        className="flex flex-col items-center gap-1"
+      >
+        <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
+        <span className="max-w-full truncate">{label}</span>
+      </motion.span>
     </Link>
   );
 }

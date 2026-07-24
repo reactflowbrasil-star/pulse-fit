@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 
 /**
  * App container:
- * - Mobile (<sm): full-bleed, edge-to-edge
- * - Tablet+ (sm): phone-shaped frame centered on a dark backdrop
- * - Large screens: wider frame (up to max-w-md) with breathing room
+ * - Mobile (<sm): full-bleed with safe-area padding for notches, dynamic
+ *   islands, rounded screen corners and gesture bars.
+ * - Tablet+ (sm): phone-shaped frame centered on a dark backdrop (safe-area
+ *   is neutral here because the frame is inset from the viewport edges).
  */
 export function MobileFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-[100dvh] w-full overflow-x-hidden bg-background-deep">
+    <div className="min-h-[100dvh] w-full overflow-x-hidden bg-background-deep safe-x">
       <div
         className="
           mx-auto flex min-h-[100dvh] w-full max-w-full flex-col bg-background
