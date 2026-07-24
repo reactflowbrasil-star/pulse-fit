@@ -12,7 +12,10 @@ export type SplashScreenProps = {
   onAnimationComplete?: (destination?: string) => void;
   error?: Error | null;
   reducedMotion?: boolean;
+  narration?: string | false;
+  narrationVoice?: string;
 };
+
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
