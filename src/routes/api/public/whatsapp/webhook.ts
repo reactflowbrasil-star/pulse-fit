@@ -47,9 +47,7 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook")({
   },
 });
 
-type SupabaseAdmin = Awaited<
-  ReturnType<typeof import("@/integrations/supabase/client.server").then>
->["supabaseAdmin"];
+type SupabaseAdmin = typeof import("@/integrations/supabase/client.server")["supabaseAdmin"];
 
 async function handleEvent(payload: unknown, db: SupabaseAdmin) {
   if (!payload || typeof payload !== "object") return;
