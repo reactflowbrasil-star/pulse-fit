@@ -10,16 +10,16 @@ import { workouts } from "@/data/mock";
 export const Route = createFileRoute("/browse")({
   head: () => ({
     meta: [
-      { title: "Browse Workouts — Pulse Fit" },
+      { title: "Explorar Treinos — Pulse Fit" },
       {
         name: "description",
         content:
-          "Explore high intensity home workouts, plans and trainers curated for every level.",
+          "Descubra treinos em casa de alta intensidade, planos e treinadores para todos os níveis.",
       },
-      { property: "og:title", content: "Browse Workouts — Pulse Fit" },
+      { property: "og:title", content: "Explorar Treinos — Pulse Fit" },
       {
         property: "og:description",
-        content: "Cards of home workouts with duration and difficulty at a glance.",
+        content: "Cards de treinos em casa com duração e dificuldade num relance.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -28,20 +28,20 @@ export const Route = createFileRoute("/browse")({
   component: BrowsePage,
 });
 
-const tabs = ["Workouts", "Fitness", "Plans", "Trainers", "Exercises"] as const;
+const tabs = ["Treinos", "Fitness", "Planos", "Treinadores", "Exercícios"] as const;
 
 function BrowsePage() {
-  const [active, setActive] = useState<(typeof tabs)[number]>("Workouts");
+  const [active, setActive] = useState<(typeof tabs)[number]>("Treinos");
 
   return (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Browse" />
+      <ScreenHeader title="Explorar" />
 
       <div className="scrollbar-none flex gap-2 overflow-x-auto px-5 pb-3">
         {tabs.map((t) => {
           const isActive = t === active;
-          const target = t === "Trainers" ? "/trainers" : undefined;
+          const target = t === "Treinadores" ? "/trainers" : undefined;
           const content = (
             <span
               className={`inline-flex h-9 items-center whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors ${
@@ -66,11 +66,11 @@ function BrowsePage() {
       </div>
 
       <div className="mx-5 flex items-center justify-between rounded-2xl bg-surface px-2 py-2 text-xs font-semibold text-text-secondary">
-        <FilterButton icon={<SlidersHorizontal className="h-4 w-4" />} label="Filters" />
+        <FilterButton icon={<SlidersHorizontal className="h-4 w-4" />} label="Filtros" />
         <span className="h-5 w-px bg-white/10" />
-        <FilterButton icon={<ArrowUpDown className="h-4 w-4" />} label="Sorting" />
+        <FilterButton icon={<ArrowUpDown className="h-4 w-4" />} label="Ordenar" />
         <span className="h-5 w-px bg-white/10" />
-        <FilterButton icon={<Search className="h-4 w-4" />} label="Search" />
+        <FilterButton icon={<Search className="h-4 w-4" />} label="Buscar" />
       </div>
 
       <main className="flex-1 px-5 pt-4 pb-2">
@@ -92,7 +92,7 @@ function BrowsePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/20" />
               <button
-                aria-label="Save"
+                aria-label="Salvar"
                 className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur ring-1 ring-white/20"
               >
                 <Bookmark className="h-4 w-4 text-primary" />

@@ -8,16 +8,16 @@ import { dashboard, user } from "@/data/mock";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pulse Fit — Your daily training dashboard" },
+      { title: "Pulse Fit — Seu painel diário de treino" },
       {
         name: "description",
         content:
-          "Track steps, workouts, calories and stay on top of your training with the Pulse Fit dashboard.",
+          "Acompanhe passos, treinos, calorias e mantenha seu ritmo com o painel do Pulse Fit.",
       },
-      { property: "og:title", content: "Pulse Fit — Daily training dashboard" },
+      { property: "og:title", content: "Pulse Fit — Painel diário de treino" },
       {
         property: "og:description",
-        content: "Steps, workouts and daily activity in one dark, focused view.",
+        content: "Passos, treinos e atividade diária em uma visão dark e focada.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -42,31 +42,31 @@ function DashboardPage() {
             className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-primary/40"
           />
           <div className="min-w-0">
-            <p className="text-sm text-text-tertiary">Hello {user.name}!</p>
-            <p className="truncate text-base font-bold">Let's start your day</p>
+            <p className="text-sm text-text-tertiary">Olá, {user.name}!</p>
+            <p className="truncate text-base font-bold">Vamos começar o seu dia</p>
           </div>
         </div>
-        <button
-          aria-label="Rewards"
+        <Link
+          to="/rewards"
+          aria-label="Recompensas"
           className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface"
         >
           <Trophy className="h-5 w-5 text-primary" />
-        </button>
+        </Link>
       </header>
 
       <main className="flex-1 space-y-4 px-5 pb-6">
-        {/* Steps hero card */}
         <section className="rounded-[28px] bg-primary p-6 text-primary-foreground shadow-glow">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold opacity-70">Steps</span>
+            <span className="text-sm font-semibold opacity-70">Passos</span>
             <Footprints className="h-5 w-5" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-6xl font-black tracking-tight">
-              {dashboard.steps.current.toLocaleString("en-US").replace(",", " ")}
+              {dashboard.steps.current.toLocaleString("pt-BR")}
             </span>
             <span className="text-lg font-semibold opacity-60">
-              / {dashboard.steps.goal.toLocaleString("en-US").replace(",", " ")}
+              / {dashboard.steps.goal.toLocaleString("pt-BR")}
             </span>
           </div>
           <div className="mt-4">
@@ -80,45 +80,43 @@ function DashboardPage() {
           </div>
         </section>
 
-        {/* Daily activity */}
         <section className="rounded-[28px] bg-surface p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold">Daily Activity</h2>
+            <h2 className="text-base font-bold">Atividade do dia</h2>
             <Link to="/browse" className="text-xs font-semibold text-primary">
-              See all
+              Ver todos
             </Link>
           </div>
           <div className="mt-4 grid grid-cols-[1fr_auto] items-center gap-4">
             <div className="space-y-3">
               <Metric
                 icon={<Footprints className="h-4 w-4" />}
-                label="Steps"
-                value={`${dashboard.steps.current.toLocaleString("en-US").replace(",", " ")}`}
-                sub={`/ ${dashboard.steps.goal.toLocaleString("en-US").replace(",", " ")}`}
+                label="Passos"
+                value={`${dashboard.steps.current.toLocaleString("pt-BR")}`}
+                sub={`/ ${dashboard.steps.goal.toLocaleString("pt-BR")}`}
               />
               <Metric
                 icon={<Flame className="h-4 w-4" />}
-                label="Calories"
+                label="Calorias"
                 value={`${dashboard.calories.current}`}
-                sub={`/ ${dashboard.calories.goal} Cal`}
+                sub={`/ ${dashboard.calories.goal} kcal`}
               />
               <Metric
                 icon={<Droplets className="h-4 w-4" />}
-                label="Water"
-                value={`${dashboard.water.current}`}
-                sub={`/ ${dashboard.water.goal} L`}
+                label="Água"
+                value={`${dashboard.water.current.toString().replace(".", ",")}`}
+                sub={`/ ${dashboard.water.goal.toString().replace(".", ",")} L`}
               />
             </div>
             <ActivityRings />
           </div>
         </section>
 
-        {/* Workouts */}
         <section className="rounded-[28px] bg-surface p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold">Workouts</h2>
+            <h2 className="text-base font-bold">Treinos</h2>
             <Link to="/browse" className="text-xs font-semibold text-primary">
-              See all
+              Ver todos
             </Link>
           </div>
           <ul className="mt-3 space-y-2">
@@ -136,7 +134,7 @@ function DashboardPage() {
                     <p className="text-xs text-text-tertiary">{a.distance} · {a.when}</p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-primary">Log</span>
+                <span className="text-xs font-semibold text-primary">Registrar</span>
               </li>
             ))}
           </ul>
@@ -185,14 +183,7 @@ function ActivityRings() {
         const c = 2 * Math.PI * ring.r;
         return (
           <g key={ring.r} transform="rotate(-90 60 60)">
-            <circle
-              cx="60"
-              cy="60"
-              r={ring.r}
-              fill="none"
-              stroke="oklch(0.29 0.008 265)"
-              strokeWidth="8"
-            />
+            <circle cx="60" cy="60" r={ring.r} fill="none" stroke="oklch(0.29 0.008 265)" strokeWidth="8" />
             <circle
               cx="60"
               cy="60"

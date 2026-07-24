@@ -8,18 +8,18 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 export const Route = createFileRoute("/meal")({
   head: () => ({
     meta: [
-      { title: "Meal — Pulse Fit" },
-      { name: "description", content: "Log meals and stay on your nutrition targets." },
-      { property: "og:title", content: "Meal — Pulse Fit" },
-      { property: "og:description", content: "Log meals and hit your nutrition targets." },
+      { title: "Dieta — Pulse Fit" },
+      { name: "description", content: "Registre refeições e mantenha suas metas de nutrição." },
+      { property: "og:title", content: "Dieta — Pulse Fit" },
+      { property: "og:description", content: "Registre refeições e bata suas metas de nutrição." },
       { property: "og:type", content: "website" },
     ],
   }),
   component: () => (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Meal" />
-      <Placeholder icon={<UtensilsCrossed className="h-8 w-8" />} title="Meal tracking" />
+      <ScreenHeader title="Dieta" />
+      <Placeholder icon={<UtensilsCrossed className="h-8 w-8" />} title="Controle de refeições" />
       <BottomNav />
     </MobileFrame>
   ),
@@ -34,7 +34,7 @@ function Placeholder({ icon, title }: { icon: React.ReactNode; title: string }) 
         </div>
         <h2 className="text-xl font-black">{title}</h2>
         <p className="mt-2 text-sm text-text-tertiary">
-          Coming soon. Track calories, macros and hydration in one view.
+          Em breve. Acompanhe calorias, macros e hidratação numa só tela.
         </p>
       </div>
     </main>
