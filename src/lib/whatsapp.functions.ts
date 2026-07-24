@@ -15,7 +15,7 @@ const sendSchema = z.object({
 export const sendWhatsappMessage = createServerFn({ method: "POST" })
   .inputValidator((input) => sendSchema.parse(input))
   .handler(async ({ data }) => {
-    const [{ readEvolutionEnv, evolutionFetch, toJid, EvolutionError }, { supabaseAdmin }] =
+    const [{ readEvolutionEnv, evolutionFetch, toJid, EvolutionError, friendlyEvolutionError }, { supabaseAdmin }] =
       await Promise.all([
         import("./evolution.server"),
         import("@/integrations/supabase/client.server"),
@@ -73,7 +73,7 @@ export const sendWhatsappMessage = createServerFn({ method: "POST" })
 
       return { ok: true as const, messageId };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Falha desconhecida";
+      const message = friendlyEvolutionError(err);
       const status = err instanceof EvolutionError ? err.status : 0;
       if (logRow?.id) {
         await supabaseAdmin
