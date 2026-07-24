@@ -15,7 +15,7 @@ export const Route = createFileRoute("/workout/$id")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Workout not found — Pulse Fit" },
+          { title: "Treino não encontrado — Pulse Fit" },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/workout/$id")({
         { title: `${workout.title} — Pulse Fit` },
         {
           name: "description",
-          content: `${workout.duration} · ${workout.level}. A ${workout.focus} workout coached by Chris Heria.`,
+          content: `${workout.duration} · ${workout.level}. Um treino de ${workout.focus} guiado por Chris Heria.`,
         },
         { property: "og:title", content: workout.title },
         {
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/workout/$id")({
     <MobileFrame>
       <StatusBar />
       <div className="flex flex-1 items-center justify-center p-8 text-center text-text-tertiary">
-        Something went wrong loading this workout.
+        Erro ao carregar este treino.
       </div>
     </MobileFrame>
   ),
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/workout/$id")({
       <StatusBar />
       <ScreenHeader />
       <div className="flex flex-1 items-center justify-center p-8 text-center text-text-tertiary">
-        Workout not found.
+        Treino não encontrado.
       </div>
     </MobileFrame>
   ),
@@ -64,7 +64,6 @@ function WorkoutDetails() {
 
   return (
     <MobileFrame>
-      {/* Hero */}
       <div className="relative">
         <img
           src={workout.image}
@@ -90,23 +89,21 @@ function WorkoutDetails() {
       </div>
 
       <main className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-5 pb-24 pt-4">
-        {/* About */}
         <section className="rounded-3xl bg-surface p-5">
-          <h2 className="text-base font-bold">About</h2>
+          <h2 className="text-base font-bold">Sobre</h2>
           <div className="mt-3 grid grid-cols-3 divide-x divide-white/10 text-center">
-            <Info label="Level" value={workout.level} />
-            <Info label="Progress" value="0%" />
-            <Info label="Focus" value={workout.focus ?? "—"} />
+            <Info label="Nível" value={workout.level} />
+            <Info label="Progresso" value="0%" />
+            <Info label="Foco" value={workout.focus ?? "—"} />
           </div>
         </section>
 
         <section className="overflow-hidden rounded-3xl bg-surface">
-          <Row icon={<Music className="h-5 w-5" />} label="Sound & Music" />
+          <Row icon={<Music className="h-5 w-5" />} label="Som e música" />
           <div className="h-px bg-white/8 mx-5" />
-          <Row icon={<BookOpen className="h-5 w-5" />} label="Guide" />
+          <Row icon={<BookOpen className="h-5 w-5" />} label="Guia" />
         </section>
 
-        {/* Trainer */}
         <Link
           to="/trainer/$id"
           params={{ id: trainer.id }}
@@ -123,7 +120,7 @@ function WorkoutDetails() {
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold">{trainer.name}</span>
               <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">
-                <Star className="h-2.5 w-2.5 fill-primary" /> {trainer.rating}
+                <Star className="h-2.5 w-2.5 fill-primary" /> {trainer.rating.toString().replace(".", ",")}
               </span>
             </div>
             <p className="truncate text-xs text-text-tertiary">{trainer.role}</p>
@@ -132,12 +129,11 @@ function WorkoutDetails() {
           <ChevronRight className="h-5 w-5 text-text-tertiary" />
         </Link>
 
-        {/* Ratings */}
         <section className="rounded-3xl bg-surface p-5">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-black">4.6</div>
-              <div className="text-xs text-text-tertiary">174 Ratings</div>
+              <div className="text-3xl font-black">4,6</div>
+              <div className="text-xs text-text-tertiary">174 avaliações</div>
             </div>
             <div className="flex-1 space-y-1.5 pl-6">
               {[92, 62, 14, 4, 2].map((v, i) => (
@@ -152,11 +148,10 @@ function WorkoutDetails() {
           </div>
         </section>
 
-        {/* Exercises */}
         <section>
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-base font-bold">Exercises</h2>
-            <span className="text-xs text-text-tertiary">{exercises.length} moves</span>
+            <h2 className="text-base font-bold">Exercícios</h2>
+            <span className="text-xs text-text-tertiary">{exercises.length} movimentos</span>
           </div>
           <ul className="mt-3 space-y-2">
             {exercises.map((ex) => (
@@ -185,7 +180,7 @@ function WorkoutDetails() {
           search={{ workout: workout.id }}
           className="mt-2 block w-full rounded-full bg-primary py-4 text-center text-sm font-bold text-primary-foreground shadow-glow transition-transform active:scale-[0.98]"
         >
-          Start Workout
+          Iniciar treino
         </Link>
       </main>
     </MobileFrame>

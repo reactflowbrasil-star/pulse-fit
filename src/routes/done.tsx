@@ -4,10 +4,10 @@ import { Check } from "lucide-react";
 export const Route = createFileRoute("/done")({
   head: () => ({
     meta: [
-      { title: "Workout Complete — Pulse Fit" },
-      { name: "description", content: "You crushed it. Session complete." },
-      { property: "og:title", content: "Workout Complete — Pulse Fit" },
-      { property: "og:description", content: "You crushed it. Session complete." },
+      { title: "Treino Concluído — Pulse Fit" },
+      { name: "description", content: "Você mandou muito bem. Sessão concluída." },
+      { property: "og:title", content: "Treino Concluído — Pulse Fit" },
+      { property: "og:description", content: "Você mandou muito bem. Sessão concluída." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -36,17 +36,17 @@ function CongratulationPage() {
                 </div>
               </div>
             </div>
-            <h1 className="mt-6 text-center text-3xl font-black">Congratulation</h1>
+            <h1 className="mt-6 text-center text-3xl font-black">Parabéns!</h1>
             <p className="mt-3 text-center text-sm font-semibold opacity-70">
-              Your session has been logged.<br />
-              A summary email has been<br />
-              sent to les***@gmail.com
+              Sua sessão foi registrada.<br />
+              Um resumo foi enviado para<br />
+              les***@gmail.com
             </p>
             <button
               onClick={() => navigate({ to: "/" })}
               className="mt-7 w-full rounded-full bg-surface-elevated py-4 text-sm font-bold text-primary transition-transform active:scale-[0.98]"
             >
-              Close
+              Fechar
             </button>
           </div>
         </div>

@@ -10,16 +10,16 @@ import { trainers } from "@/data/mock";
 export const Route = createFileRoute("/trainers")({
   head: () => ({
     meta: [
-      { title: "Browse Trainers — Pulse Fit" },
+      { title: "Treinadores — Pulse Fit" },
       {
         name: "description",
         content:
-          "Meet certified strength, calisthenics, yoga and powerlifting coaches ready to guide your training.",
+          "Conheça treinadores certificados de força, calistenia, yoga e powerlifting para guiar sua jornada.",
       },
-      { property: "og:title", content: "Browse Trainers — Pulse Fit" },
+      { property: "og:title", content: "Treinadores — Pulse Fit" },
       {
         property: "og:description",
-        content: "Certified coaches for every discipline.",
+        content: "Coaches certificados para cada modalidade.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -28,15 +28,15 @@ export const Route = createFileRoute("/trainers")({
   component: BrowseTrainers,
 });
 
-const tabs = ["All", "Strength", "Yoga", "Cardio", "Calisthenics"] as const;
+const tabs = ["Todos", "Força", "Yoga", "Cardio", "Calistenia"] as const;
 
 function BrowseTrainers() {
-  const [active, setActive] = useState<(typeof tabs)[number]>("All");
+  const [active, setActive] = useState<(typeof tabs)[number]>("Todos");
 
   return (
     <MobileFrame>
       <StatusBar />
-      <ScreenHeader title="Browse" />
+      <ScreenHeader title="Treinadores" />
 
       <div className="scrollbar-none flex gap-2 overflow-x-auto px-5 pb-3">
         {tabs.map((t) => (
@@ -55,11 +55,11 @@ function BrowseTrainers() {
       </div>
 
       <div className="mx-5 flex items-center justify-between rounded-2xl bg-surface px-2 py-2 text-xs font-semibold text-text-secondary">
-        <FBtn icon={<SlidersHorizontal className="h-4 w-4" />} label="Filters" />
+        <FBtn icon={<SlidersHorizontal className="h-4 w-4" />} label="Filtros" />
         <span className="h-5 w-px bg-white/10" />
-        <FBtn icon={<ArrowUpDown className="h-4 w-4" />} label="Sorting" />
+        <FBtn icon={<ArrowUpDown className="h-4 w-4" />} label="Ordenar" />
         <span className="h-5 w-px bg-white/10" />
-        <FBtn icon={<Search className="h-4 w-4" />} label="Search" />
+        <FBtn icon={<Search className="h-4 w-4" />} label="Buscar" />
       </div>
 
       <main className="flex-1 space-y-2.5 px-5 pt-4 pb-2">
@@ -80,7 +80,7 @@ function BrowseTrainers() {
               />
               <span className="absolute -bottom-1 -right-1 inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold text-primary-foreground">
                 <Star className="h-2 w-2 fill-primary-foreground" />
-                {t.rating}
+                {t.rating.toString().replace(".", ",")}
               </span>
             </div>
             <div className="min-w-0 flex-1">

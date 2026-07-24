@@ -11,10 +11,10 @@ export const Route = createFileRoute("/player")({
   }),
   head: () => ({
     meta: [
-      { title: "Exercise Player — Pulse Fit" },
-      { name: "description", content: "Guided countdown for your current exercise." },
-      { property: "og:title", content: "Exercise Player — Pulse Fit" },
-      { property: "og:description", content: "Guided countdown for your current exercise." },
+      { title: "Player de Exercício — Pulse Fit" },
+      { name: "description", content: "Contagem regressiva guiada para o exercício atual." },
+      { property: "og:title", content: "Player de Exercício — Pulse Fit" },
+      { property: "og:description", content: "Contagem regressiva guiada para o exercício atual." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -66,7 +66,7 @@ function PlayerPage() {
             <div className="flex items-center justify-between px-5 py-2">
               <button
                 onClick={() => navigate({ to: "/browse" })}
-                aria-label="Exit"
+                aria-label="Sair"
                 className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black/40 backdrop-blur"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -76,7 +76,7 @@ function PlayerPage() {
                 params={{ id: workout }}
                 className="text-xs font-semibold text-primary"
               >
-                See all
+                Ver todos
               </Link>
             </div>
           </div>
@@ -95,7 +95,7 @@ function PlayerPage() {
 
         <div className="flex flex-1 flex-col justify-end px-5 pb-8 pt-6">
           <div className="mb-4 flex items-center justify-between text-xs font-semibold text-text-tertiary">
-            <span>Exercise {i + 1} of {exercises.length}</span>
+            <span>Exercício {i + 1} de {exercises.length}</span>
             <span>{Math.round(pct)}%</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-white/8">
@@ -113,7 +113,7 @@ function PlayerPage() {
               disabled={i === 0}
               className="rounded-full bg-surface-elevated py-4 text-sm font-bold text-primary transition-transform active:scale-[0.98] disabled:opacity-40"
             >
-              Previous
+              Anterior
             </button>
             <button
               onClick={() => {
@@ -123,7 +123,7 @@ function PlayerPage() {
               }}
               className="rounded-full bg-primary py-4 text-sm font-bold text-primary-foreground shadow-glow transition-transform active:scale-[0.98]"
             >
-              Next
+              Próximo
             </button>
           </div>
         </div>

@@ -16,7 +16,7 @@ export function ScreenHeader({
     <div className="flex items-center justify-between px-5 py-3">
       <button
         onClick={onBack ?? (() => router.history.back())}
-        aria-label="Back"
+        aria-label="Voltar"
         className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-foreground transition-transform active:scale-95"
       >
         <ChevronLeft className="h-5 w-5" />

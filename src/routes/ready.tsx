@@ -7,10 +7,10 @@ export const Route = createFileRoute("/ready")({
   }),
   head: () => ({
     meta: [
-      { title: "Get Ready — Pulse Fit" },
-      { name: "description", content: "Take a breath. Your workout is about to start." },
-      { property: "og:title", content: "Get Ready — Pulse Fit" },
-      { property: "og:description", content: "Your workout is about to start." },
+      { title: "Prepare-se — Pulse Fit" },
+      { name: "description", content: "Respire fundo. Seu treino está prestes a começar." },
+      { property: "og:title", content: "Prepare-se — Pulse Fit" },
+      { property: "og:description", content: "Seu treino está prestes a começar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -38,13 +38,13 @@ function GetReadyPage() {
             style={{ animation: "ready-fade 500ms cubic-bezier(0.2,0.8,0.2,1) both" }}
           >
             <p className="text-sm font-bold uppercase tracking-[0.3em] opacity-60">
-              Focus
+              Foco
             </p>
             <h1 className="mt-4 text-[80px] font-black leading-none tracking-tight">
-              Get<br />ready
+              Prepare-<br />se
             </h1>
             <p className="mt-6 text-sm font-semibold opacity-70">
-              Starting in a moment…
+              Começando em instantes…
             </p>
           </div>
         </div>

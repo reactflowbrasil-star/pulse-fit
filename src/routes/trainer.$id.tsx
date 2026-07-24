@@ -15,7 +15,7 @@ export const Route = createFileRoute("/trainer/$id")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Trainer not found — Pulse Fit" },
+          { title: "Treinador não encontrado — Pulse Fit" },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/trainer/$id")({
         { title: `${trainer.name} — ${trainer.role}` },
         {
           name: "description",
-          content: `${trainer.name} · ${trainer.role}. ${trainer.experience}, ${trainer.rating}/5 rating.`,
+          content: `${trainer.name} · ${trainer.role}. ${trainer.experience}, avaliação ${trainer.rating.toString().replace(".", ",")}/5.`,
         },
         { property: "og:title", content: `${trainer.name} — Pulse Fit` },
         { property: "og:description", content: trainer.role },
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/trainer/$id")({
     <MobileFrame>
       <StatusBar />
       <div className="flex flex-1 items-center justify-center p-8 text-text-tertiary">
-        Something went wrong.
+        Algo deu errado.
       </div>
     </MobileFrame>
   ),
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/trainer/$id")({
       <StatusBar />
       <ScreenHeader />
       <div className="flex flex-1 items-center justify-center p-8 text-text-tertiary">
-        Trainer not found.
+        Treinador não encontrado.
       </div>
     </MobileFrame>
   ),
@@ -75,7 +75,7 @@ function TrainerProfile() {
           <ScreenHeader />
         </div>
         <button
-          aria-label="Message trainer"
+          aria-label="Enviar mensagem"
           className="absolute bottom-5 right-5 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow"
         >
           <MessageCircle className="h-5 w-5" />
@@ -88,23 +88,23 @@ function TrainerProfile() {
 
       <main className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-5 pb-10 pt-4">
         <section className="rounded-3xl bg-surface p-5">
-          <h2 className="text-base font-bold">About</h2>
+          <h2 className="text-base font-bold">Sobre</h2>
           <p className="mt-2 text-sm leading-relaxed text-text-secondary">
             {trainer.bio ??
-              `${trainer.name} coaches athletes across all levels with a focus on ${trainer.role.toLowerCase()}.`}
+              `${trainer.name} acompanha atletas de todos os níveis com foco em ${trainer.role.toLowerCase()}.`}
           </p>
         </section>
 
         <section className="grid grid-cols-3 rounded-3xl bg-surface p-5 text-center divide-x divide-white/10">
-          <Stat label="Experience" value={stats.experience} />
-          <Stat label="Completed" value={stats.completed} />
-          <Stat label="Active clients" value={stats.clients} />
+          <Stat label="Experiência" value={stats.experience} />
+          <Stat label="Concluídos" value={stats.completed} />
+          <Stat label="Alunos ativos" value={stats.clients} />
         </section>
 
         <section className="overflow-hidden rounded-3xl bg-surface">
-          <Row icon={<Globe className="h-5 w-5" />} label="Online Programs" />
+          <Row icon={<Globe className="h-5 w-5" />} label="Programas online" />
           <div className="mx-5 h-px bg-white/8" />
-          <Row icon={<Instagram className="h-5 w-5" />} label="Social Media" />
+          <Row icon={<Instagram className="h-5 w-5" />} label="Redes sociais" />
         </section>
       </main>
     </MobileFrame>
