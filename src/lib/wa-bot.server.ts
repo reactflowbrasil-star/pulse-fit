@@ -49,7 +49,7 @@ async function fetchContexto(db: SupabaseAdmin, remoteJid: string): Promise<{ no
   if (user?.user_id) {
     const { data: sessions } = await db
       .from("workout_sessions")
-      .select("focus, duration_seconds, ended_at, created_at")
+      .select("plan, duration_seconds, ended_at, created_at")
       .eq("user_id", user.user_id)
       .order("created_at", { ascending: false })
       .limit(3);
@@ -58,8 +58,9 @@ async function fetchContexto(db: SupabaseAdmin, remoteJid: string): Promise<{ no
         const min = Math.round(((s.duration_seconds ?? 0) as number) / 60);
         const ts = (s.ended_at ?? s.created_at) as string | null;
         const quando = ts ? relTime(new Date(ts)) : "Recente";
+        const plan = s.plan as { focus?: string; title?: string } | null;
         return {
-          nome: (s.focus as string | null) ?? "Treino",
+          nome: plan?.focus ?? plan?.title ?? "Treino",
           distancia: Number((min / 10).toFixed(2)),
           quando,
         };
