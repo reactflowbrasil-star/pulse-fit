@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Footprints, Flame, Droplets, Timer, Sparkles } from "lucide-react";
+import {
+  ArrowUpRight,
+  Footprints,
+  Flame,
+  Droplets,
+  Timer,
+  Sparkles,
+  Play,
+  Trophy,
+} from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
@@ -79,53 +88,79 @@ function DashboardPage() {
       <main className="flex-1 space-y-4 px-5 pb-6">
         <StepsProgressCard current={dashboard.steps.current} goal={dashboard.steps.goal} />
 
+        {/* Bento: Coach IA CTA */}
         <Link
           to="/coach"
-          className="flex items-center justify-between rounded-[28px] bg-gradient-to-r from-primary/25 via-surface to-surface p-4 ring-1 ring-primary/25 transition-transform active:scale-[0.98] animate-[card-in_500ms_ease-out]"
+          className="grain-noise relative flex items-center justify-between overflow-hidden rounded-[28px] bg-surface p-5 ring-1 ring-primary/25 transition-transform active:scale-[0.98] animate-[card-in_500ms_ease-out]"
         >
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground">
-              <Sparkles className="h-6 w-6" />
+          <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-primary/25 blur-3xl" />
+          <div className="relative flex min-w-0 items-center gap-3">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-glow">
+              <Sparkles className="h-7 w-7" strokeWidth={2.4} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wider text-primary">Coach IA</p>
-              <p className="truncate text-sm font-black">Treinador 3D com IA e voz</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                Coach IA
+              </p>
+              <p className="truncate font-display text-xl uppercase tracking-wide">
+                Treino guiado 3D
+              </p>
+              <p className="truncate text-xs text-text-tertiary">
+                Voz + demonstração ao vivo
+              </p>
             </div>
           </div>
-          <ArrowUpRight className="h-5 w-5 shrink-0 text-primary" />
+          <div className="relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary">
+            <ArrowUpRight className="h-5 w-5" strokeWidth={2.6} />
+          </div>
         </Link>
 
-        <section className="rounded-[28px] bg-surface p-5 animate-[card-in_500ms_ease-out]">
+        {/* Bento: Activity rings — large tile */}
+        <section className="relative overflow-hidden rounded-[28px] bg-surface p-5 ring-1 ring-white/5 animate-[card-in_500ms_ease-out]">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold">Atividade do dia</h2>
-            <Link to="/stats" className="text-xs font-semibold text-primary">
-              Ver detalhes
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
+                Hoje
+              </p>
+              <h2 className="font-display text-2xl uppercase tracking-wide">
+                Atividade
+              </h2>
+            </div>
+            <Link
+              to="/stats"
+              className="rounded-full bg-surface-elevated px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary"
+            >
+              Detalhes
             </Link>
           </div>
           <div className="mt-4 grid grid-cols-[1fr_auto] items-center gap-5">
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
               {rings.map((r) => (
                 <div key={r.label} className="flex items-center gap-2 text-xs">
                   <span
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ backgroundColor: r.color }}
+                    className="h-3 w-3 rounded-full"
+                    style={{
+                      backgroundColor: r.color,
+                      boxShadow: `0 0 8px ${r.color}`,
+                    }}
                   />
-                  <span className="text-text-tertiary">{r.label}</span>
-                  <span className="ml-auto font-bold tabular-nums">
+                  <span className="text-text-secondary">{r.label}</span>
+                  <span className="ml-auto font-display text-base tabular-nums">
                     {Math.round(r.pct)}%
                   </span>
                 </div>
               ))}
             </div>
-            <div className="h-32 w-32">
-              <ActivityRings rings={rings} size={128} />
+            <div className="h-36 w-36">
+              <ActivityRings rings={rings} size={144} />
             </div>
           </div>
         </section>
 
+        {/* Bento grid — 2x2 metrics */}
         <section className="grid grid-cols-2 gap-3">
           <MetricCard
-            icon={<Flame className="h-4 w-4" />}
+            icon={<Flame className="h-4 w-4" strokeWidth={2.4} />}
             label="Calorias"
             value={dashboard.calories.current}
             unit={`/ ${dashboard.calories.goal} kcal`}
@@ -133,7 +168,7 @@ function DashboardPage() {
             accent="orange"
           />
           <MetricCard
-            icon={<Droplets className="h-4 w-4" />}
+            icon={<Droplets className="h-4 w-4" strokeWidth={2.4} />}
             label="Água"
             value={dashboard.water.current}
             unit={`/ ${dashboard.water.goal.toLocaleString("pt-BR")} L`}
@@ -142,15 +177,15 @@ function DashboardPage() {
             decimals={1}
           />
           <MetricCard
-            icon={<Timer className="h-4 w-4" />}
-            label="Minutos ativos"
+            icon={<Timer className="h-4 w-4" strokeWidth={2.4} />}
+            label="Ativo"
             value={dashboard.activeMinutes.current}
             unit={`/ ${dashboard.activeMinutes.goal} min`}
             goal={dashboard.activeMinutes.goal}
             accent="primary"
           />
           <MetricCard
-            icon={<Footprints className="h-4 w-4" />}
+            icon={<Footprints className="h-4 w-4" strokeWidth={2.4} />}
             label="Distância"
             value={dashboard.distanceKm.current}
             unit={`/ ${dashboard.distanceKm.goal.toLocaleString("pt-BR")} km`}
@@ -160,10 +195,57 @@ function DashboardPage() {
           />
         </section>
 
-        <section className="rounded-[28px] bg-surface p-5 animate-[card-in_500ms_ease-out]">
+        {/* Bento: Wide split — Rewards + Streak */}
+        <section className="grid grid-cols-[1.4fr_1fr] gap-3">
+          <Link
+            to="/browse"
+            className="relative overflow-hidden rounded-[24px] bg-surface p-4 ring-1 ring-white/5 transition-transform active:scale-[0.98] animate-[card-in_500ms_ease-out]"
+          >
+            <div className="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-primary/10 blur-2xl" />
+            <div className="relative flex items-center gap-2">
+              <Play className="h-4 w-4 text-primary" fill="currentColor" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
+                Explorar
+              </span>
+            </div>
+            <p className="relative mt-2 font-display text-2xl uppercase leading-none tracking-wide">
+              Treinos
+              <br />
+              <span className="text-primary">em alta</span>
+            </p>
+            <p className="relative mt-3 text-xs text-text-tertiary">
+              +240 sessões disponíveis
+            </p>
+          </Link>
+          <Link
+            to="/rewards"
+            className="relative overflow-hidden rounded-[24px] bg-primary p-4 text-primary-foreground shadow-glow transition-transform active:scale-[0.98] animate-[card-in_500ms_ease-out]"
+          >
+            <Trophy className="h-5 w-5" strokeWidth={2.4} />
+            <p className="mt-2 font-display text-2xl uppercase leading-none tracking-wide">
+              7<span className="text-lg">d</span>
+            </p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-70">
+              Sequência
+            </p>
+          </Link>
+        </section>
+
+        {/* Bento: Recent activity */}
+        <section className="rounded-[28px] bg-surface p-5 ring-1 ring-white/5 animate-[card-in_500ms_ease-out]">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold">Treinos</h2>
-            <Link to="/browse" className="text-xs font-semibold text-primary">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
+                Recentes
+              </p>
+              <h2 className="font-display text-xl uppercase tracking-wide">
+                Seus treinos
+              </h2>
+            </div>
+            <Link
+              to="/history"
+              className="text-[11px] font-bold uppercase tracking-wider text-primary"
+            >
               Ver todos
             </Link>
           </div>
@@ -171,20 +253,24 @@ function DashboardPage() {
             {dashboard.activities.map((a) => (
               <li
                 key={a.id}
-                className="flex items-center justify-between rounded-2xl bg-surface-elevated p-3"
+                className="flex items-center justify-between rounded-2xl bg-surface-elevated p-3 ring-1 ring-white/5"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <ArrowUpRight className="h-4 w-4" strokeWidth={2.6} />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                    <ArrowUpRight className="h-5 w-5" strokeWidth={2.6} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">{a.name}</p>
+                    <p className="font-display text-base uppercase tracking-wide">
+                      {a.name}
+                    </p>
                     <p className="text-xs text-text-tertiary">
                       {a.distance} · {a.when}
                     </p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-primary">Registrar</span>
+                <span className="rounded-full bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                  Registrar
+                </span>
               </li>
             ))}
           </ul>
