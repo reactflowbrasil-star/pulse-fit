@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { LogIn, Loader2 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -52,7 +51,6 @@ function AuthPage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <main className="flex flex-1 flex-col justify-between px-6 py-10">
         <div>
           <p className="font-display text-xs uppercase tracking-widest text-primary">Pulse Fit</p>

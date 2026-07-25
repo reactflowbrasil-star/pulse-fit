@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { MessageCircle, Bell, Shield, HelpCircle, User2, Check } from "lucide-react";
@@ -48,7 +47,6 @@ function SettingsPage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Configurações" onBack={() => window.history.back()} />
       <main className="flex-1 space-y-4 px-5 py-4">
         {/* Photoreal avatar (GLB URL) */}

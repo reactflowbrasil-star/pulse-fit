@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Send, ShieldAlert, Megaphone, Users, MessageCircle } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,12 +33,12 @@ function AdminPage() {
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe(), enabled: !!session });
 
   if (loading || !session || me.isLoading) {
-    return <MobileFrame><StatusBar /><Loader /></MobileFrame>;
+    return <MobileFrame>
+<Loader /></MobileFrame>;
   }
   if (!me.data?.isAdmin) {
     return (
       <MobileFrame>
-        <StatusBar />
         <ScreenHeader title="Admin" onBack={() => navigate({ to: "/" })} />
         <main className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
           <ShieldAlert className="h-10 w-10 text-primary" />
@@ -91,7 +90,6 @@ function AdminDashboard() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Painel Admin" onBack={() => navigate({ to: "/" })} />
       <main className="flex-1 space-y-4 overflow-y-auto px-5 py-4 pb-6">
         <section className="grid grid-cols-3 gap-2">

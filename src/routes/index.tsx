@@ -20,7 +20,6 @@ import {
   Calendar,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StepsProgressCard } from "@/components/dashboard/StepsProgressCard";
@@ -67,8 +66,7 @@ function HomePage() {
   if (loading) {
     return (
       <MobileFrame>
-        <StatusBar />
-        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-1 items-center justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </div>
       </MobileFrame>
@@ -103,7 +101,6 @@ function LandingSignup() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <main className="flex flex-1 flex-col justify-between px-6 pb-10 pt-6">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -315,7 +312,6 @@ function StudentDashboard() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <DashboardHeader name={displayName} avatar={avatar} greeting={greeting()} />
 
       <main className="flex-1 space-y-4 px-5 pb-6">

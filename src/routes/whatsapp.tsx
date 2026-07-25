@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState, useEffect } from "react";
 import { MessageCircle, Send, RefreshCw, CheckCheck, Check, Clock3, AlertTriangle, Copy } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import {
@@ -59,7 +58,6 @@ function WhatsappPage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader
         title="WhatsApp Bot"
         right={

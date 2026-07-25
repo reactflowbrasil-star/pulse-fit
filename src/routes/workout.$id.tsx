@@ -1,7 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Clock, Flame, ChevronRight, Music, BookOpen, Star } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { workouts, trainers, exercises } from "@/data/mock";
 
@@ -40,7 +39,6 @@ export const Route = createFileRoute("/workout/$id")({
   },
   errorComponent: () => (
     <MobileFrame>
-      <StatusBar />
       <div className="flex flex-1 items-center justify-center p-8 text-center text-text-tertiary">
         Erro ao carregar este treino.
       </div>
@@ -48,7 +46,6 @@ export const Route = createFileRoute("/workout/$id")({
   ),
   notFoundComponent: () => (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader />
       <div className="flex flex-1 items-center justify-center p-8 text-center text-text-tertiary">
         Treino não encontrado.
@@ -74,7 +71,6 @@ function WorkoutDetails() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-background" />
         <div className="absolute inset-x-0 top-0">
-          <StatusBar />
           <ScreenHeader />
         </div>
         <div className="absolute inset-x-0 bottom-4 px-5">

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { UtensilsCrossed } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 
@@ -17,7 +16,6 @@ export const Route = createFileRoute("/meal")({
   }),
   component: () => (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Dieta" />
       <Placeholder icon={<UtensilsCrossed className="h-8 w-8" />} title="Controle de refeições" />
       <BottomNav />

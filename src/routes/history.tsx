@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/history")({
 function HistoryPage() {
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Histórico" onBack={() => window.history.back()} />
       <main className="flex-1 px-5 py-4">
         <p className="rounded-2xl bg-surface p-5 text-sm text-text-tertiary">

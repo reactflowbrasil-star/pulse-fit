@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { Settings, History, Trophy, MessageCircle, LogIn, LogOut, ShieldCheck } from "lucide-react";
@@ -35,7 +34,6 @@ function ProfilePage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Perfil" onBack={() => window.history.back()} />
       <main className="flex-1 space-y-4 px-5 py-4">
         <section className="flex items-center gap-4 rounded-3xl bg-surface p-5">

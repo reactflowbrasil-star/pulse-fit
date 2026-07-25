@@ -1,7 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { MessageCircle, ChevronRight, Instagram, Globe } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { trainers } from "@/data/mock";
 
@@ -37,7 +36,6 @@ export const Route = createFileRoute("/trainer/$id")({
   },
   errorComponent: () => (
     <MobileFrame>
-      <StatusBar />
       <div className="flex flex-1 items-center justify-center p-8 text-text-tertiary">
         Algo deu errado.
       </div>
@@ -45,7 +43,6 @@ export const Route = createFileRoute("/trainer/$id")({
   ),
   notFoundComponent: () => (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader />
       <div className="flex flex-1 items-center justify-center p-8 text-text-tertiary">
         Treinador não encontrado.
@@ -71,7 +68,6 @@ function TrainerProfile() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-background" />
         <div className="absolute inset-x-0 top-0">
-          <StatusBar />
           <ScreenHeader />
         </div>
         <button

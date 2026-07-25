@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { exercises } from "@/data/mock";
-import { StatusBar } from "@/components/StatusBar";
 
 export const Route = createFileRoute("/player")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -62,7 +61,6 @@ function PlayerPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background" />
 
           <div className="absolute inset-x-0 top-0">
-            <StatusBar />
             <div className="flex items-center justify-between px-5 py-2">
               <button
                 onClick={() => navigate({ to: "/browse" })}

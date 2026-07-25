@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding")({
@@ -20,7 +19,6 @@ export const Route = createFileRoute("/onboarding")({
 function OnboardingPage() {
   return (
     <MobileFrame>
-      <StatusBar />
       <main className="flex flex-1 flex-col justify-between px-6 py-8">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-primary">

@@ -10,7 +10,6 @@ import coachHero from "@/assets/coach-hero.jpg";
 import { BottomNav } from "@/components/BottomNav";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { StatusBar } from "@/components/StatusBar";
 import { useAuth } from "@/hooks/useAuth";
 import { useSessionId } from "@/hooks/useSessionId";
 import {
@@ -92,7 +91,6 @@ function CoachOnboardingPage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Treino com IA" />
 
       <main className="flex-1 space-y-5 px-5 pb-6">

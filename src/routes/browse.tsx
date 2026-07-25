@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bookmark, Clock, Flame, Search, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { workouts } from "@/data/mock";
@@ -35,7 +34,6 @@ function BrowsePage() {
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Explorar" />
 
       <div className="scrollbar-none flex gap-2 overflow-x-auto px-5 pb-3">

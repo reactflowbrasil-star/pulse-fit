@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
 
@@ -17,7 +16,6 @@ export const Route = createFileRoute("/stats")({
   }),
   component: () => (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Progresso" />
       <main className="flex flex-1 items-center justify-center px-6 text-center">
         <div>

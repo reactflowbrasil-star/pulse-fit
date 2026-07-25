@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, MessageCircle, Loader2, ShieldCheck } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
-import { StatusBar } from "@/components/StatusBar";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { getMe } from "@/lib/auth.functions";
@@ -74,12 +73,12 @@ function OnboardingWhatsappPage() {
   });
 
   if (loading || !session) {
-    return <MobileFrame><StatusBar /><Loading /></MobileFrame>;
+    return <MobileFrame>
+<Loading /></MobileFrame>;
   }
 
   return (
     <MobileFrame>
-      <StatusBar />
       <ScreenHeader title="Confirmar WhatsApp" onBack={() => navigate({ to: "/" })} />
       <main className="flex-1 space-y-4 px-5 py-4">
         <div className="rounded-3xl bg-surface p-5">
