@@ -153,6 +153,7 @@ REGRAS OBRIGATÓRIAS:
 
 const SaveSessionSchema = z.object({
   clientSessionId: z.string(),
+  userId: z.string().uuid().optional(),
   context: z.record(z.string(), z.any()),
   plan: z.record(z.string(), z.any()),
 });
@@ -165,6 +166,7 @@ export const startWorkoutSession = createServerFn({ method: "POST" })
       .from("workout_sessions")
       .insert({
         client_session_id: data.clientSessionId,
+        user_id: data.userId ?? null,
         context: data.context,
         plan: data.plan,
         status: "in_progress",
