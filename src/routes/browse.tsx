@@ -33,7 +33,7 @@ function BrowsePage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <input
-              className="w-full rounded-2xl bg-surface-elevated border border-border pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-muted"
+              className="w-full rounded-2xl bg-surface-elevated border border-border pl-10 pr-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 placeholder:text-text-muted transition-all"
               placeholder="Buscar treinos..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}

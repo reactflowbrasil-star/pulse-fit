@@ -12,22 +12,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:brightness-110 active:scale-[0.97]",
+    "bg-primary text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:brightness-110 active:scale-[0.97]",
   secondary:
-    "bg-surface-elevated text-foreground border border-border hover:bg-surface-card hover:border-border active:scale-[0.97]",
+    "bg-surface-elevated text-foreground border border-border/60 hover:bg-surface-card hover:border-border active:scale-[0.97]",
   ghost:
     "bg-transparent text-text-secondary hover:bg-surface-elevated hover:text-foreground active:scale-[0.97]",
   destructive:
     "bg-destructive text-destructive-foreground shadow-md hover:shadow-lg hover:brightness-110 active:scale-[0.97]",
   outline:
-    "bg-transparent text-foreground border border-border hover:bg-surface-elevated active:scale-[0.97]",
+    "bg-transparent text-foreground border border-border/60 hover:bg-surface-elevated hover:border-border active:scale-[0.97]",
 };
 
 const sizes: Record<Size, string> = {
   sm: "h-8 px-3 text-xs rounded-xl gap-1.5",
-  md: "h-10 px-5 text-sm rounded-2xl gap-2",
-  lg: "h-12 px-6 text-base rounded-2xl gap-2.5",
-  icon: "h-10 w-10 rounded-2xl p-0",
+  md: "h-10 px-5 text-sm rounded-xl gap-2",
+  lg: "h-12 px-6 text-base rounded-xl gap-2.5",
+  icon: "h-10 w-10 rounded-xl p-0",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

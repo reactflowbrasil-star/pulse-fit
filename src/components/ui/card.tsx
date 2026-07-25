@@ -7,13 +7,13 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 const cardVariants: Record<string, string> = {
   default:
-    "rounded-2xl bg-surface-card border border-border shadow-card",
+    "rounded-2xl bg-surface-card border border-border/60 shadow-card",
   elevated:
-    "rounded-2xl bg-surface-card border border-border shadow-elevated",
+    "rounded-2xl bg-surface-card border border-border/60 shadow-elevated",
   glass:
     "rounded-2xl glass",
   gradient:
-    "rounded-2xl bg-gradient-to-br from-primary/10 via-surface-card to-surface-card border border-primary/10 shadow-card",
+    "rounded-2xl bg-gradient-to-br from-primary/[0.06] via-surface-card to-surface-card border border-primary/[0.08] shadow-card",
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -22,7 +22,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={`${cardVariants[variant]} ${
-          hover ? "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated" : ""
+          hover ? "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated cursor-pointer" : ""
         } ${className}`}
         {...props}
       >
@@ -42,5 +42,5 @@ export function CardContent({ className = "", children }: { className?: string; 
 }
 
 export function CardTitle({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return <h3 className={`font-display text-lg font-semibold ${className}`}>{children}</h3>;
+  return <h3 className={`font-display text-base font-semibold ${className}`}>{children}</h3>;
 }

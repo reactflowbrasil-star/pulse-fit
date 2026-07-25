@@ -16,30 +16,30 @@ export function BottomNav() {
 
   return (
     <>
-      <div aria-hidden="true" className="shrink-0" style={{ height: "calc(100px + env(safe-area-inset-bottom))" }} />
+      <div aria-hidden="true" className="shrink-0" style={{ height: "calc(96px + env(safe-area-inset-bottom))" }} />
 
       <motion.div
-        initial={{ y: 100, opacity: 0 }}
+        initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ ...spring, delay: 0.08 }}
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pt-4"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pt-3"
         style={{
           paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))",
-          background: "linear-gradient(to top, var(--background-deep) 50%, transparent)",
+          background: "linear-gradient(to top, var(--background-deep) 45%, transparent)",
         }}
       >
-        <div className="pointer-events-auto relative mx-3 flex h-[64px] w-full max-w-[430px] items-center justify-around gap-1 rounded-[24px] glass-strong px-2 shadow-elevated md:max-w-[460px] lg:max-w-[480px]">
+        <div className="pointer-events-auto relative mx-3 flex h-[60px] w-full max-w-[430px] items-center justify-around rounded-[20px] glass-strong px-1 shadow-elevated md:max-w-[460px] lg:max-w-[480px]">
           {items.slice(0, 2).map((item) => (
             <NavItem key={item.to} {...item} active={pathname === item.to} />
           ))}
 
-          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={spring} className="-mt-8">
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={spring} className="-mt-7">
             <Link
               to="/coach"
               aria-label="Treinador IA"
-              className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-4 ring-background-deep animate-[pulse-fab_2.4s_ease-out_infinite]"
+              className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-[3px] ring-background-deep animate-[pulse-fab_2.4s_ease-out_infinite]"
             >
-              <Sparkles className="h-6 w-6" strokeWidth={2.4} />
+              <Sparkles className="h-5 w-5" strokeWidth={2.4} />
             </Link>
           </motion.div>
 
@@ -56,7 +56,7 @@ function NavItem({ to, icon: Icon, label, active }: { to: string; icon: typeof H
   return (
     <Link
       to={to}
-      className={`group relative flex min-w-0 flex-1 flex-col items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+      className={`group relative flex min-w-0 flex-1 flex-col items-center gap-0.5 text-[9px] font-semibold uppercase tracking-wider transition-colors duration-200 ${
         active ? "text-primary" : "text-text-muted"
       }`}
       aria-current={active ? "page" : undefined}
@@ -65,11 +65,11 @@ function NavItem({ to, icon: Icon, label, active }: { to: string; icon: typeof H
         <motion.span
           layoutId="navIndicator"
           transition={spring}
-          className="absolute -top-0.5 left-1/2 h-[3px] w-6 -translate-x-1/2 rounded-full bg-primary"
+          className="absolute -top-0.5 left-1/2 h-[2.5px] w-5 -translate-x-1/2 rounded-full bg-primary"
         />
       )}
       <motion.span whileTap={{ scale: 0.85 }} transition={spring} className="flex flex-col items-center gap-0.5">
-        <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.2 : 1.6} />
+        <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={active ? 2.2 : 1.6} />
         <span className="max-w-full truncate">{label}</span>
       </motion.span>
     </Link>

@@ -90,7 +90,7 @@ function AdminDashboard() {
             </Button>
           </Card>
 
-          {feedback && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-xs text-primary">{feedback}</motion.p>}
+          {feedback && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-xs text-primary font-medium">{feedback}</motion.p>}
         </main>
       </PageTransition>
       <BottomNav />

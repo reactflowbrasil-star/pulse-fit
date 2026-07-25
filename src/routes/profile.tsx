@@ -47,7 +47,7 @@ function ProfilePage() {
           {/* Profile Card */}
           <Card variant="gradient" className="p-5">
             <div className="flex items-center gap-4">
-              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-primary/30">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-primary/20 border border-border">
                 {avatar ? (
                   <img src={avatar} alt="" className="h-full w-full object-cover" />
                 ) : (
@@ -57,7 +57,7 @@ function ProfilePage() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold">{displayName}</p>
+                <p className="text-lg font-bold truncate min-w-0">{displayName}</p>
                 <p className="truncate text-xs text-text-tertiary">{email ?? "Sessão convidada"}</p>
               </div>
             </div>

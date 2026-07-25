@@ -43,7 +43,7 @@ function StatsPage() {
 
           <Card variant="default" className="p-5">
             <CardTitle>Volume semanal</CardTitle>
-            <div className="mt-4 flex items-end gap-2 h-32">
+            <div className="mt-4 flex items-end gap-2 h-32 px-1">
               {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => {
                 const heights = [40, 65, 50, 80, 35, 70, 45];
                 return (

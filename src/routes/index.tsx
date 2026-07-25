@@ -68,7 +68,7 @@ function LandingSignup() {
       <PageTransition>
         <main className="flex flex-1 flex-col justify-between px-6 py-12">
           <div>
-            <div className="flex items-center gap-2 mb-8">
+            <div className="flex items-center gap-2.5 mb-8">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                 <Zap className="h-5 w-5 text-primary" />
               </div>
@@ -153,10 +153,10 @@ function StudentDashboard() {
       <PageTransition>
         <main className="flex-1 space-y-5 px-5 py-5 pb-8 overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-text-tertiary">{greeting()}</p>
-              <h1 className="font-display text-2xl font-bold">{displayName.split(" ")[0]} 👋</h1>
+              <h1 className="font-display text-2xl font-bold truncate">{displayName.split(" ")[0]} 👋</h1>
             </div>
             <div className="flex gap-2">
               <ThemeToggle />
@@ -256,13 +256,13 @@ function KPICard({ icon, label, value, unit, progress, color }: {
   icon: React.ReactNode; label: string; value: string; unit: string; progress: number; color: string;
 }) {
   return (
-    <div className="rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-2xl bg-surface-card border border-border p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-center gap-1.5">
         <span className={color}>{icon}</span>
         <span className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">{label}</span>
       </div>
       <div className="mt-2 flex items-baseline gap-1">
-        <span className="font-display text-2xl font-bold">{value}</span>
+        <span className="font-display text-2xl font-bold truncate">{value}</span>
         {unit && <span className="text-xs text-text-muted">{unit}</span>}
       </div>
       <div className="mt-2.5 h-1.5 rounded-full bg-surface-elevated overflow-hidden">
@@ -282,7 +282,7 @@ function KPICard({ icon, label, value, unit, progress, color }: {
 function DashboardSkeleton() {
   return (
     <main className="flex-1 space-y-5 px-5 py-5">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div className="space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-6 w-32" /></div>
         <Skeleton className="h-10 w-10 rounded-xl" />
       </div>

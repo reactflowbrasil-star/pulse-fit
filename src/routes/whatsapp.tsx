@@ -62,7 +62,7 @@ function WhatsappPage() {
         <main className="flex-1 space-y-4 px-5 py-4 overflow-y-auto">
           {/* Status */}
           <Card variant="default" className="p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isOnline ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
                   <div className={`h-2.5 w-2.5 rounded-full ${isOnline ? "bg-success animate-pulse" : "bg-destructive"}`} />
@@ -113,13 +113,13 @@ function WhatsappPage() {
                 {messages.data!.slice(0, 10).map((m) => (
                   <StaggerItem key={m.id}>
                     <div className="rounded-2xl bg-surface-card border border-border p-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="text-[11px] font-semibold text-text-secondary">
                           {m.direction === "outbound" ? "→" : "←"} {m.remote_jid?.replace(/@.*/, "")}
                         </span>
                         <StatusIcon status={m.status} />
                       </div>
-                      <p className="mt-1 text-xs text-foreground">{m.content ?? "[mídia]"}</p>
+                      <p className="mt-1 text-xs text-foreground break-words">{m.content ?? "[mídia]"}</p>
                       <p className="mt-1 text-[10px] text-text-muted">{new Date(m.created_at).toLocaleString("pt-BR")}</p>
                     </div>
                   </StaggerItem>

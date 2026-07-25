@@ -48,7 +48,7 @@ function CoachPage() {
           ) : (
             <div className="flex-1 space-y-3 overflow-y-auto pb-4">
               {messages.map((m, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`rounded-2xl p-3.5 text-sm ${m.role === "user" ? "ml-8 bg-primary text-primary-foreground" : "mr-8 bg-surface-card border border-border"}`}>
+                <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`rounded-2xl p-3.5 text-sm break-words ${m.role === "user" ? "ml-8 bg-primary text-primary-foreground" : "mr-8 bg-surface-card border border-border"}`}>
                   {m.content}
                 </motion.div>
               ))}
@@ -61,7 +61,7 @@ function CoachPage() {
           )}
           <div className="flex items-center gap-2 pt-2">
             <input
-              className="flex-1 rounded-2xl bg-surface-elevated border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-muted"
+              className="flex-1 rounded-2xl bg-surface-elevated border border-border px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 placeholder:text-text-muted transition-all"
               placeholder="Digite sua mensagem..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
