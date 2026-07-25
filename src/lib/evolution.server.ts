@@ -1,10 +1,9 @@
 /**
  * Cliente da Evolution API (WhatsApp) — usado apenas em código server-side.
- * Faz chamadas HTTP à instância configurada com tratamento de erro e retries simples.
  *
- * Leitura de credenciais:
+ * Leitura de credenciais (ordem de prioridade):
  *  1. Variáveis de ambiente (EVOLUTION_API_URL, etc.)
- *  2. Banco de dados (whatsapp_config table) — fallback
+ *  2. Banco de dados (whatsapp_config table)
  */
 
 export type EvolutionEnv = {
@@ -15,23 +14,27 @@ export type EvolutionEnv = {
 
 let _cachedConfig: EvolutionEnv | null = null;
 let _cacheTs = 0;
-const CACHE_TTL = 30_000; // 30s
+const CACHE_TTL = 30_000;
+
+function isReal(v: string | undefined): boolean {
+  return Boolean(v && v !== "undefined" && v !== "null" && v.trim() !== "");
+}
 
 export async function readEvolutionEnv(): Promise<EvolutionEnv | null> {
   // 1. Variáveis de ambiente (prioridade)
   const envUrl = process.env.EVOLUTION_API_URL;
   const envKey = process.env.EVOLUTION_API_KEY;
   const envInstance = process.env.EVOLUTION_INSTANCE;
-  if (envUrl && envKey && envInstance) {
-    return { apiUrl: envUrl.replace(/\/+$/, ""), apiKey: envKey, instance: envInstance };
+  if (isReal(envUrl) && isReal(envKey) && isReal(envInstance)) {
+    return { apiUrl: envUrl!.replace(/\/+$/, ""), apiKey: envKey!, instance: envInstance! };
   }
 
-  // 2. Cache (evita DB hit a cada chamada)
+  // 2. Cache
   if (_cachedConfig && Date.now() - _cacheTs < CACHE_TTL) {
     return _cachedConfig;
   }
 
-  // 3. Banco de dados (whatsapp_config table)
+  // 3. Banco de dados
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
@@ -58,30 +61,6 @@ export async function readEvolutionEnv(): Promise<EvolutionEnv | null> {
   }
 
   return null;
-}
-
-// Síncrona — para compatibilidade com código existente que chama readEvolutionEnv() sem await
-export function readEvolutionEnvSync(): EvolutionEnv | null {
-  const envUrl = process.env.EVOLUTION_API_URL;
-  const envKey = process.env.EVOLUTION_API_KEY;
-  const envInstance = process.env.EVOLUTION_INSTANCE;
-  if (envUrl && envKey && envInstance) {
-    return { apiUrl: envUrl.replace(/\/+$/, ""), apiKey: envKey, instance: envInstance };
-  }
-  if (_cachedConfig && Date.now() - _cacheTs < CACHE_TTL) {
-    return _cachedConfig;
-  }
-  return null;
-}
-
-function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
-  if (!raw) return { apiKey: "", webhookToken: "" };
-  try {
-    const parsed = JSON.parse(raw);
-    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
-  } catch {
-    return { apiKey: "", webhookToken: raw };
-  }
 }
 
 export async function evolutionFetch(
@@ -142,7 +121,6 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Normaliza um número BR para o JID esperado pela Evolution. */
 export function toJid(phone: string): string {
   if (phone.includes("@")) return phone;
   let digits = phone.replace(/\D+/g, "");
@@ -153,7 +131,16 @@ export function toJid(phone: string): string {
   return `${digits}@s.whatsapp.net`;
 }
 
-/** Extrai uma mensagem amigável de erros da Evolution API. */
+function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
+  if (!raw) return { apiKey: "", webhookToken: "" };
+  try {
+    const parsed = JSON.parse(raw);
+    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
+  } catch {
+    return { apiKey: "", webhookToken: raw };
+  }
+}
+
 export function friendlyEvolutionError(err: unknown): string {
   if (!(err instanceof EvolutionError)) {
     return err instanceof Error ? err.message : "Falha desconhecida";
@@ -166,7 +153,7 @@ export function friendlyEvolutionError(err: unknown): string {
     const notFound = msg.find((m) => m && m.exists === false);
     if (notFound) {
       const num = (notFound.number || notFound.jid || "").split("@")[0];
-      return `O número ${num || "informado"} não possui WhatsApp ativo. Confira DDI (55 para Brasil), DDD e o dígito 9.`;
+      return `O número ${num || "informado"} não possui WhatsApp ativo.`;
     }
     return msg.map((m) => (typeof m === "string" ? m : JSON.stringify(m))).join("; ");
   }
