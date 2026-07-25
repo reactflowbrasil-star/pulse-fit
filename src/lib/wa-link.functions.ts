@@ -108,20 +108,20 @@ export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Erro ao confirmar o código." };
     }
 
-    // Atualiza profiles (schema oficial da spec).
-    const { error: upProfileErr } = await supabase
-      .from("profiles")
-      .update({ whatsapp: data.whatsapp, whatsapp_verificado: true })
-      .eq("id", userId);
-    if (upProfileErr) {
-      console.error("[wa-link] update profiles falhou:", upProfileErr.message);
+    // Atualiza app_users (tabela principal do app).
+    const { error: upAppUserErr } = await supabase
+      .from("app_users")
+      .update({ whatsapp_number: data.whatsapp, whatsapp_verified: true })
+      .eq("user_id", userId);
+    if (upAppUserErr) {
+      console.error("[wa-link] update app_users falhou:", upAppUserErr.message);
       return { ok: false as const, error: "Não foi possível salvar o WhatsApp no perfil." };
     }
 
-    // Compat: mantém app_users em sincronia (usado em várias telas do app).
+    // Compat: mantém profiles em sincronia (schema legado).
     await supabase
-      .from("app_users")
-      .update({ whatsapp_number: data.whatsapp, whatsapp_verified: true })
+      .from("profiles")
+      .update({ whatsapp: data.whatsapp, whatsapp_verificado: true })
       .eq("user_id", userId);
 
     return { ok: true as const };
