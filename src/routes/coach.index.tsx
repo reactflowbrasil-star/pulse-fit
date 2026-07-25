@@ -11,6 +11,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { StatusBar } from "@/components/StatusBar";
+import { useAuth } from "@/hooks/useAuth";
 import { useSessionId } from "@/hooks/useSessionId";
 import {
   generateWorkoutPlan,
