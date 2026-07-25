@@ -1,235 +1,79 @@
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { Sparkles, Loader2 } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-
-import coachHero from "@/assets/coach-hero.jpg";
-
-
-import { BottomNav } from "@/components/BottomNav";
+import { motion } from "framer-motion";
+import { Sparkles, Send, Loader2, ArrowRight } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
+import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { useAuth } from "@/hooks/useAuth";
-import { useSessionId } from "@/hooks/useSessionId";
-import {
-  generateWorkoutPlan,
-  startWorkoutSession,
-} from "@/lib/coach.functions";
-import type { WorkoutContext } from "@/lib/exercise-catalog";
+import { PageTransition } from "@/components/PageTransition";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/coach/")({
-  head: () => ({
-    meta: [
-      { title: "Treino com IA — Pulse Fit" },
-      {
-        name: "description",
-        content:
-          "Um personal trainer com IA que monta seu treino em segundos, com voz e demonstração 3D.",
-      },
-      { property: "og:title", content: "Treino com IA — Pulse Fit" },
-      {
-        property: "og:description",
-        content: "Personal trainer 3D com IA, voz e feedback em tempo real.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: CoachOnboardingPage,
+  head: () => ({ meta: [{ title: "Coach IA — Pulse Fit" }] }),
+  component: CoachPage,
 });
 
-const objectives = [
-  { id: "emagrecer", label: "Emagrecer" },
-  { id: "ganhar_massa", label: "Ganhar massa" },
-  { id: "condicionamento", label: "Condicionamento" },
-  { id: "manter", label: "Manter forma" },
-] as const;
+function CoachPage() {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+  const [loading, setLoading] = useState(false);
 
-const levels = [
-  { id: "iniciante", label: "Iniciante" },
-  { id: "intermediario", label: "Intermediário" },
-  { id: "avancado", label: "Avançado" },
-] as const;
-
-const locations = [
-  { id: "casa", label: "Em casa" },
-  { id: "academia", label: "Academia" },
-  { id: "ar_livre", label: "Ao ar livre" },
-] as const;
-
-function CoachOnboardingPage() {
-  const navigate = useNavigate();
-  const sessionId = useSessionId();
-  const { user } = useAuth();
-  const [ctx, setCtx] = useState<WorkoutContext>({
-    objective: "condicionamento",
-    level: "iniciante",
-    minutes: 20,
-    location: "casa",
-    equipment: [],
-  });
-
-  const gen = useServerFn(generateWorkoutPlan);
-  const start = useServerFn(startWorkoutSession);
-
-  const mut = useMutation({
-    mutationFn: async () => {
-      if (!sessionId) throw new Error("sessão indisponível");
-      const { plan } = await gen({
-        data: { ...ctx, clientSessionId: sessionId },
-      });
-      const { id } = await start({
-        data: { clientSessionId: sessionId, userId: user?.id, context: ctx, plan },
-      });
-      return id;
-    },
-    onSuccess: (id) => {
-      navigate({ to: "/coach/session/$sessionId", params: { sessionId: id } });
-    },
-  });
+  const quickActions = [
+    { label: "Montar treino", prompt: "Monte um treino de 30 minutos para mim" },
+    { label: "Dica de nutrição", prompt: "Me dê uma dica de nutrição para hoje" },
+    { label: "Motivação", prompt: "Me motiva para treinar hoje!" },
+  ];
 
   return (
     <MobileFrame>
-      <ScreenHeader title="Treino com IA" />
-
-      <main className="flex-1 space-y-5 px-5 pb-6">
-        <section className="grain-noise relative overflow-hidden rounded-[32px] p-6 text-primary-foreground shadow-neon">
-          <img
-            src={coachHero}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-primary-dark/90 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/60 via-transparent to-transparent" />
-          <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-primary-foreground/10 blur-2xl" />
-          <div className="relative flex items-center gap-3">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary-foreground/20 text-primary-foreground backdrop-blur">
-              <Sparkles className="h-7 w-7" strokeWidth={2.4} />
+      <ScreenHeader title="Coach IA" onBack={() => window.history.back()} />
+      <PageTransition>
+        <main className="flex-1 flex flex-col px-5 py-4">
+          {messages.length === 0 ? (
+            <div className="flex flex-1 flex-col items-center justify-center text-center">
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10">
+                <Sparkles className="h-10 w-10 text-primary" />
+              </motion.div>
+              <h2 className="font-display text-2xl font-bold">Olá! 👋</h2>
+              <p className="mt-2 text-sm text-text-tertiary max-w-[260px]">Sou seu coach IA. Pergunte sobre treinos, nutrição ou peça motivação.</p>
+              <div className="mt-6 space-y-2 w-full max-w-[300px]">
+                {quickActions.map((a) => (
+                  <button key={a.label} onClick={() => setInput(a.prompt)} className="w-full rounded-2xl bg-surface-card border border-border p-3 text-left text-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
+                    <span className="font-semibold">{a.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">
-                Coach IA
-              </p>
-              <p className="truncate font-display text-2xl uppercase tracking-wide">
-                Monte seu treino
-              </p>
-            </div>
-          </div>
-          <p className="relative mt-3 text-sm opacity-90">
-            Responda 4 perguntas rápidas. A IA escolhe exercícios validados e um
-            treinador demonstra em vídeo fotorreal, com voz.
-          </p>
-        </section>
-
-
-        <ChipGroup
-          label="Objetivo"
-          options={objectives}
-          value={ctx.objective}
-          onChange={(v) => setCtx({ ...ctx, objective: v })}
-        />
-        <ChipGroup
-          label="Nível"
-          options={levels}
-          value={ctx.level}
-          onChange={(v) => setCtx({ ...ctx, level: v })}
-        />
-        <ChipGroup
-          label="Local"
-          options={locations}
-          value={ctx.location}
-          onChange={(v) => setCtx({ ...ctx, location: v })}
-        />
-
-        <section className="rounded-[24px] bg-surface p-5 ring-1 ring-white/5">
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-              Tempo disponível
-            </p>
-            <span className="font-display text-2xl uppercase tracking-wide text-primary tabular-nums">
-              {ctx.minutes}<span className="text-sm">min</span>
-            </span>
-          </div>
-          <input
-            type="range"
-            min={10}
-            max={60}
-            step={5}
-            value={ctx.minutes}
-            onChange={(e) => setCtx({ ...ctx, minutes: Number(e.target.value) })}
-            className="mt-4 w-full accent-primary"
-          />
-          <div className="mt-1 flex justify-between text-[10px] font-semibold text-text-tertiary">
-            <span>10min</span>
-            <span>60min</span>
-          </div>
-        </section>
-
-        <button
-          disabled={mut.isPending || !sessionId}
-          onClick={() => mut.mutate()}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-display text-lg uppercase tracking-wider text-primary-foreground shadow-glow transition-transform active:scale-[0.98] disabled:opacity-60"
-        >
-          {mut.isPending ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Montando seu treino…
-            </>
           ) : (
-            "Começar treino"
+            <div className="flex-1 space-y-3 overflow-y-auto pb-4">
+              {messages.map((m, i) => (
+                <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`rounded-2xl p-3.5 text-sm ${m.role === "user" ? "ml-8 bg-primary text-primary-foreground" : "mr-8 bg-surface-card border border-border"}`}>
+                  {m.content}
+                </motion.div>
+              ))}
+              {loading && (
+                <div className="mr-8 rounded-2xl bg-surface-card border border-border p-3.5">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                </div>
+              )}
+            </div>
           )}
-        </button>
-
-        {mut.isError ? (
-          <p className="text-center text-sm text-destructive">
-            Não deu para gerar agora. Tente de novo em instantes.
-          </p>
-        ) : null}
-      </main>
-
-
+          <div className="flex items-center gap-2 pt-2">
+            <input
+              className="flex-1 rounded-2xl bg-surface-elevated border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-text-muted"
+              placeholder="Digite sua mensagem..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && input.trim()) { setMessages((p) => [...p, { role: "user", content: input }]); setInput(""); } }}
+            />
+            <Button variant="primary" size="icon" disabled={!input.trim()}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </main>
+      </PageTransition>
       <BottomNav />
     </MobileFrame>
   );
 }
-
-function ChipGroup<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: readonly { id: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <section>
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-        {label}
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => {
-          const active = value === o.id;
-          return (
-            <button
-              key={o.id}
-              onClick={() => onChange(o.id)}
-              className={`rounded-full px-4 py-2.5 font-display text-sm uppercase tracking-wider transition-all ${
-                active
-                  ? "bg-primary text-primary-foreground shadow-glow"
-                  : "bg-surface text-text-secondary ring-1 ring-white/5"
-              }`}
-            >
-              {o.label}
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-

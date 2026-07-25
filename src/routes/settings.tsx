@@ -1,9 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { MessageCircle, Bell, Shield, HelpCircle, User2, Check, Palette } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { MessageCircle, Bell, Shield, HelpCircle, User2, Check } from "lucide-react";
+import { PageTransition, StaggerContainer, StaggerItem } from "@/components/PageTransition";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "@/components/ThemeProvider";
 
 const GLB_KEY = "pulsefit.trainer.glb-url";
 
@@ -12,23 +19,13 @@ export const Route = createFileRoute("/settings")({
     meta: [
       { title: "Configurações — Pulse Fit" },
       { name: "description", content: "Notificações, integrações e avatar 3D do app." },
-      { property: "og:title", content: "Configurações — Pulse Fit" },
-      { property: "og:description", content: "Notificações, integrações e avatar 3D do app." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SettingsPage,
 });
 
 function SettingsPage() {
-  const items = [
-    { to: "/whatsapp", icon: <MessageCircle className="h-5 w-5" />, label: "WhatsApp Bot" },
-    { to: "/settings", icon: <Bell className="h-5 w-5" />, label: "Notificações" },
-    { to: "/settings", icon: <Shield className="h-5 w-5" />, label: "Privacidade" },
-    { to: "/settings", icon: <HelpCircle className="h-5 w-5" />, label: "Ajuda e suporte" },
-  ];
-
+  const { theme } = useTheme();
   const [glbUrl, setGlbUrl] = useState("");
   const [saved, setSaved] = useState(false);
 
@@ -42,64 +39,71 @@ function SettingsPage() {
     if (trimmed) window.localStorage.setItem(GLB_KEY, trimmed);
     else window.localStorage.removeItem(GLB_KEY);
     setSaved(true);
-    setTimeout(() => setSaved(false), 1600);
+    setTimeout(() => setSaved(false), 2000);
   }
+
+  const menuItems = [
+    { icon: <MessageCircle className="h-5 w-5" />, label: "WhatsApp Bot", to: "/whatsapp" },
+    { icon: <Bell className="h-5 w-5" />, label: "Notificações", to: "/settings" },
+    { icon: <Shield className="h-5 w-5" />, label: "Privacidade", to: "/settings" },
+    { icon: <HelpCircle className="h-5 w-5" />, label: "Ajuda e suporte", to: "/settings" },
+  ];
 
   return (
     <MobileFrame>
       <ScreenHeader title="Configurações" onBack={() => window.history.back()} />
-      <main className="flex-1 space-y-4 px-5 py-4">
-        {/* Photoreal avatar (GLB URL) */}
-        <section className="rounded-2xl bg-surface p-4 ring-1 ring-white/5">
-          <div className="mb-3 flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface-elevated text-primary">
-              <User2 className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <div className="font-display text-lg uppercase tracking-wide">Avatar 3D fotorreal</div>
-              <div className="text-xs text-text-tertiary">
-                Cole uma URL de modelo GLB (Ready Player Me / Mixamo).
+      <PageTransition>
+        <main className="flex-1 space-y-5 px-5 py-4 overflow-y-auto">
+          {/* Theme */}
+          <Card variant="default" className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Palette className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Tema</p>
+                  <p className="text-[11px] text-text-tertiary">{theme === "dark" ? "Escuro" : "Claro"}</p>
+                </div>
               </div>
+              <ThemeToggle />
             </div>
-          </div>
-          <input
-            type="url"
-            inputMode="url"
-            placeholder="https://models.readyplayer.me/…​.glb"
-            value={glbUrl}
-            onChange={(e) => setGlbUrl(e.target.value)}
-            className="mb-2 w-full rounded-xl bg-surface-elevated px-3 py-2 text-sm outline-none ring-1 ring-white/5 focus:ring-primary/60"
-          />
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[11px] text-text-tertiary">
-              Deixe em branco para usar o vídeo real ou o modelo 3D padrão.
-            </p>
-            <button
-              onClick={save}
-              className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-black uppercase tracking-widest text-primary-foreground transition-transform active:scale-95"
-            >
-              {saved ? <Check className="h-3.5 w-3.5" /> : null}
-              {saved ? "Salvo" : "Salvar"}
-            </button>
-          </div>
-        </section>
+          </Card>
 
-        {items.map((it, i) => (
-          <Link
-            key={i}
-            to={it.to}
-            className="flex items-center justify-between rounded-2xl bg-surface p-4 transition-transform active:scale-[0.98]"
-          >
+          {/* Avatar 3D */}
+          <Card variant="default" className="p-4 space-y-3">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface-elevated text-primary">
-                {it.icon}
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated text-text-tertiary">
+                <User2 className="h-5 w-5" />
               </div>
-              <span className="font-semibold">{it.label}</span>
+              <div>
+                <p className="text-sm font-semibold">Avatar 3D</p>
+                <p className="text-[11px] text-text-tertiary">URL do modelo fotorreal (GLB)</p>
+              </div>
             </div>
-            <span className="text-text-tertiary">›</span>
-          </Link>
-        ))}
-      </main>
+            <Input
+              placeholder="https://exemplo.com/avatar.glb"
+              value={glbUrl}
+              onChange={(e) => setGlbUrl(e.target.value)}
+            />
+            <Button variant="secondary" size="sm" onClick={save} loading={false} className="w-full">
+              {saved ? <><Check className="h-3.5 w-3.5" /> Salvo!</> : "Salvar"}
+            </Button>
+          </Card>
+
+          {/* Menu Items */}
+          <StaggerContainer className="space-y-2">
+            {menuItems.map((item) => (
+              <StaggerItem key={item.label}>
+                <a href={item.to} className="flex items-center gap-3 rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated text-text-tertiary">{item.icon}</div>
+                  <span className="flex-1 text-sm font-semibold">{item.label}</span>
+                </a>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </main>
+      </PageTransition>
       <BottomNav />
     </MobileFrame>
   );

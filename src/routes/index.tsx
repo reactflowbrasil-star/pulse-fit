@@ -3,50 +3,26 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
-  ArrowUpRight,
-  Footprints,
-  Flame,
-  Droplets,
-  Timer,
-  Sparkles,
-  Play,
-  Trophy,
-  LogIn,
-  Loader2,
-  ShieldCheck,
-  MessageCircle,
-  Mail,
-  Phone,
-  Calendar,
+  ArrowUpRight, Flame, Droplets, Timer, Sparkles, Play, Trophy,
+  LogIn, Loader2, Zap, TrendingUp, Target, Calendar,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { StepsProgressCard } from "@/components/dashboard/StepsProgressCard";
-import { ActivityRings } from "@/components/dashboard/ActivityRings";
-import { MetricCard } from "@/components/dashboard/MetricCard";
-import { dashboard, user as mockUser } from "@/data/mock";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { PageTransition, StaggerContainer, StaggerItem } from "@/components/PageTransition";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { dashboard } from "@/data/mock";
 import { useAuth } from "@/hooks/useAuth";
 import { getMe } from "@/lib/auth.functions";
-import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Pulse Fit — Painel diário de treino" },
-      {
-        name: "description",
-        content:
-          "Cadastre-se, valide seu WhatsApp e acompanhe todos os seus dados de treino no Pulse Fit.",
-      },
+      { name: "description", content: "Cadastre-se, valide seu WhatsApp e acompanhe todos os seus dados de treino no Pulse Fit." },
       { property: "og:title", content: "Pulse Fit — Painel diário de treino" },
-      {
-        property: "og:description",
-        content:
-          "Cadastre-se, valide seu WhatsApp e acompanhe todos os seus dados de treino no Pulse Fit.",
-      },
-      { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
@@ -63,22 +39,12 @@ function greeting() {
 function HomePage() {
   const { session, user, loading } = useAuth();
 
-  if (loading) {
-    return (
-      <MobileFrame>
-          <div className="flex flex-1 items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        </div>
-      </MobileFrame>
-    );
-  }
-
+  if (loading) return <MobileFrame><DashboardSkeleton /></MobileFrame>;
   if (!session || !user) return <LandingSignup />;
-
   return <StudentDashboard />;
 }
 
-/* ============= LANDING / CADASTRO ============= */
+/* ─── Landing ─────────────────────────────────────────── */
 
 function LandingSignup() {
   const [signing, setSigning] = useState(false);
@@ -89,542 +55,246 @@ function LandingSignup() {
     setError(null);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: window.location.origin,
-      },
+      options: { redirectTo: window.location.origin },
     });
-    if (error) {
-      setError(error.message);
-      setSigning(false);
-    }
+    if (error) { setError(error.message); setSigning(false); }
   };
 
   return (
     <MobileFrame>
-      <main className="flex flex-1 flex-col justify-between px-6 pb-10 pt-6">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <p className="font-display text-xs uppercase tracking-[0.35em] text-primary">
-            Pulse Fit
-          </p>
-          <h1 className="mt-3 font-display text-5xl uppercase leading-[0.9] tracking-wide">
-            Seu treino
-            <br />
-            <span className="text-primary">com IA</span>
-          </h1>
-          <p className="mt-4 text-sm text-text-secondary">
-            Cadastre-se em segundos com sua conta Google. Depois valide seu
-            WhatsApp para receber lembretes, treinos personalizados e feedback
-            do seu coach virtual.
-          </p>
-        </motion.div>
+      <div className="absolute top-4 right-4 safe-top z-10">
+        <ThemeToggle />
+      </div>
+      <PageTransition>
+        <main className="flex flex-1 flex-col justify-between px-6 py-12">
+          <div>
+            <div className="flex items-center gap-2 mb-8">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Zap className="h-5 w-5 text-primary" />
+              </div>
+              <span className="font-display text-sm font-semibold uppercase tracking-widest text-primary">Pulse Fit</span>
+            </div>
+            <h1 className="font-display text-[3.5rem] font-bold leading-[1]">
+              Seu treino
+              <br />
+              <span className="text-primary">com IA</span>
+            </h1>
+            <p className="mt-4 text-sm leading-relaxed text-text-secondary max-w-[300px]">
+              Cadastre-se em segundos com sua conta Google. Depois valide seu WhatsApp para receber lembretes e treinos personalizados.
+            </p>
+          </div>
 
-        <motion.ul
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="my-8 space-y-3"
-        >
-          <FeatureRow
-            icon={<Sparkles className="h-5 w-5" />}
-            title="Coach IA 24/7"
-            text="Planos gerados no seu nível e objetivo."
-          />
-          <FeatureRow
-            icon={<MessageCircle className="h-5 w-5" />}
-            title="Bot no WhatsApp"
-            text="Lembretes, motivação e check-ins diretos no seu celular."
-          />
-          <FeatureRow
-            icon={<Trophy className="h-5 w-5" />}
-            title="Progresso completo"
-            text="Histórico, conquistas e métricas de cada treino."
-          />
-        </motion.ul>
+          <StaggerContainer className="my-8 space-y-3">
+            <StaggerItem>
+              <FeatureRow icon={<Sparkles className="h-5 w-5" />} title="Coach IA 24/7" text="Planos gerados no seu nível e objetivo." />
+            </StaggerItem>
+            <StaggerItem>
+              <FeatureRow icon={<Trophy className="h-5 w-5" />} title="Progresso completo" text="Histórico, conquistas e métricas de cada treino." />
+            </StaggerItem>
+            <StaggerItem>
+              <FeatureRow icon={<Target className="h-5 w-5" />} title="Metas personalizadas" text="Defina objetivos e acompanhe sua evolução." />
+            </StaggerItem>
+          </StaggerContainer>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="space-y-3"
-        >
-          <button
-            onClick={signInGoogle}
-            disabled={signing}
-            className="flex w-full items-center justify-center gap-3 rounded-full bg-primary py-4 font-bold text-primary-foreground shadow-glow disabled:opacity-60"
-          >
-            {signing ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <LogIn className="h-5 w-5" />
-            )}
-            Cadastrar / entrar com Google
-          </button>
-          {error && <p className="text-center text-xs text-red-400">{error}</p>}
-          <p className="text-center text-[11px] text-text-tertiary">
-            Ao continuar você concorda em receber mensagens do bot Pulse Fit no
-            WhatsApp.
-          </p>
-        </motion.div>
-      </main>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }} className="space-y-3">
+            <motion.button
+              onClick={signInGoogle}
+              disabled={signing}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-primary py-4 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 disabled:opacity-50"
+            >
+              {signing ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                <svg className="h-5 w-5" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+              )}
+              Continuar com Google
+            </motion.button>
+            {error && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-xs text-destructive">{error}</motion.p>}
+            <Link to="/" className="block text-center text-xs text-text-tertiary hover:text-text-secondary transition-colors">Continuar sem entrar</Link>
+          </motion.div>
+        </main>
+      </PageTransition>
     </MobileFrame>
   );
 }
 
-function FeatureRow({
-  icon,
-  title,
-  text,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  text: string;
-}) {
+function FeatureRow({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <li className="flex items-start gap-3 rounded-2xl bg-surface p-4 ring-1 ring-white/5">
-      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
-        {icon}
-      </div>
+    <div className="flex items-start gap-4 rounded-2xl bg-surface-card border border-border p-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">{icon}</div>
       <div>
-        <p className="font-display text-base uppercase tracking-wide">{title}</p>
-        <p className="text-xs text-text-tertiary">{text}</p>
+        <p className="text-sm font-semibold">{title}</p>
+        <p className="mt-0.5 text-xs leading-relaxed text-text-tertiary">{text}</p>
       </div>
-    </li>
+    </div>
   );
 }
 
-/* ============= WHATSAPP GATE ============= */
-
-function WhatsappGate({ phone }: { phone?: string | null }) {
-  return (
-    <section className="relative overflow-hidden rounded-[28px] bg-surface p-5 ring-1 ring-primary/30">
-      <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-      <div className="relative flex items-center gap-3">
-        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-glow">
-          <MessageCircle className="h-6 w-6" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
-            Passo final
-          </p>
-          <p className="font-display text-xl uppercase tracking-wide">
-            Valide seu WhatsApp
-          </p>
-        </div>
-      </div>
-      <p className="relative mt-3 text-xs text-text-secondary">
-        Precisamos confirmar seu número{phone ? ` (${phone})` : ""} para liberar
-        os lembretes e o histórico completo dos seus treinos.
-      </p>
-      <Link
-        to="/whatsapp-setup"
-        className="relative mt-4 flex items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground shadow-glow"
-      >
-        <ShieldCheck className="h-4 w-4" />
-        Confirmar meu WhatsApp
-      </Link>
-    </section>
-  );
-}
-
-/* ============= STUDENT DASHBOARD ============= */
-
-type WorkoutRow = {
-  id: string;
-  started_at: string | null;
-  ended_at: string | null;
-  status: string | null;
-  duration_seconds: number | null;
-  plan: unknown;
-};
+/* ─── Dashboard ───────────────────────────────────────── */
 
 function StudentDashboard() {
   const { user } = useAuth();
-  const navigate = useNavigate();
-
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe() });
+  const displayName = me.data?.profile?.full_name || user?.user_metadata?.full_name || "Atleta";
 
-  const [workouts, setWorkouts] = useState<WorkoutRow[]>([]);
-
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
-      const w = await supabase
-        .from("workout_sessions")
-        .select("id, started_at, ended_at, status, duration_seconds, plan")
-        .eq("user_id", user.id)
-        .order("started_at", { ascending: false })
-        .limit(5);
-      setWorkouts((w.data as WorkoutRow[] | null) ?? []);
-    })();
-  }, [user]);
-
-  const profile = me.data?.profile;
-  const displayName =
-    profile?.full_name || user?.user_metadata?.full_name || "Aluno";
-  const avatar =
-    profile?.avatar_url || user?.user_metadata?.avatar_url || mockUser.avatar;
-  const whatsappOk = !!profile?.whatsapp_verified;
-  const whatsappNumber = profile?.whatsapp_number
-    ? String(profile.whatsapp_number).replace(/@.*/, "")
-    : null;
-
-  const steps = dashboard.steps.current;
-  const stepsGoal = dashboard.steps.goal;
-  const calories = dashboard.calories.current;
-  const activeMin = dashboard.activeMinutes.current;
-  const waterL = dashboard.water.current;
-  const distanceKm = dashboard.distanceKm.current;
-  const achievements = workouts.filter((w) => w.status === "completed").length;
-
-  const rings: [
-    { label: string; pct: number; color: string },
-    { label: string; pct: number; color: string },
-    { label: string; pct: number; color: string },
-  ] = [
-    {
-      label: "Passos",
-      pct: (steps / stepsGoal) * 100,
-      color: "var(--primary)",
-    },
-    {
-      label: "Calorias",
-      pct: (calories / dashboard.calories.goal) * 100,
-      color: "var(--accent-orange)",
-    },
-    {
-      label: "Ativo",
-      pct: (activeMin / dashboard.activeMinutes.goal) * 100,
-      color: "var(--accent-blue)",
-    },
-  ];
-
-  const completed = workouts.filter((w) => w.status === "completed").length;
-  const memberSince = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString("pt-BR", {
-        month: "short",
-        year: "numeric",
-      })
-    : "—";
+  const calories = dashboard.rings.calories;
+  const steps = dashboard.rings.steps;
+  const activeMin = dashboard.rings.activeMinutes;
+  const workouts = dashboard.recentWorkouts ?? [];
+  const achievements = dashboard.achievements ?? 0;
 
   return (
     <MobileFrame>
-      <DashboardHeader name={displayName} avatar={avatar} greeting={greeting()} />
-
-      <main className="flex-1 space-y-4 px-5 pb-6">
-        {!whatsappOk && <WhatsappGate phone={whatsappNumber} />}
-
-        {/* Ficha do aluno */}
-        <section className="rounded-[28px] bg-surface p-5 ring-1 ring-white/5">
-          <div className="flex items-center gap-4">
-            <img
-              src={avatar}
-              alt=""
-              className="h-16 w-16 rounded-2xl object-cover ring-2 ring-primary/40"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-                Ficha do aluno
-              </p>
-              <p className="truncate font-display text-xl uppercase tracking-wide">
-                {displayName}
-              </p>
-              {me.data?.isAdmin && (
-                <span className="mt-1 inline-block rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary">
-                  Admin
-                </span>
-              )}
-            </div>
-          </div>
-          <ul className="mt-4 space-y-2 text-xs">
-            <InfoLine
-              icon={<Mail className="h-4 w-4" />}
-              label="Email"
-              value={user?.email ?? "—"}
-            />
-            <InfoLine
-              icon={<Phone className="h-4 w-4" />}
-              label="WhatsApp"
-              value={
-                whatsappNumber
-                  ? `${whatsappNumber} ${whatsappOk ? "✓" : "(não verificado)"}`
-                  : "Não cadastrado"
-              }
-              accent={whatsappOk}
-            />
-            <InfoLine
-              icon={<Calendar className="h-4 w-4" />}
-              label="Membro desde"
-              value={memberSince}
-            />
-            <InfoLine
-              icon={<Trophy className="h-4 w-4" />}
-              label="Treinos concluídos"
-              value={String(completed)}
-            />
-            <InfoLine
-              icon={<Sparkles className="h-4 w-4" />}
-              label="Conquistas"
-              value={String(achievements)}
-            />
-          </ul>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <Link
-              to="/profile"
-              className="rounded-full bg-surface-elevated py-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-primary"
-            >
-              Meu perfil
-            </Link>
-            <button
-              onClick={async () => {
-                await supabase.auth.signOut();
-                navigate({ to: "/" });
-              }}
-              className="rounded-full bg-surface-elevated py-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-red-400"
-            >
-              Sair
-            </button>
-          </div>
-        </section>
-
-        <StepsProgressCard current={steps} goal={stepsGoal} />
-
-        {/* Coach IA CTA */}
-        <Link
-          to="/coach"
-          className="grain-noise relative flex items-center justify-between overflow-hidden rounded-[28px] bg-surface p-5 ring-1 ring-primary/25 transition-transform active:scale-[0.98]"
-        >
-          <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-primary/25 blur-3xl" />
-          <div className="relative flex min-w-0 items-center gap-3">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-glow">
-              <Sparkles className="h-7 w-7" strokeWidth={2.4} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                Coach IA
-              </p>
-              <p className="truncate font-display text-xl uppercase tracking-wide">
-                Treino guiado 3D
-              </p>
-              <p className="truncate text-xs text-text-tertiary">
-                Voz + demonstração ao vivo
-              </p>
-            </div>
-          </div>
-          <div className="relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary">
-            <ArrowUpRight className="h-5 w-5" strokeWidth={2.6} />
-          </div>
-        </Link>
-
-        {/* Anéis */}
-        <section className="relative overflow-hidden rounded-[28px] bg-surface p-5 ring-1 ring-white/5">
+      <PageTransition>
+        <main className="flex-1 space-y-5 px-5 py-5 pb-8 overflow-y-auto">
+          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-                Hoje
-              </p>
-              <h2 className="font-display text-2xl uppercase tracking-wide">
-                Atividade
-              </h2>
+              <p className="text-xs font-semibold uppercase tracking-widest text-text-tertiary">{greeting()}</p>
+              <h1 className="font-display text-2xl font-bold">{displayName.split(" ")[0]} 👋</h1>
             </div>
-            <Link
-              to="/stats"
-              className="rounded-full bg-surface-elevated px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary"
-            >
-              Detalhes
-            </Link>
-          </div>
-          <div className="mt-4 grid grid-cols-[1fr_auto] items-center gap-5">
-            <div className="grid grid-cols-1 gap-2.5">
-              {rings.map((r) => (
-                <div key={r.label} className="flex items-center gap-2 text-xs">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{
-                      backgroundColor: r.color,
-                      boxShadow: `0 0 8px ${r.color}`,
-                    }}
-                  />
-                  <span className="text-text-secondary">{r.label}</span>
-                  <span className="ml-auto font-display text-base tabular-nums">
-                    {Math.round(r.pct)}%
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="h-36 w-36">
-              <ActivityRings rings={rings} size={144} />
+            <div className="flex gap-2">
+              <ThemeToggle />
+              <Link to="/profile" className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated border border-border overflow-hidden">
+                {me.data?.profile?.avatar_url ? (
+                  <img src={me.data.profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                ) : <span className="text-sm font-bold text-primary">{displayName[0]}</span>}
+              </Link>
             </div>
           </div>
-        </section>
 
-        {/* Métricas */}
-        <section className="grid grid-cols-2 gap-3">
-          <MetricCard
-            icon={<Flame className="h-4 w-4" strokeWidth={2.4} />}
-            label="Calorias"
-            value={calories}
-            unit={`/ ${dashboard.calories.goal} kcal`}
-            goal={dashboard.calories.goal}
-            accent="orange"
-          />
-          <MetricCard
-            icon={<Droplets className="h-4 w-4" strokeWidth={2.4} />}
-            label="Água"
-            value={waterL}
-            unit={`/ ${dashboard.water.goal.toLocaleString("pt-BR")} L`}
-            goal={dashboard.water.goal}
-            accent="blue"
-            decimals={1}
-          />
-          <MetricCard
-            icon={<Timer className="h-4 w-4" strokeWidth={2.4} />}
-            label="Ativo"
-            value={activeMin}
-            unit={`/ ${dashboard.activeMinutes.goal} min`}
-            goal={dashboard.activeMinutes.goal}
-            accent="primary"
-          />
-          <MetricCard
-            icon={<Footprints className="h-4 w-4" strokeWidth={2.4} />}
-            label="Distância"
-            value={distanceKm}
-            unit={`/ ${dashboard.distanceKm.goal.toLocaleString("pt-BR")} km`}
-            goal={dashboard.distanceKm.goal}
-            accent="primary"
-            decimals={1}
-          />
-        </section>
+          {/* KPI Cards */}
+          <StaggerContainer className="grid grid-cols-2 gap-3">
+            <StaggerItem>
+              <KPICard icon={<Flame className="h-4 w-4" />} label="Calorias" value={`${calories.current}`} unit="kcal" progress={calories.current / calories.goal} color="text-accent-orange" />
+            </StaggerItem>
+            <StaggerItem>
+              <KPICard icon={<Droplets className="h-4 w-4" />} label="Passos" value={`${steps.current.toLocaleString()}`} unit="" progress={steps.current / steps.goal} color="text-accent-blue" />
+            </StaggerItem>
+            <StaggerItem>
+              <KPICard icon={<Timer className="h-4 w-4" />} label="Ativo" value={`${activeMin.current}`} unit="min" progress={activeMin.current / activeMin.goal} color="text-primary" />
+            </StaggerItem>
+            <StaggerItem>
+              <KPICard icon={<Trophy className="h-4 w-4" />} label="Conquistas" value={`${achievements}`} unit="" progress={0.6} color="text-accent-purple" />
+            </StaggerItem>
+          </StaggerContainer>
 
-        {/* Wide split */}
-        <section className="grid grid-cols-[1.4fr_1fr] gap-3">
-          <Link
-            to="/browse"
-            className="relative overflow-hidden rounded-[24px] bg-surface p-4 ring-1 ring-white/5 transition-transform active:scale-[0.98]"
-          >
-            <div className="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-primary/10 blur-2xl" />
-            <div className="relative flex items-center gap-2">
-              <Play className="h-4 w-4 text-primary" fill="currentColor" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-                Explorar
-              </span>
+          {/* Quick Actions */}
+          <StaggerContainer className="grid grid-cols-2 gap-3">
+            <StaggerItem>
+              <Link to="/browse" className="group block rounded-2xl bg-gradient-to-br from-primary/10 via-surface-card to-surface-card border border-primary/10 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
+                <Play className="h-5 w-5 text-primary" fill="currentColor" />
+                <p className="mt-2 font-display text-lg font-semibold">Treinos</p>
+                <p className="text-[11px] text-text-tertiary">Explorar disponíveis</p>
+              </Link>
+            </StaggerItem>
+            <StaggerItem>
+              <Link to="/rewards" className="group block rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98]">
+                <Trophy className="h-5 w-5" />
+                <p className="mt-2 font-display text-lg font-semibold">{achievements}</p>
+                <p className="text-[11px] opacity-70">Conquistas</p>
+              </Link>
+            </StaggerItem>
+          </StaggerContainer>
+
+          {/* Recent Workouts */}
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display text-lg font-semibold">Treinos recentes</h2>
+              <Link to="/history" className="text-xs font-semibold text-primary">Ver todos</Link>
             </div>
-            <p className="relative mt-2 font-display text-2xl uppercase leading-none tracking-wide">
-              Treinos
-              <br />
-              <span className="text-primary">em alta</span>
-            </p>
-            <p className="relative mt-3 text-xs text-text-tertiary">
-              +240 sessões disponíveis
-            </p>
-          </Link>
-          <Link
-            to="/rewards"
-            className="relative overflow-hidden rounded-[24px] bg-primary p-4 text-primary-foreground shadow-glow transition-transform active:scale-[0.98]"
-          >
-            <Trophy className="h-5 w-5" strokeWidth={2.4} />
-            <p className="mt-2 font-display text-2xl uppercase leading-none tracking-wide">
-              {achievements}
-            </p>
-            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-70">
-              Conquistas
-            </p>
-          </Link>
-        </section>
-
-        {/* Treinos recentes */}
-        <section className="rounded-[28px] bg-surface p-5 ring-1 ring-white/5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-                Recentes
-              </p>
-              <h2 className="font-display text-xl uppercase tracking-wide">
-                Seus treinos
-              </h2>
-            </div>
-            <Link
-              to="/history"
-              className="text-[11px] font-bold uppercase tracking-wider text-primary"
-            >
-              Ver todos
-            </Link>
-          </div>
-          {workouts.length === 0 ? (
-            <div className="mt-4 rounded-2xl bg-surface-elevated p-4 text-center text-xs text-text-tertiary">
-              Você ainda não tem treinos. Comece agora pelo Coach IA.
-            </div>
-          ) : (
-            <ul className="mt-3 space-y-2">
-              {workouts.map((w) => (
-                <li
-                  key={w.id}
-                  className="flex items-center justify-between rounded-2xl bg-surface-elevated p-3 ring-1 ring-white/5"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                      <ArrowUpRight className="h-5 w-5" strokeWidth={2.6} />
-                    </div>
-                    <div>
-                      <p className="font-display text-base uppercase tracking-wide">
-                        Treino
-                      </p>
-                      <p className="text-xs text-text-tertiary">
-                        {w.duration_seconds
-                          ? `${Math.round(w.duration_seconds / 60)} min · `
-                          : ""}
-                        {w.started_at
-                          ? new Date(w.started_at).toLocaleDateString("pt-BR")
-                          : "—"}
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${
-                      w.status === "completed"
-                        ? "bg-primary/15 text-primary"
-                        : "bg-surface text-text-tertiary"
-                    }`}
-                  >
-                    {w.status === "completed" ? "Concluído" : w.status ?? "—"}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </main>
-
+            {workouts.length === 0 ? (
+              <Card variant="default" className="p-6 text-center">
+                <p className="text-sm text-text-tertiary">Nenhum treino ainda. Comece pelo Coach IA!</p>
+                <Link to="/coach" className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground">
+                  <Sparkles className="h-3.5 w-3.5" /> Abrir Coach
+                </Link>
+              </Card>
+            ) : (
+              <StaggerContainer className="space-y-2">
+                {workouts.map((w) => (
+                  <StaggerItem key={w.id}>
+                    <Link to={`/workout/${w.id}`} className="flex items-center justify-between rounded-2xl bg-surface-card border border-border p-3.5 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <ArrowUpRight className="h-4 w-4" strokeWidth={2.6} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">Treino</p>
+                          <p className="text-[11px] text-text-tertiary">
+                            {w.duration_seconds ? `${Math.round(w.duration_seconds / 60)} min · ` : ""}
+                            {w.started_at ? new Date(w.started_at).toLocaleDateString("pt-BR") : "—"}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                        w.status === "completed" ? "bg-success/15 text-success" : "bg-surface-elevated text-text-tertiary"
+                      }`}>
+                        {w.status === "completed" ? "Concluído" : w.status ?? "—"}
+                      </span>
+                    </Link>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            )}
+          </section>
+        </main>
+      </PageTransition>
       <BottomNav />
     </MobileFrame>
   );
 }
 
-function InfoLine({
-  icon,
-  label,
-  value,
-  accent,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  accent?: boolean;
+/* ─── KPI Card ────────────────────────────────────────── */
+
+function KPICard({ icon, label, value, unit, progress, color }: {
+  icon: React.ReactNode; label: string; value: string; unit: string; progress: number; color: string;
 }) {
   return (
-    <li className="flex items-center gap-3 rounded-xl bg-surface-elevated px-3 py-2">
-      <span className={accent ? "text-primary" : "text-text-tertiary"}>
-        {icon}
-      </span>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
-        {label}
-      </span>
-      <span className="ml-auto truncate text-right text-xs font-semibold">
-        {value}
-      </span>
-    </li>
+    <div className="rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <div className="flex items-center gap-1.5">
+        <span className={color}>{icon}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">{label}</span>
+      </div>
+      <div className="mt-2 flex items-baseline gap-1">
+        <span className="font-display text-2xl font-bold">{value}</span>
+        {unit && <span className="text-xs text-text-muted">{unit}</span>}
+      </div>
+      <div className="mt-2.5 h-1.5 rounded-full bg-surface-elevated overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.min(progress * 100, 100)}%` }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className={`h-full rounded-full ${color.replace("text-", "bg-")}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Skeleton ────────────────────────────────────────── */
+
+function DashboardSkeleton() {
+  return (
+    <main className="flex-1 space-y-5 px-5 py-5">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-6 w-32" /></div>
+        <Skeleton className="h-10 w-10 rounded-xl" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="rounded-2xl bg-surface-card border border-border p-4 space-y-3">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-7 w-20" />
+            <Skeleton className="h-1.5 w-full" />
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }

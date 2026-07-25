@@ -1,106 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronRight, Search, SlidersHorizontal, ArrowUpDown, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { User, ChevronRight } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { trainers } from "@/data/mock";
+import { PageTransition, StaggerContainer, StaggerItem } from "@/components/PageTransition";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export const Route = createFileRoute("/trainers")({
-  head: () => ({
-    meta: [
-      { title: "Treinadores — Pulse Fit" },
-      {
-        name: "description",
-        content:
-          "Conheça treinadores certificados de força, calistenia, yoga e powerlifting para guiar sua jornada.",
-      },
-      { property: "og:title", content: "Treinadores — Pulse Fit" },
-      {
-        property: "og:description",
-        content: "Coaches certificados para cada modalidade.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: BrowseTrainers,
+  head: () => ({ meta: [{ title: "Personal — Pulse Fit" }] }),
+  component: TrainersPage,
 });
 
-const tabs = ["Todos", "Força", "Yoga", "Cardio", "Calistenia"] as const;
-
-function BrowseTrainers() {
-  const [active, setActive] = useState<(typeof tabs)[number]>("Todos");
-
+function TrainersPage() {
   return (
     <MobileFrame>
-      <ScreenHeader title="Treinadores" />
-
-      <div className="scrollbar-none flex gap-2 overflow-x-auto px-5 pb-3">
-        {tabs.map((t) => (
-          <button key={t} onClick={() => setActive(t)}>
-            <span
-              className={`inline-flex h-9 items-center whitespace-nowrap rounded-full px-4 text-sm font-semibold ${
-                active === t
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface-card text-text-secondary"
-              }`}
-            >
-              {t}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      <div className="mx-5 flex items-center justify-between rounded-2xl bg-surface px-2 py-2 text-xs font-semibold text-text-secondary">
-        <FBtn icon={<SlidersHorizontal className="h-4 w-4" />} label="Filtros" />
-        <span className="h-5 w-px bg-white/10" />
-        <FBtn icon={<ArrowUpDown className="h-4 w-4" />} label="Ordenar" />
-        <span className="h-5 w-px bg-white/10" />
-        <FBtn icon={<Search className="h-4 w-4" />} label="Buscar" />
-      </div>
-
-      <main className="flex-1 space-y-2.5 px-5 pt-4 pb-2">
-        {trainers.map((t) => (
-          <Link
-            key={t.id}
-            to="/trainer/$id"
-            params={{ id: t.id }}
-            className="flex items-center gap-3 rounded-3xl bg-surface p-3.5 transition-transform active:scale-[0.98]"
-          >
-            <div className="relative shrink-0">
-              <img
-                src={t.image}
-                alt=""
-                width={512}
-                height={512}
-                className="h-14 w-14 rounded-full object-cover"
-              />
-              <span className="absolute -bottom-1 -right-1 inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold text-primary-foreground">
-                <Star className="h-2 w-2 fill-primary-foreground" />
-                {t.rating.toString().replace(".", ",")}
-              </span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold">{t.name}</p>
-              <p className="truncate text-xs text-text-tertiary">{t.role}</p>
-              <p className="text-xs text-primary">{t.experience}</p>
-            </div>
-            <ChevronRight className="h-5 w-5 text-primary" />
-          </Link>
-        ))}
-      </main>
-
+      <ScreenHeader title="Personal" onBack={() => window.history.back()} />
+      <PageTransition>
+        <main className="flex-1 px-5 py-4">
+          <EmptyState
+            icon={<User className="h-6 w-6" />}
+            title="Personal trainers"
+            description="Escolha um treinador personalizado para te guiar nos treinos."
+          />
+        </main>
+      </PageTransition>
       <BottomNav />
     </MobileFrame>
-  );
-}
-
-function FBtn({ icon, label }: { icon: React.ReactNode; label: string }) {
-  return (
-    <button className="flex flex-1 items-center justify-center gap-2 py-2">
-      {icon}
-      {label}
-    </button>
   );
 }

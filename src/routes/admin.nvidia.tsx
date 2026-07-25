@@ -7,6 +7,7 @@ import {
   ShieldCheck, ShieldX, Eye, EyeOff, Zap, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
+import { PageTransition } from "@/components/PageTransition";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/hooks/useAuth";
