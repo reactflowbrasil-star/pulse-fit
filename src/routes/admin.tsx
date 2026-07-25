@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
-import { Loader2, Send, ShieldAlert, Megaphone, Users, MessageCircle, Cpu, ChevronRight } from "lucide-react";
+import { Loader2, Send, ShieldAlert, Megaphone, Users, MessageCircle, Cpu, Settings, ChevronRight } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { BottomNav } from "@/components/BottomNav";
@@ -76,6 +76,15 @@ function AdminDashboard() {
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15"><Cpu className="h-5 w-5 text-primary" /></div>
               <div className="flex-1"><p className="text-sm font-semibold">NVIDIA API</p><p className="text-[11px] text-text-tertiary">Gerenciar chaves e modelos</p></div>
+              <ChevronRight className="h-4 w-4 text-text-muted" />
+            </div>
+          </Card>
+
+          {/* WhatsApp Integration Link */}
+          <Card variant="gradient" hover className="p-4 cursor-pointer" onClick={() => navigate({ to: "/admin/whatsapp-integration" })}>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/15"><Settings className="h-5 w-5 text-success" /></div>
+              <div className="flex-1"><p className="text-sm font-semibold">WhatsApp Integration</p><p className="text-[11px] text-text-tertiary">Evolution API, webhook e credenciais</p></div>
               <ChevronRight className="h-4 w-4 text-text-muted" />
             </div>
           </Card>

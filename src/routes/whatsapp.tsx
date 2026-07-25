@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -12,12 +12,11 @@ import {
   Clock3,
   AlertTriangle,
   Copy,
-  Power,
   Wifi,
   WifiOff,
-  QrCode,
-  Smartphone,
+  Settings,
   ExternalLink,
+  Wrench,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
@@ -34,7 +33,7 @@ import {
   listWhatsappSessions,
   sendWhatsappMessage,
 } from "@/lib/whatsapp.functions";
-import { getBotStatus, sendBotCommand, getBotQr } from "@/lib/bot-status.functions";
+import { getBotStatus } from "@/lib/bot-status.functions";
 
 export const Route = createFileRoute("/whatsapp")({
   head: () => ({
@@ -47,58 +46,33 @@ export const Route = createFileRoute("/whatsapp")({
 });
 
 function WhatsappPage() {
+  const navigate = useNavigate();
   const qc = useQueryClient();
 
-  // Bot server status
   const botStatus = useQuery({
     queryKey: ["bot", "status"],
     queryFn: () => getBotStatus(),
     refetchInterval: 10000,
   });
 
-  // QR Code
-  const qrQuery = useQuery({
-    queryKey: ["bot", "qr"],
-    queryFn: () => getBotQr(),
-    enabled: false,
-    refetchInterval: false,
-  });
-
-  // Evolution API status
   const evoStatus = useQuery({
     queryKey: ["wa", "status"],
     queryFn: () => getWhatsappStatus(),
     refetchInterval: 15000,
   });
 
-  // Messages
   const messages = useQuery({
     queryKey: ["wa", "messages"],
     queryFn: () => listWhatsappMessages({ data: { limit: 20 } }),
     refetchInterval: 8000,
   });
 
-  // Sessions
   const sessions = useQuery({
     queryKey: ["wa", "sessions"],
     queryFn: () => listWhatsappSessions(),
     refetchInterval: 15000,
   });
 
-  // Bot commands
-  const botCommandFn = useServerFn(sendBotCommand);
-  const connectMut = useMutation({
-    mutationFn: () => botCommandFn({ data: { command: "connect" } }),
-    onSuccess: () => {
-      setTimeout(() => qc.invalidateQueries({ queryKey: ["bot"] }), 2000);
-    },
-  });
-  const disconnectMut = useMutation({
-    mutationFn: () => botCommandFn({ data: { command: "disconnect" } }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["bot"] }),
-  });
-
-  // Send message
   const sendFn = useServerFn(sendWhatsappMessage);
   const [target, setTarget] = useState("");
   const [text, setText] = useState("");
@@ -110,13 +84,6 @@ function WhatsappPage() {
     },
   });
 
-  // QR code modal
-  const [showQr, setShowQr] = useState(false);
-  const handleShowQr = async () => {
-    setShowQr(true);
-    await qc.fetchQuery({ queryKey: ["bot", "qr"], queryFn: () => getBotQr() });
-  };
-
   const [webhookUrl, setWebhookUrl] = useState("");
   if (typeof window !== "undefined" && !webhookUrl) {
     setWebhookUrl(`${window.location.origin}/api/public/whatsapp/webhook`);
@@ -124,13 +91,15 @@ function WhatsappPage() {
 
   const botConnected = botStatus.data?.connectionState === "open";
   const botConfigured = botStatus.data?.configured !== false;
+  const evoConfigured = evoStatus.data?.configured;
+  const evoConnected = evoStatus.data?.state === "open";
 
   return (
     <MobileFrame>
       <ScreenHeader title="WhatsApp" onBack={() => window.history.back()} />
       <PageTransition>
         <main className="flex-1 space-y-4 px-5 py-4 overflow-y-auto">
-          {/* Bot Status Card */}
+          {/* Bot Status */}
           <Card variant="default" className="p-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3">
@@ -143,129 +112,57 @@ function WhatsappPage() {
                         : "bg-destructive/15 text-destructive"
                   }`}
                 >
-                  {botConnected ? (
-                    <Wifi className="h-5 w-5" />
-                  ) : botStatus.isLoading ? (
-                    <Skeleton className="h-5 w-5 rounded" />
-                  ) : (
-                    <WifiOff className="h-5 w-5" />
-                  )}
+                  {botConnected ? <Wifi className="h-5 w-5" /> : <WifiOff className="h-5 w-5" />}
                 </div>
                 <div>
                   <p className="text-sm font-semibold">Bot WhatsApp</p>
                   <p className="text-[11px] text-text-tertiary">
-                    {!botConfigured
-                      ? "BOT_URL não configurado"
-                      : botConnected
-                        ? `Conectado${botStatus.data?.phone ? ` (${botStatus.data.phone})` : ""}`
-                        : botStatus.data?.connectionState === "connecting"
-                          ? "Conectando..."
-                          : "Desconectado"}
+                    {!botConfigured ? "Evolution API não configurada" : botConnected ? "Conectado" : "Desconectado"}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => qc.invalidateQueries({ queryKey: ["bot"] })}
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-                {botConfigured && (
-                  <>
-                    {botConnected ? (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => disconnectMut.mutate()}
-                        disabled={disconnectMut.isPending}
-                      >
-                        <Power className="h-4 w-4 text-destructive" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => connectMut.mutate()}
-                        disabled={connectMut.isPending || botStatus.data?.connectionState === "connecting"}
-                      >
-                        <Power className="h-4 w-4 text-success" />
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
+              <Button variant="ghost" size="icon" onClick={() => qc.invalidateQueries({ queryKey: ["bot"] })}>
+                <RefreshCw className="h-4 w-4" />
+              </Button>
             </div>
-
-            {/* Connection buttons */}
-            {botConfigured && !botConnected && (
-              <div className="mt-3 flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => connectMut.mutate()}
-                  loading={connectMut.isPending}
-                >
-                  <Power className="h-3.5 w-3.5" /> Conectar
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={handleShowQr}
-                >
-                  <QrCode className="h-3.5 w-3.5" /> QR Code
-                </Button>
-              </div>
-            )}
           </Card>
 
-          {/* QR Code Modal */}
-          {showQr && (
-            <Card variant="default" className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-semibold">QR Code</p>
-                <button onClick={() => setShowQr(false)} className="text-xs text-text-tertiary hover:text-foreground">
-                  ✕
-                </button>
+          {/* ── DIAGNÓSTICO ── */}
+          {!evoConfigured && (
+            <Card variant="default" className="p-4 space-y-3 border-warning/30 bg-warning/5">
+              <div className="flex items-center gap-2">
+                <Wrench className="h-4 w-4 text-warning" />
+                <p className="text-sm font-semibold">Configuração necessária</p>
               </div>
-              {qrQuery.isLoading ? (
-                <div className="flex justify-center py-6">
-                  <Skeleton className="h-[200px] w-[200px] rounded-xl" />
-                </div>
-              ) : qrQuery.data?.ok && qrQuery.data.qr ? (
-                <div className="flex flex-col items-center gap-3">
-                  <img
-                    src={qrQuery.data.qr}
-                    alt="QR Code WhatsApp"
-                    className="rounded-xl border border-border"
-                    style={{ width: 220, height: 220 }}
-                  />
-                  <p className="text-[11px] text-text-tertiary text-center">
-                    Abra WhatsApp &gt; Dispositivos conectados &gt; Vincular dispositivo
-                  </p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => qc.fetchQuery({ queryKey: ["bot", "qr"], queryFn: () => getBotQr() })}
-                  >
-                    <RefreshCw className="h-3.5 w-3.5" /> Atualizar QR
-                  </Button>
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <p className="text-xs text-text-tertiary">
-                    {qrQuery.data?.error || "QR não disponível. Conecte o bot primeiro."}
-                  </p>
-                </div>
-              )}
+              <p className="text-xs text-text-secondary">
+                A Evolution API não está configurada. Para enviar e receber mensagens, você precisa:
+              </p>
+              <ul className="space-y-1.5 text-[11px] text-text-secondary">
+                <li className="flex items-start gap-2">
+                  <span className="text-warning font-bold">1.</span>
+                  <span>Ter uma instância da Evolution API rodando</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-warning font-bold">2.</span>
+                  <span>Cadastrar as credenciais no painel de integração</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-warning font-bold">3.</span>
+                  <span>Configurar o webhook na Evolution API</span>
+                </li>
+              </ul>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate({ to: "/admin/whatsapp-integration" })}
+              >
+                <Settings className="h-4 w-4" /> Abrir painel de integração
+              </Button>
             </Card>
           )}
 
-          {/* Bot error */}
-          {botStatus.data?.error && (
+          {/* Erro de conexão */}
+          {botStatus.data?.error && evoConfigured && (
             <Card variant="default" className="p-3">
               <div className="flex items-center gap-2 text-xs text-destructive">
                 <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
@@ -275,16 +172,18 @@ function WhatsappPage() {
           )}
 
           {/* Evolution API status */}
-          {evoStatus.data?.configured && (
+          {evoConfigured && (
             <Card variant="default" className="p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Smartphone className="h-4 w-4 text-text-tertiary" />
+                  <div className={`h-2.5 w-2.5 rounded-full ${evoConnected ? "bg-success animate-pulse" : "bg-muted"}`} />
                   <span className="text-xs text-text-secondary">
-                    Evolution API: {evoStatus.data.state || "desconhecido"}
+                    Evolution API: {evoStatus.data?.state || "desconhecido"}
                   </span>
                 </div>
-                <div className={`h-2 w-2 rounded-full ${evoStatus.data.state === "open" ? "bg-success" : "bg-muted"}`} />
+                {evoStatus.data?.phone && (
+                  <span className="text-[11px] text-text-muted font-mono">{evoStatus.data.phone}</span>
+                )}
               </div>
             </Card>
           )}
@@ -312,23 +211,9 @@ function WhatsappPage() {
           {/* Send Message */}
           <Card variant="default" className="p-4 space-y-3">
             <p className="text-sm font-semibold">Enviar mensagem</p>
-            <Input
-              placeholder="Número (ex: 5511999999999)"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-            />
-            <Input
-              placeholder="Mensagem..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-            <Button
-              variant="primary"
-              className="w-full"
-              onClick={() => sendMut.mutate()}
-              loading={sendMut.isPending}
-              disabled={!target.trim() || !text.trim()}
-            >
+            <Input placeholder="Número (ex: 5511999999999)" value={target} onChange={(e) => setTarget(e.target.value)} />
+            <Input placeholder="Mensagem..." value={text} onChange={(e) => setText(e.target.value)} />
+            <Button variant="primary" className="w-full" onClick={() => sendMut.mutate()} loading={sendMut.isPending} disabled={!target.trim() || !text.trim()}>
               <Send className="h-4 w-4" /> Enviar
             </Button>
           </Card>
@@ -346,11 +231,7 @@ function WhatsappPage() {
                 ))}
               </div>
             ) : (messages.data?.length ?? 0) === 0 ? (
-              <EmptyState
-                icon={<MessageCircle className="h-6 w-6" />}
-                title="Sem mensagens"
-                description="As mensagens recebidas e enviadas aparecerão aqui."
-              />
+              <EmptyState icon={<MessageCircle className="h-6 w-6" />} title="Sem mensagens" description="As mensagens recebidas e enviadas aparecerão aqui." />
             ) : (
               <StaggerContainer className="space-y-2">
                 {messages.data!.slice(0, 10).map((m) => (
@@ -358,17 +239,12 @@ function WhatsappPage() {
                     <div className="rounded-2xl bg-surface-card border border-border p-3">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-[11px] font-semibold text-text-secondary">
-                          {m.direction === "outbound" ? "→" : "←"}{" "}
-                          {m.remote_jid?.replace(/@.*/, "")}
+                          {m.direction === "outbound" ? "→" : "←"} {m.remote_jid?.replace(/@.*/, "")}
                         </span>
                         <StatusIcon status={m.status} />
                       </div>
-                      <p className="mt-1 text-xs text-foreground break-words">
-                        {m.content ?? "[mídia]"}
-                      </p>
-                      <p className="mt-1 text-[10px] text-text-muted">
-                        {new Date(m.created_at).toLocaleString("pt-BR")}
-                      </p>
+                      <p className="mt-1 text-xs text-foreground break-words">{m.content ?? "[mídia]"}</p>
+                      <p className="mt-1 text-[10px] text-text-muted">{new Date(m.created_at).toLocaleString("pt-BR")}</p>
                     </div>
                   </StaggerItem>
                 ))}

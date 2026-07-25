@@ -30,6 +30,7 @@ import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as WhatsappSetupRouteImport } from './routes/whatsapp-setup'
 import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
+import { Route as AdminWhatsappIntegrationRouteImport } from './routes/admin.whatsapp-integration'
 import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
@@ -149,6 +150,12 @@ const AdminNvidiaRoute = AdminNvidiaRouteImport.update({
   path: '/nvidia',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminWhatsappIntegrationRoute =
+  AdminWhatsappIntegrationRouteImport.update({
+    id: '/whatsapp-integration',
+    path: '/whatsapp-integration',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const ApiLiveCoachRoute = ApiLiveCoachRouteImport.update({
   id: '/api/live-coach',
   path: '/api/live-coach',
@@ -238,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
   '/admin/nvidia': typeof AdminNvidiaRoute
+  '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
   '/admin/nvidia': typeof AdminNvidiaRoute
+  '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -311,6 +320,7 @@ export interface FileRoutesById {
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
   '/admin/nvidia': typeof AdminNvidiaRoute
+  '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/whatsapp-setup'
     | '/admin/nvidia'
+    | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/whatsapp-setup'
     | '/admin/nvidia'
+    | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -421,6 +433,7 @@ export interface FileRouteTypes {
     | '/whatsapp'
     | '/whatsapp-setup'
     | '/admin/nvidia'
+    | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -621,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNvidiaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/whatsapp-integration': {
+      id: '/admin/whatsapp-integration'
+      path: '/whatsapp-integration'
+      fullPath: '/admin/whatsapp-integration'
+      preLoaderRoute: typeof AdminWhatsappIntegrationRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/live-coach': {
       id: '/api/live-coach'
       path: '/api/live-coach'
@@ -717,10 +737,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminNvidiaRoute: typeof AdminNvidiaRoute
+  AdminWhatsappIntegrationRoute: typeof AdminWhatsappIntegrationRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminNvidiaRoute: AdminNvidiaRoute,
+  AdminWhatsappIntegrationRoute: AdminWhatsappIntegrationRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
