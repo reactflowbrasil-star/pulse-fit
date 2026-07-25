@@ -61,8 +61,9 @@ function WhatsAppIntegrationPage() {
   const [webhookToken, setWebhookToken] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
   const [showWebhook, setShowWebhook] = useState(false);
-  const [dirty, setDirty] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
+
+  const hasAnyField = Boolean(apiUrl.trim() || apiKey.trim() || instanceName.trim() || webhookToken.trim());
 
   const saveMut = useMutation({
     mutationFn: async () => {
@@ -71,12 +72,14 @@ function WhatsAppIntegrationPage() {
       if (apiKey.trim()) payload.apiKey = apiKey.trim();
       if (instanceName.trim()) payload.instanceName = instanceName.trim();
       if (webhookToken.trim()) payload.webhookToken = webhookToken.trim();
+      if (Object.keys(payload).length === 0) {
+        throw new Error("Preencha pelo menos um campo para salvar.");
+      }
       return saveFn({ data: payload as never });
     },
     onSuccess: (r) => {
       if (r?.data?.ok) {
         setFeedback({ type: "ok", msg: "Configuração salva com sucesso!" });
-        setDirty(false);
         setApiKey("");
         setWebhookToken("");
         qc.invalidateQueries({ queryKey: ["wa", "config"] });
@@ -94,10 +97,10 @@ function WhatsAppIntegrationPage() {
       if (d?.ok) {
         setFeedback({
           type: "ok",
-          msg: `✅ Conectado! Estado: ${d.connectionState} | Instância: ${d.instanceName}`,
+          msg: `Conectado! Estado: ${d.connectionState} | Instância: ${d.instanceName}`,
         });
       } else {
-        setFeedback({ type: "err", msg: `❌ ${d?.error || "Falha no teste"}` });
+        setFeedback({ type: "err", msg: d?.error || "Falha no teste" });
       }
     },
     onError: (e) => setFeedback({ type: "err", msg: e.message }),
@@ -159,7 +162,7 @@ function WhatsAppIntegrationPage() {
               <label className="flex items-center gap-1.5 text-[11px] font-semibold text-text-secondary">
                 <Link2 className="h-3 w-3" /> API URL
               </label>
-              <Input placeholder="https://sua-evolution-api.com.br" value={apiUrl} onChange={(e) => { setApiUrl(e.target.value); setDirty(true); setFeedback(null); }} inputMode="url" />
+              <Input placeholder="https://sua-evolution-api.com.br" value={apiUrl} onChange={(e) => { setApiUrl(e.target.value); setFeedback(null); }} inputMode="url" />
               <p className="text-[10px] text-text-muted">URL base da sua Evolution API (ex: https://evo.exemplo.com)</p>
             </div>
 
@@ -168,7 +171,7 @@ function WhatsAppIntegrationPage() {
                 <Key className="h-3 w-3" /> API Key
               </label>
               <div className="relative">
-                <Input placeholder={config.data?.configured ? "•••••••• (já salva)" : "Sua API key"} value={apiKey} onChange={(e) => { setApiKey(e.target.value); setDirty(true); setFeedback(null); }} type={showApiKey ? "text" : "password"} className="pr-10" />
+                <Input placeholder={config.data?.apiKeySet ? "(já salva)" : "Sua API key"} value={apiKey} onChange={(e) => { setApiKey(e.target.value); setFeedback(null); }} type={showApiKey ? "text" : "password"} className="pr-10" />
                 <button type="button" onClick={() => setShowApiKey(!showApiKey)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
                   {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -180,7 +183,7 @@ function WhatsAppIntegrationPage() {
               <label className="flex items-center gap-1.5 text-[11px] font-semibold text-text-secondary">
                 <Hash className="h-3 w-3" /> Nome da Instância
               </label>
-              <Input placeholder="pulsefit" value={instanceName} onChange={(e) => { setInstanceName(e.target.value); setDirty(true); setFeedback(null); }} />
+              <Input placeholder="pulsefit" value={instanceName} onChange={(e) => { setInstanceName(e.target.value); setFeedback(null); }} />
               <p className="text-[10px] text-text-muted">Nome da instância criada na Evolution API</p>
             </div>
 
@@ -189,7 +192,7 @@ function WhatsAppIntegrationPage() {
                 <Lock className="h-3 w-3" /> Webhook Token
               </label>
               <div className="relative">
-                <Input placeholder="Token para validar webhooks" value={webhookToken} onChange={(e) => { setWebhookToken(e.target.value); setDirty(true); setFeedback(null); }} type={showWebhook ? "text" : "password"} className="pr-10" />
+                <Input placeholder="Token para validar webhooks" value={webhookToken} onChange={(e) => { setWebhookToken(e.target.value); setFeedback(null); }} type={showWebhook ? "text" : "password"} className="pr-10" />
                 <button type="button" onClick={() => setShowWebhook(!showWebhook)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
                   {showWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -198,7 +201,7 @@ function WhatsAppIntegrationPage() {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button variant="primary" className="flex-1" onClick={() => saveMut.mutate()} loading={saveMut.isPending} disabled={!dirty && !apiKey && !webhookToken}>
+              <Button variant="primary" className="flex-1" onClick={() => saveMut.mutate()} loading={saveMut.isPending} disabled={!hasAnyField}>
                 <Save className="h-4 w-4" /> Salvar
               </Button>
               <Button variant="outline" className="flex-1" onClick={() => testMut.mutate()} loading={testMut.isPending}>
