@@ -111,37 +111,40 @@ export type Database = {
         Row: {
           active_minutes: number
           calories: number
-          client_session_id: string
+          client_session_id: string | null
           created_at: string
           date: string
           distance_km: number
           id: string
           steps: number
           updated_at: string
+          user_id: string | null
           water_liters: number
         }
         Insert: {
           active_minutes?: number
           calories?: number
-          client_session_id: string
+          client_session_id?: string | null
           created_at?: string
           date: string
           distance_km?: number
           id?: string
           steps?: number
           updated_at?: string
+          user_id?: string | null
           water_liters?: number
         }
         Update: {
           active_minutes?: number
           calories?: number
-          client_session_id?: string
+          client_session_id?: string | null
           created_at?: string
           date?: string
           distance_km?: number
           id?: string
           steps?: number
           updated_at?: string
+          user_id?: string | null
           water_liters?: number
         }
         Relationships: []
@@ -225,7 +228,7 @@ export type Database = {
         Row: {
           available_equipment: string[]
           avatar_url: string | null
-          client_session_id: string
+          client_session_id: string | null
           created_at: string
           fitness_goal: string | null
           fitness_level: string | null
@@ -235,6 +238,7 @@ export type Database = {
           onboarded: boolean
           preferences: Json
           updated_at: string
+          user_id: string | null
           weekly_frequency: number | null
           whatsapp: string | null
           whatsapp_verificado: boolean
@@ -242,7 +246,7 @@ export type Database = {
         Insert: {
           available_equipment?: string[]
           avatar_url?: string | null
-          client_session_id: string
+          client_session_id?: string | null
           created_at?: string
           fitness_goal?: string | null
           fitness_level?: string | null
@@ -252,6 +256,7 @@ export type Database = {
           onboarded?: boolean
           preferences?: Json
           updated_at?: string
+          user_id?: string | null
           weekly_frequency?: number | null
           whatsapp?: string | null
           whatsapp_verificado?: boolean
@@ -259,7 +264,7 @@ export type Database = {
         Update: {
           available_equipment?: string[]
           avatar_url?: string | null
-          client_session_id?: string
+          client_session_id?: string | null
           created_at?: string
           fitness_goal?: string | null
           fitness_level?: string | null
@@ -269,6 +274,7 @@ export type Database = {
           onboarded?: boolean
           preferences?: Json
           updated_at?: string
+          user_id?: string | null
           weekly_frequency?: number | null
           whatsapp?: string | null
           whatsapp_verificado?: boolean
@@ -305,24 +311,27 @@ export type Database = {
       user_achievements: {
         Row: {
           achievement_key: string
-          client_session_id: string
+          client_session_id: string | null
           id: string
           metadata: Json
           unlocked_at: string
+          user_id: string | null
         }
         Insert: {
           achievement_key: string
-          client_session_id: string
+          client_session_id?: string | null
           id?: string
           metadata?: Json
           unlocked_at?: string
+          user_id?: string | null
         }
         Update: {
           achievement_key?: string
-          client_session_id?: string
+          client_session_id?: string | null
           id?: string
           metadata?: Json
           unlocked_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -389,6 +398,7 @@ export type Database = {
           status: string
           template_name: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           content?: string | null
@@ -404,6 +414,7 @@ export type Database = {
           status?: string
           template_name?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           content?: string | null
@@ -419,6 +430,7 @@ export type Database = {
           status?: string
           template_name?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -431,6 +443,7 @@ export type Database = {
           last_message_at: string | null
           remote_jid: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           context?: Json
@@ -440,6 +453,7 @@ export type Database = {
           last_message_at?: string | null
           remote_jid: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           context?: Json
@@ -449,6 +463,7 @@ export type Database = {
           last_message_at?: string | null
           remote_jid?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -485,7 +500,7 @@ export type Database = {
       workout_sessions: {
         Row: {
           calories_estimate: number
-          client_session_id: string
+          client_session_id: string | null
           context: Json
           created_at: string
           duration_seconds: number
@@ -501,7 +516,7 @@ export type Database = {
         }
         Insert: {
           calories_estimate?: number
-          client_session_id: string
+          client_session_id?: string | null
           context?: Json
           created_at?: string
           duration_seconds?: number
@@ -517,7 +532,7 @@ export type Database = {
         }
         Update: {
           calories_estimate?: number
-          client_session_id?: string
+          client_session_id?: string | null
           context?: Json
           created_at?: string
           duration_seconds?: number
