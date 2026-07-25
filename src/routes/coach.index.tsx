@@ -62,6 +62,7 @@ const locations = [
 function CoachOnboardingPage() {
   const navigate = useNavigate();
   const sessionId = useSessionId();
+  const { user } = useAuth();
   const [ctx, setCtx] = useState<WorkoutContext>({
     objective: "condicionamento",
     level: "iniciante",
@@ -80,7 +81,7 @@ function CoachOnboardingPage() {
         data: { ...ctx, clientSessionId: sessionId },
       });
       const { id } = await start({
-        data: { clientSessionId: sessionId, context: ctx, plan },
+        data: { clientSessionId: sessionId, userId: user?.id, context: ctx, plan },
       });
       return id;
     },
