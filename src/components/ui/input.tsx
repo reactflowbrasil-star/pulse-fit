@@ -1,22 +1,35 @@
-import * as React from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 
-import { cn } from "@/lib/utils";
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  error?: string;
+  label?: string;
+}
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ error, label, className = "", ...props }, ref) => {
     return (
-      <input
-        type={type}
-        className={cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-          className,
+      <div className="w-full">
+        {label && (
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-text-tertiary">
+            {label}
+          </label>
         )}
-        ref={ref}
-        {...props}
-      />
+        <input
+          ref={ref}
+          className={`w-full rounded-2xl bg-surface-elevated px-4 py-3 text-sm text-foreground
+            placeholder:text-text-muted
+            border border-border
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50
+            hover:border-border
+            disabled:opacity-40 disabled:cursor-not-allowed
+            ${error ? "border-destructive/50 focus:ring-destructive/40" : ""}
+            ${className}`}
+          {...props}
+        />
+        {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
+      </div>
     );
-  },
+  }
 );
 Input.displayName = "Input";
-
-export { Input };

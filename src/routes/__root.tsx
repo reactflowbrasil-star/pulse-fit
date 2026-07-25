@@ -12,7 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SplashGate } from "@/components/splash/SplashGate";
-
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastProvider } from "@/components/ui/toast";
 
 function NotFoundComponent() {
   return (
@@ -26,7 +27,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.97]"
           >
             Ir para o início
           </Link>
@@ -54,17 +55,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            onClick={() => { router.invalidate(); reset(); }}
+            className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.97]"
           >
             Tentar novamente
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-2xl border border-border bg-surface-elevated px-5 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-surface-card active:scale-[0.97]"
           >
             Ir para o início
           </a>
@@ -78,14 +76,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1, viewport-fit=cover",
-      },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#0f1015" },
-      // NOTE: title/description/og:image são definidos por cada leaf route para
-      // evitar que a share preview do dashboard sobrescreva rotas como /coach,
-      // /whatsapp, /workout/$id (head() do __root concatena em todo match).
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Pulse Fit" },
@@ -94,14 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
       },
     ],
   }),
@@ -130,10 +118,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SplashGate>
-        <Outlet />
-      </SplashGate>
+      <ThemeProvider>
+        <ToastProvider>
+          <SplashGate>
+            <Outlet />
+          </SplashGate>
+        </ToastProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
-
