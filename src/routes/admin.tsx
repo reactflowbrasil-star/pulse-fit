@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Send, ShieldAlert, Megaphone, Users, MessageCircle } from "lucide-react";
+import { Loader2, Send, ShieldAlert, Megaphone, Users, MessageCircle, Cpu } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { BottomNav } from "@/components/BottomNav";
@@ -161,6 +161,17 @@ function AdminDashboard() {
           )}
         </section>
 
+
+        <section className="rounded-3xl bg-surface p-5">
+          <h2 className="flex items-center gap-2 font-display text-lg"><Cpu className="h-4 w-4" /> NVIDIA API (VIN)</h2>
+          <p className="mt-1 text-xs text-text-tertiary">Gerenciar chaves, modelos e configurações da API NVIDIA.</p>
+          <button
+            onClick={() => navigate({ to: "/admin/nvidia" })}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground"
+          >
+            <Cpu className="h-4 w-4" /> Abrir Painel NVIDIA
+          </button>
+        </section>
         {feedback && <p className="text-center text-xs text-primary">{feedback}</p>}
       </main>
       <BottomNav />

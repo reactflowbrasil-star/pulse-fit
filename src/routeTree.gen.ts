@@ -29,6 +29,7 @@ import { Route as StatsRouteImport } from './routes/stats'
 import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as WhatsappSetupRouteImport } from './routes/whatsapp-setup'
+import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
 import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
@@ -139,6 +140,11 @@ const WhatsappSetupRoute = WhatsappSetupRouteImport.update({
   path: '/whatsapp-setup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNvidiaRoute = AdminNvidiaRouteImport.update({
+  id: '/nvidia',
+  path: '/nvidia',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiLiveCoachRoute = ApiLiveCoachRouteImport.update({
   id: '/api/live-coach',
   path: '/api/live-coach',
@@ -188,7 +194,7 @@ const ApiPublicWhatsappWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
+  '/admin/nvidia': typeof AdminNvidiaRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -219,7 +226,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
+  '/admin/nvidia': typeof AdminNvidiaRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -251,7 +259,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/done': typeof DoneRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/trainers': typeof TrainersRoute
   '/whatsapp': typeof WhatsappRoute
   '/whatsapp-setup': typeof WhatsappSetupRoute
+  '/admin/nvidia': typeof AdminNvidiaRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
   '/trainer/$id': typeof TrainerIdRoute
@@ -303,6 +312,7 @@ export interface FileRouteTypes {
     | '/trainers'
     | '/whatsapp'
     | '/whatsapp-setup'
+    | '/admin/nvidia'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
     | '/trainers'
     | '/whatsapp'
     | '/whatsapp-setup'
+    | '/admin/nvidia'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -365,6 +376,7 @@ export interface FileRouteTypes {
     | '/trainers'
     | '/whatsapp'
     | '/whatsapp-setup'
+    | '/admin/nvidia'
     | '/api/live-coach'
     | '/api/tts'
     | '/trainer/$id'
@@ -378,7 +390,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
   DoneRoute: typeof DoneRoute
@@ -550,6 +562,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsappSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/nvidia': {
+      id: '/admin/nvidia'
+      path: '/nvidia'
+      fullPath: '/admin/nvidia'
+      preLoaderRoute: typeof AdminNvidiaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/live-coach': {
       id: '/api/live-coach'
       path: '/api/live-coach'
@@ -616,9 +635,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminNvidiaRoute: typeof AdminNvidiaRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminNvidiaRoute: AdminNvidiaRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
   DoneRoute: DoneRoute,
