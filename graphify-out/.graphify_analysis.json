@@ -1,0 +1,1375 @@
+{
+  "communities": {
+    "0": [
+      "src_components_glbtrainerviewer",
+      "src_components_glbtrainerviewer_camerapresets",
+      "src_components_glbtrainerviewer_camerarig",
+      "src_components_glbtrainerviewer_glbtrainerviewer",
+      "src_components_glbtrainerviewer_model",
+      "src_components_glbtrainerviewer_props",
+      "src_components_trainer3dviewer",
+      "src_components_trainer3dviewer_camerapresets",
+      "src_components_trainer3dviewer_camerarig",
+      "src_components_trainer3dviewer_humanoid",
+      "src_components_trainer3dviewer_props",
+      "src_components_trainer3dviewer_trainer3dviewer",
+      "src_components_trainercoach",
+      "src_components_trainercoach_glbtrainerviewer",
+      "src_components_trainercoach_props",
+      "src_components_trainercoach_stageloader",
+      "src_components_trainercoach_trainer3dviewer",
+      "src_components_trainercoach_trainercoach",
+      "src_components_trainercoach_useglburl",
+      "src_components_voicecontroller",
+      "src_components_voicecontroller_props",
+      "src_components_voicecontroller_voicecontroller",
+      "src_lib_coach_functions",
+      "src_lib_coach_functions_contextschema",
+      "src_lib_coach_functions_fallbackplan",
+      "src_lib_coach_functions_finishschema",
+      "src_lib_coach_functions_finishworkoutsession",
+      "src_lib_coach_functions_generateworkoutplan",
+      "src_lib_coach_functions_getsessionschema",
+      "src_lib_coach_functions_getworkoutsession",
+      "src_lib_coach_functions_listcatalog",
+      "src_lib_coach_functions_planschema",
+      "src_lib_coach_functions_savesessionschema",
+      "src_lib_coach_functions_startworkoutsession",
+      "src_lib_exercise_catalog",
+      "src_lib_exercise_catalog_animationid",
+      "src_lib_exercise_catalog_cameraangle",
+      "src_lib_exercise_catalog_exercisecatalogitem",
+      "src_lib_exercise_catalog_planexercise",
+      "src_lib_exercise_catalog_workoutcontext",
+      "src_lib_exercise_catalog_workoutplan",
+      "src_lib_exercise_videos",
+      "src_lib_exercise_videos_exercisevideos",
+      "src_routes_coach_session_sessionid",
+      "src_routes_coach_session_sessionid_formattime",
+      "src_routes_coach_session_sessionid_painmodal",
+      "src_routes_coach_session_sessionid_route",
+      "src_routes_coach_session_sessionid_sessionpage",
+      "src_routes_coach_summary_sessionid",
+      "src_routes_coach_summary_sessionid_formatduration",
+      "src_routes_coach_summary_sessionid_route",
+      "src_routes_coach_summary_sessionid_statcard",
+      "src_routes_coach_summary_sessionid_summarypage"
+    ],
+    "1": [
+      "eslint",
+      "eslint_config_prettier",
+      "eslint_js",
+      "eslint_plugin_prettier",
+      "eslint_plugin_react_hooks",
+      "eslint_plugin_react_refresh",
+      "globals",
+      "lovable_dev_vite_tanstack_config",
+      "nitro",
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_eslint",
+      "package_devdependencies_eslint_config_prettier",
+      "package_devdependencies_eslint_js",
+      "package_devdependencies_eslint_plugin_prettier",
+      "package_devdependencies_eslint_plugin_react_hooks",
+      "package_devdependencies_eslint_plugin_react_refresh",
+      "package_devdependencies_globals",
+      "package_devdependencies_lovable_dev_vite_tanstack_config",
+      "package_devdependencies_nitro",
+      "package_devdependencies_prettier",
+      "package_devdependencies_types_node",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_devdependencies_typescript_eslint",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_react",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_dev",
+      "package_scripts_dev",
+      "package_scripts_format",
+      "package_scripts_lint",
+      "package_scripts_preview",
+      "package_sideeffects",
+      "package_type",
+      "prettier",
+      "types_node",
+      "types_react",
+      "types_react_dom",
+      "typescript",
+      "typescript_eslint",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "2": [
+      "src_routetree_gen",
+      "src_routetree_gen_adminroute",
+      "src_routetree_gen_apicoachttsroute",
+      "src_routetree_gen_apilivecoachroute",
+      "src_routetree_gen_apipublicwhatsappwebhookroute",
+      "src_routetree_gen_apittsroute",
+      "src_routetree_gen_authroute",
+      "src_routetree_gen_browseroute",
+      "src_routetree_gen_coachindexroute",
+      "src_routetree_gen_coachsessionsessionidroute",
+      "src_routetree_gen_coachsummarysessionidroute",
+      "src_routetree_gen_doneroute",
+      "src_routetree_gen_fileroutesbyfullpath",
+      "src_routetree_gen_fileroutesbyto",
+      "src_routetree_gen_fileroutetypes",
+      "src_routetree_gen_historyroute",
+      "src_routetree_gen_indexroute",
+      "src_routetree_gen_liveroute",
+      "src_routetree_gen_mealroute",
+      "src_routetree_gen_onboardingroute",
+      "src_routetree_gen_playerroute",
+      "src_routetree_gen_profileroute",
+      "src_routetree_gen_progressroute",
+      "src_routetree_gen_readyroute",
+      "src_routetree_gen_rewardsroute",
+      "src_routetree_gen_rootroutechildren",
+      "src_routetree_gen_settingsroute",
+      "src_routetree_gen_splashroute",
+      "src_routetree_gen_statsroute",
+      "src_routetree_gen_tanstack_react_router",
+      "src_routetree_gen_tanstack_react_start",
+      "src_routetree_gen_traineridroute",
+      "src_routetree_gen_trainersroute",
+      "src_routetree_gen_whatsapproute",
+      "src_routetree_gen_whatsappsetuproute",
+      "src_routetree_gen_workoutidroute"
+    ],
+    "3": [
+      "src_components_bottomnav",
+      "src_components_bottomnav_bottomnav",
+      "src_components_bottomnav_items",
+      "src_components_bottomnav_navitem",
+      "src_components_bottomnav_spring",
+      "src_components_mobileframe",
+      "src_components_mobileframe_mobileframe",
+      "src_components_screenheader",
+      "src_components_screenheader_screenheader",
+      "src_components_screenheader_spring",
+      "src_components_statusbar",
+      "src_components_statusbar_statusbar",
+      "src_data_mock_workouts",
+      "src_routes_browse",
+      "src_routes_browse_browsepage",
+      "src_routes_browse_filterbutton",
+      "src_routes_browse_tabs",
+      "src_routes_history",
+      "src_routes_history_historypage",
+      "src_routes_meal",
+      "src_routes_meal_placeholder",
+      "src_routes_onboarding",
+      "src_routes_onboarding_onboardingpage",
+      "src_routes_rewards",
+      "src_routes_settings",
+      "src_routes_settings_settingspage",
+      "src_routes_stats",
+      "src_routes_trainers",
+      "src_routes_trainers_browsetrainers",
+      "src_routes_trainers_fbtn",
+      "src_routes_trainers_tabs"
+    ],
+    "4": [
+      "src_components_ui_separator",
+      "src_components_ui_separator_separator",
+      "src_components_ui_sidebar",
+      "src_components_ui_sidebar_sidebar",
+      "src_components_ui_sidebar_sidebarcontent",
+      "src_components_ui_sidebar_sidebarcontext",
+      "src_components_ui_sidebar_sidebarcontextprops",
+      "src_components_ui_sidebar_sidebarfooter",
+      "src_components_ui_sidebar_sidebargroup",
+      "src_components_ui_sidebar_sidebargroupaction",
+      "src_components_ui_sidebar_sidebargroupcontent",
+      "src_components_ui_sidebar_sidebargrouplabel",
+      "src_components_ui_sidebar_sidebarheader",
+      "src_components_ui_sidebar_sidebarinput",
+      "src_components_ui_sidebar_sidebarinset",
+      "src_components_ui_sidebar_sidebarmenu",
+      "src_components_ui_sidebar_sidebarmenuaction",
+      "src_components_ui_sidebar_sidebarmenubadge",
+      "src_components_ui_sidebar_sidebarmenubutton",
+      "src_components_ui_sidebar_sidebarmenubuttonvariants",
+      "src_components_ui_sidebar_sidebarmenuitem",
+      "src_components_ui_sidebar_sidebarmenuskeleton",
+      "src_components_ui_sidebar_sidebarmenusub",
+      "src_components_ui_sidebar_sidebarmenusubbutton",
+      "src_components_ui_sidebar_sidebarmenusubitem",
+      "src_components_ui_sidebar_sidebarprovider",
+      "src_components_ui_sidebar_sidebarrail",
+      "src_components_ui_sidebar_sidebarseparator",
+      "src_components_ui_sidebar_sidebartrigger",
+      "src_components_ui_tooltip",
+      "src_components_ui_tooltip_tooltipcontent"
+    ],
+    "5": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2022",
+      "ref_eslint_config_js",
+      "ref_src_ts",
+      "ref_src_tsx",
+      "ref_vite_client",
+      "ref_vite_config_ts",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowimportingtsextensions",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_compileroptions_nouncheckedsideeffectimports",
+      "tsconfig_compileroptions_nounusedlocals",
+      "tsconfig_compileroptions_nounusedparameters",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_types",
+      "tsconfig_compileroptions_verbatimmodulesyntax",
+      "tsconfig_include"
+    ],
+    "6": [
+      "src_integrations_supabase_auth_middleware",
+      "src_integrations_supabase_auth_middleware_createsupabasefetch",
+      "src_integrations_supabase_auth_middleware_isnewsupabaseapikey",
+      "src_integrations_supabase_auth_middleware_requiresupabaseauth",
+      "src_integrations_supabase_client_server",
+      "src_integrations_supabase_client_server_createsupabaseadminclient",
+      "src_integrations_supabase_client_server_createsupabasefetch",
+      "src_integrations_supabase_client_server_isnewsupabaseapikey",
+      "src_integrations_supabase_client_server_supabaseadmin",
+      "src_integrations_supabase_types",
+      "src_integrations_supabase_types_compositetypes",
+      "src_integrations_supabase_types_constants",
+      "src_integrations_supabase_types_database",
+      "src_integrations_supabase_types_databasewithoutinternals",
+      "src_integrations_supabase_types_defaultschema",
+      "src_integrations_supabase_types_enums",
+      "src_integrations_supabase_types_json",
+      "src_integrations_supabase_types_tables",
+      "src_integrations_supabase_types_tablesinsert",
+      "src_integrations_supabase_types_tablesupdate",
+      "src_lib_coach_functions_loadcatalog",
+      "src_lib_wa_link_functions",
+      "src_lib_wa_link_functions_codigoschema",
+      "src_lib_wa_link_functions_enviarcodigowhatsapp",
+      "src_lib_wa_link_functions_gerarcodigo",
+      "src_lib_wa_link_functions_verificarcodigowhatsapp",
+      "src_lib_wa_link_functions_whatsappschema"
+    ],
+    "7": [
+      "src_components_splash_splashgate",
+      "src_components_splash_splashgate_splashgate",
+      "src_components_splash_splashscreen",
+      "src_components_splash_splashscreen_animatedlogo",
+      "src_components_splash_splashscreen_ease",
+      "src_components_splash_splashscreen_failsafeexit",
+      "src_components_splash_splashscreen_splashappname",
+      "src_components_splash_splashscreen_splashloadingbar",
+      "src_components_splash_splashscreen_splashscreen",
+      "src_components_splash_splashscreen_splashscreenprops",
+      "src_components_splash_splashscreen_splashtagline",
+      "src_lib_lovable_error_reporting",
+      "src_lib_lovable_error_reporting_lovableerroroptions",
+      "src_lib_lovable_error_reporting_lovableevents",
+      "src_lib_lovable_error_reporting_reportlovableerror",
+      "src_lib_lovable_error_reporting_window",
+      "src_routes_root",
+      "src_routes_root_errorcomponent",
+      "src_routes_root_notfoundcomponent",
+      "src_routes_root_rationale_86",
+      "src_routes_root_rootcomponent",
+      "src_routes_root_rootshell",
+      "src_routes_splash",
+      "src_routes_splash_bootstrap",
+      "src_routes_splash_route",
+      "src_routes_splash_splashroute"
+    ],
+    "8": [
+      "src_lib_evolution_server",
+      "src_lib_evolution_server_evolutionenv",
+      "src_lib_evolution_server_evolutionerror",
+      "src_lib_evolution_server_evolutionerror_constructor",
+      "src_lib_evolution_server_evolutionfetch",
+      "src_lib_evolution_server_friendlyevolutionerror",
+      "src_lib_evolution_server_readevolutionenv",
+      "src_lib_evolution_server_sleep",
+      "src_lib_evolution_server_tojid",
+      "src_lib_wa_bot_server",
+      "src_lib_wa_bot_server_aguamsg",
+      "src_lib_wa_bot_server_bar",
+      "src_lib_wa_bot_server_botreply",
+      "src_lib_wa_bot_server_fetchcontexto",
+      "src_lib_wa_bot_server_menu",
+      "src_lib_wa_bot_server_mockresumo",
+      "src_lib_wa_bot_server_passosmsg",
+      "src_lib_wa_bot_server_reltime",
+      "src_lib_wa_bot_server_resolverbot",
+      "src_lib_wa_bot_server_resumo",
+      "src_lib_wa_bot_server_resumomsg",
+      "src_lib_wa_bot_server_supabaseadmin",
+      "src_lib_wa_bot_server_treino",
+      "src_lib_wa_bot_server_treinosmsg"
+    ],
+    "9": [
+      "src_data_mock",
+      "src_data_mock_dashboard",
+      "src_data_mock_exercise",
+      "src_data_mock_exercises",
+      "src_data_mock_trainer",
+      "src_data_mock_trainers",
+      "src_data_mock_user",
+      "src_data_mock_workout",
+      "src_routes_player",
+      "src_routes_player_playerpage",
+      "src_routes_player_route",
+      "src_routes_trainer_id",
+      "src_routes_trainer_id_route",
+      "src_routes_trainer_id_row",
+      "src_routes_trainer_id_stat",
+      "src_routes_trainer_id_trainerprofile",
+      "src_routes_workout_id",
+      "src_routes_workout_id_chip",
+      "src_routes_workout_id_info",
+      "src_routes_workout_id_route",
+      "src_routes_workout_id_row",
+      "src_routes_workout_id_workoutdetails"
+    ],
+    "10": [
+      "src_components_ui_checkbox",
+      "src_components_ui_checkbox_checkbox",
+      "src_components_ui_hover_card",
+      "src_components_ui_hover_card_hovercardcontent",
+      "src_components_ui_popover",
+      "src_components_ui_popover_popovercontent",
+      "src_components_ui_progress",
+      "src_components_ui_progress_progress",
+      "src_components_ui_radio_group",
+      "src_components_ui_radio_group_radiogroup",
+      "src_components_ui_radio_group_radiogroupitem",
+      "src_components_ui_scroll_area",
+      "src_components_ui_scroll_area_scrollarea",
+      "src_components_ui_scroll_area_scrollbar",
+      "src_components_ui_slider",
+      "src_components_ui_slider_slider",
+      "src_components_ui_switch",
+      "src_components_ui_switch_switch",
+      "src_components_ui_textarea",
+      "src_components_ui_textarea_textarea",
+      "src_lib_utils"
+    ],
+    "11": [
+      "src_hooks_useauth",
+      "src_hooks_useauth_useauth",
+      "src_integrations_supabase_client_supabase",
+      "src_lib_auth_functions",
+      "src_lib_auth_functions_adminbroadcast",
+      "src_lib_auth_functions_adminsendmessage",
+      "src_lib_auth_functions_assertadmin",
+      "src_lib_auth_functions_confirmwhatsappverification",
+      "src_lib_auth_functions_getme",
+      "src_lib_auth_functions_requestwhatsappverification",
+      "src_routes_admin",
+      "src_routes_admin_adminpage",
+      "src_routes_admin_loader",
+      "src_routes_admin_stat",
+      "src_routes_admin_userrow",
+      "src_routes_profile",
+      "src_routes_profile_profilelink",
+      "src_routes_profile_profilepage",
+      "src_routes_whatsapp_setup",
+      "src_routes_whatsapp_setup_loading",
+      "src_routes_whatsapp_setup_onboardingwhatsapppage"
+    ],
+    "12": [
+      "src_integrations_supabase_auth_attacher",
+      "src_integrations_supabase_auth_attacher_attachsupabaseauth",
+      "src_lib_error_capture",
+      "src_lib_error_capture_consumelastcapturederror",
+      "src_lib_error_capture_describeerror",
+      "src_lib_error_capture_describestatus",
+      "src_lib_error_capture_iserrorlike",
+      "src_lib_error_capture_originalconsoleerror",
+      "src_lib_error_capture_record",
+      "src_lib_error_capture_safestringify",
+      "src_lib_error_page",
+      "src_lib_error_page_rendererrorpage",
+      "src_server",
+      "src_server_fetch",
+      "src_server_getserverentry",
+      "src_server_ish3swallowederrorbody",
+      "src_server_normalizecatastrophicssrresponse",
+      "src_server_serverentry",
+      "src_start",
+      "src_start_errormiddleware"
+    ],
+    "13": [
+      "components",
+      "components_aliases",
+      "components_aliases_components",
+      "components_aliases_hooks",
+      "components_aliases_lib",
+      "components_aliases_ui",
+      "components_aliases_utils",
+      "components_iconlibrary",
+      "components_registries",
+      "components_rsc",
+      "components_rtl",
+      "components_schema",
+      "components_style",
+      "components_tailwind",
+      "components_tailwind_basecolor",
+      "components_tailwind_css",
+      "components_tailwind_cssvariables",
+      "components_tailwind_prefix",
+      "components_tsx"
+    ],
+    "14": [
+      "src_lib_auth_functions_adminlistusers",
+      "src_lib_whatsapp_functions",
+      "src_lib_whatsapp_functions_getwhatsappstatus",
+      "src_lib_whatsapp_functions_listwhatsappmessages",
+      "src_lib_whatsapp_functions_listwhatsappsessions",
+      "src_lib_whatsapp_functions_sendschema",
+      "src_lib_whatsapp_functions_sendwhatsappmessage",
+      "src_routes_admin_admindashboard",
+      "src_routes_whatsapp",
+      "src_routes_whatsapp_messagescard",
+      "src_routes_whatsapp_route",
+      "src_routes_whatsapp_sendcard",
+      "src_routes_whatsapp_sessionscard",
+      "src_routes_whatsapp_statuscard",
+      "src_routes_whatsapp_statusicon",
+      "src_routes_whatsapp_templates",
+      "src_routes_whatsapp_webhookcard",
+      "src_routes_whatsapp_whatsapppage"
+    ],
+    "15": [
+      "src_components_ui_command",
+      "src_components_ui_command_command",
+      "src_components_ui_command_commanddialog",
+      "src_components_ui_command_commandempty",
+      "src_components_ui_command_commandgroup",
+      "src_components_ui_command_commandinput",
+      "src_components_ui_command_commanditem",
+      "src_components_ui_command_commandlist",
+      "src_components_ui_command_commandseparator",
+      "src_components_ui_command_commandshortcut",
+      "src_components_ui_dialog",
+      "src_components_ui_dialog_dialogcontent",
+      "src_components_ui_dialog_dialogdescription",
+      "src_components_ui_dialog_dialogfooter",
+      "src_components_ui_dialog_dialogheader",
+      "src_components_ui_dialog_dialogoverlay",
+      "src_components_ui_dialog_dialogtitle"
+    ],
+    "16": [
+      "src_components_ui_menubar",
+      "src_components_ui_menubar_menubar",
+      "src_components_ui_menubar_menubarcheckboxitem",
+      "src_components_ui_menubar_menubarcontent",
+      "src_components_ui_menubar_menubargroup",
+      "src_components_ui_menubar_menubaritem",
+      "src_components_ui_menubar_menubarlabel",
+      "src_components_ui_menubar_menubarmenu",
+      "src_components_ui_menubar_menubarportal",
+      "src_components_ui_menubar_menubarradiogroup",
+      "src_components_ui_menubar_menubarradioitem",
+      "src_components_ui_menubar_menubarseparator",
+      "src_components_ui_menubar_menubarshortcut",
+      "src_components_ui_menubar_menubarsub",
+      "src_components_ui_menubar_menubarsubcontent",
+      "src_components_ui_menubar_menubarsubtrigger",
+      "src_components_ui_menubar_menubartrigger"
+    ],
+    "17": [
+      "src_components_ui_alert_dialog",
+      "src_components_ui_alert_dialog_alertdialogaction",
+      "src_components_ui_alert_dialog_alertdialogcancel",
+      "src_components_ui_alert_dialog_alertdialogcontent",
+      "src_components_ui_alert_dialog_alertdialogdescription",
+      "src_components_ui_alert_dialog_alertdialogfooter",
+      "src_components_ui_alert_dialog_alertdialogheader",
+      "src_components_ui_alert_dialog_alertdialogoverlay",
+      "src_components_ui_alert_dialog_alertdialogtitle",
+      "src_components_ui_button",
+      "src_components_ui_button_button",
+      "src_components_ui_button_buttonprops",
+      "src_components_ui_button_buttonvariants",
+      "src_components_ui_calendar",
+      "src_components_ui_calendar_calendar",
+      "src_components_ui_calendar_calendardaybutton"
+    ],
+    "18": [
+      "ai",
+      "class_variance_authority",
+      "package_dependencies",
+      "package_dependencies_ai",
+      "package_dependencies_class_variance_authority",
+      "package_dependencies_radix_ui_react_alert_dialog",
+      "package_dependencies_radix_ui_react_avatar",
+      "package_dependencies_radix_ui_react_context_menu",
+      "package_dependencies_radix_ui_react_popover",
+      "package_dependencies_vite_tsconfig_paths",
+      "radix_ui_react_alert_dialog",
+      "radix_ui_react_avatar",
+      "radix_ui_react_context_menu",
+      "radix_ui_react_popover",
+      "vite_tsconfig_paths"
+    ],
+    "19": [
+      "src_components_ui_pagination",
+      "src_components_ui_pagination_pagination",
+      "src_components_ui_pagination_paginationcontent",
+      "src_components_ui_pagination_paginationellipsis",
+      "src_components_ui_pagination_paginationitem",
+      "src_components_ui_pagination_paginationlink",
+      "src_components_ui_pagination_paginationlinkprops",
+      "src_components_ui_pagination_paginationnext",
+      "src_components_ui_pagination_paginationprevious",
+      "src_components_ui_resizable",
+      "src_components_ui_resizable_resizablehandle",
+      "src_components_ui_resizable_resizablepanelgroup",
+      "src_components_ui_skeleton",
+      "src_components_ui_skeleton_skeleton",
+      "src_lib_utils_cn"
+    ],
+    "20": [
+      "src_components_ui_form",
+      "src_components_ui_form_formcontrol",
+      "src_components_ui_form_formdescription",
+      "src_components_ui_form_formfield",
+      "src_components_ui_form_formfieldcontext",
+      "src_components_ui_form_formfieldcontextvalue",
+      "src_components_ui_form_formitem",
+      "src_components_ui_form_formitemcontext",
+      "src_components_ui_form_formitemcontextvalue",
+      "src_components_ui_form_formlabel",
+      "src_components_ui_form_formmessage",
+      "src_components_ui_label",
+      "src_components_ui_label_label",
+      "src_components_ui_label_labelvariants"
+    ],
+    "21": [
+      "src_routes_admin_route",
+      "src_routes_browse_route",
+      "src_routes_coach_index_route",
+      "src_routes_history_route",
+      "src_routes_live_route",
+      "src_routes_meal_route",
+      "src_routes_onboarding_route",
+      "src_routes_profile_route",
+      "src_routes_rewards_route",
+      "src_routes_settings_route",
+      "src_routes_stats_route",
+      "src_routes_trainers_route",
+      "src_routes_whatsapp_setup_route",
+      "src_routetree_gen_fileroutesbypath"
+    ],
+    "22": [
+      "src_components_ui_carousel",
+      "src_components_ui_carousel_carousel",
+      "src_components_ui_carousel_carouselapi",
+      "src_components_ui_carousel_carouselcontent",
+      "src_components_ui_carousel_carouselcontext",
+      "src_components_ui_carousel_carouselcontextprops",
+      "src_components_ui_carousel_carouselitem",
+      "src_components_ui_carousel_carouselnext",
+      "src_components_ui_carousel_carouseloptions",
+      "src_components_ui_carousel_carouselplugin",
+      "src_components_ui_carousel_carouselprevious",
+      "src_components_ui_carousel_carouselprops",
+      "src_components_ui_carousel_usecarouselparameters"
+    ],
+    "23": [
+      "src_components_dashboard_dashboardheader",
+      "src_components_dashboard_dashboardheader_dashboardheader",
+      "src_routes_index",
+      "src_routes_index_featurerow",
+      "src_routes_index_greeting",
+      "src_routes_index_homepage",
+      "src_routes_index_infoline",
+      "src_routes_index_landingsignup",
+      "src_routes_index_route",
+      "src_routes_index_studentdashboard",
+      "src_routes_index_whatsappgate",
+      "src_routes_index_workoutrow"
+    ],
+    "24": [
+      "src_components_dashboard_activityrings",
+      "src_components_dashboard_activityrings_activityrings",
+      "src_components_dashboard_activityrings_ring",
+      "src_components_dashboard_metriccard",
+      "src_components_dashboard_metriccard_metriccard",
+      "src_components_dashboard_stepsprogresscard",
+      "src_components_dashboard_stepsprogresscard_stepsprogresscard",
+      "src_hooks_useanimatednumber",
+      "src_hooks_useanimatednumber_useanimatednumber",
+      "src_hooks_usereducedmotion",
+      "src_hooks_usereducedmotion_usereducedmotion"
+    ],
+    "25": [
+      "src_integrations_lovable_index",
+      "src_integrations_lovable_index_lovable",
+      "src_integrations_lovable_index_lovableauth",
+      "src_integrations_lovable_index_signinoptions",
+      "src_integrations_supabase_client",
+      "src_integrations_supabase_client_createsupabaseclient",
+      "src_integrations_supabase_client_createsupabasefetch",
+      "src_integrations_supabase_client_isnewsupabaseapikey",
+      "src_routes_auth",
+      "src_routes_auth_authpage",
+      "src_routes_auth_route"
+    ],
+    "26": [
+      "src_components_ui_chart",
+      "src_components_ui_chart_chartconfig",
+      "src_components_ui_chart_chartcontainer",
+      "src_components_ui_chart_chartcontext",
+      "src_components_ui_chart_chartcontextprops",
+      "src_components_ui_chart_chartlegendcontent",
+      "src_components_ui_chart_chartstyle",
+      "src_components_ui_chart_charttooltipcontent",
+      "src_components_ui_chart_getpayloadconfigfrompayload",
+      "src_components_ui_chart_themes"
+    ],
+    "27": [
+      "src_components_ui_context_menu",
+      "src_components_ui_context_menu_contextmenucheckboxitem",
+      "src_components_ui_context_menu_contextmenucontent",
+      "src_components_ui_context_menu_contextmenuitem",
+      "src_components_ui_context_menu_contextmenulabel",
+      "src_components_ui_context_menu_contextmenuradioitem",
+      "src_components_ui_context_menu_contextmenuseparator",
+      "src_components_ui_context_menu_contextmenushortcut",
+      "src_components_ui_context_menu_contextmenusubcontent",
+      "src_components_ui_context_menu_contextmenusubtrigger"
+    ],
+    "28": [
+      "src_components_ui_dropdown_menu",
+      "src_components_ui_dropdown_menu_dropdownmenucheckboxitem",
+      "src_components_ui_dropdown_menu_dropdownmenucontent",
+      "src_components_ui_dropdown_menu_dropdownmenuitem",
+      "src_components_ui_dropdown_menu_dropdownmenulabel",
+      "src_components_ui_dropdown_menu_dropdownmenuradioitem",
+      "src_components_ui_dropdown_menu_dropdownmenuseparator",
+      "src_components_ui_dropdown_menu_dropdownmenushortcut",
+      "src_components_ui_dropdown_menu_dropdownmenusubcontent",
+      "src_components_ui_dropdown_menu_dropdownmenusubtrigger"
+    ],
+    "29": [
+      "src_components_ui_sheet",
+      "src_components_ui_sheet_sheetcontent",
+      "src_components_ui_sheet_sheetcontentprops",
+      "src_components_ui_sheet_sheetdescription",
+      "src_components_ui_sheet_sheetfooter",
+      "src_components_ui_sheet_sheetheader",
+      "src_components_ui_sheet_sheetoverlay",
+      "src_components_ui_sheet_sheettitle",
+      "src_components_ui_sheet_sheetvariants"
+    ],
+    "30": [
+      "src_components_ui_table",
+      "src_components_ui_table_table",
+      "src_components_ui_table_tablebody",
+      "src_components_ui_table_tablecaption",
+      "src_components_ui_table_tablecell",
+      "src_components_ui_table_tablefooter",
+      "src_components_ui_table_tablehead",
+      "src_components_ui_table_tableheader",
+      "src_components_ui_table_tablerow"
+    ],
+    "31": [
+      "src_hooks_usesessionid",
+      "src_hooks_usesessionid_generateid",
+      "src_hooks_usesessionid_usesessionid",
+      "src_routes_coach_index",
+      "src_routes_coach_index_chipgroup",
+      "src_routes_coach_index_coachonboardingpage",
+      "src_routes_coach_index_levels",
+      "src_routes_coach_index_locations",
+      "src_routes_coach_index_objectives"
+    ],
+    "32": [
+      "package_dependencies_react",
+      "react",
+      "src_components_ui_carousel_usecarousel",
+      "src_components_ui_chart_usechart",
+      "src_components_ui_form_useformfield",
+      "src_components_ui_sidebar_usesidebar",
+      "src_hooks_use_mobile",
+      "src_hooks_use_mobile_useismobile"
+    ],
+    "33": [
+      "src_components_ui_breadcrumb",
+      "src_components_ui_breadcrumb_breadcrumb",
+      "src_components_ui_breadcrumb_breadcrumbellipsis",
+      "src_components_ui_breadcrumb_breadcrumbitem",
+      "src_components_ui_breadcrumb_breadcrumblink",
+      "src_components_ui_breadcrumb_breadcrumblist",
+      "src_components_ui_breadcrumb_breadcrumbpage",
+      "src_components_ui_breadcrumb_breadcrumbseparator"
+    ],
+    "34": [
+      "src_components_ui_drawer",
+      "src_components_ui_drawer_drawer",
+      "src_components_ui_drawer_drawercontent",
+      "src_components_ui_drawer_drawerdescription",
+      "src_components_ui_drawer_drawerfooter",
+      "src_components_ui_drawer_drawerheader",
+      "src_components_ui_drawer_draweroverlay",
+      "src_components_ui_drawer_drawertitle"
+    ],
+    "35": [
+      "src_components_ui_navigation_menu",
+      "src_components_ui_navigation_menu_navigationmenu",
+      "src_components_ui_navigation_menu_navigationmenucontent",
+      "src_components_ui_navigation_menu_navigationmenuindicator",
+      "src_components_ui_navigation_menu_navigationmenulist",
+      "src_components_ui_navigation_menu_navigationmenutrigger",
+      "src_components_ui_navigation_menu_navigationmenutriggerstyle",
+      "src_components_ui_navigation_menu_navigationmenuviewport"
+    ],
+    "36": [
+      "src_components_ui_select",
+      "src_components_ui_select_selectcontent",
+      "src_components_ui_select_selectitem",
+      "src_components_ui_select_selectlabel",
+      "src_components_ui_select_selectscrolldownbutton",
+      "src_components_ui_select_selectscrollupbutton",
+      "src_components_ui_select_selectseparator",
+      "src_components_ui_select_selecttrigger"
+    ],
+    "37": [
+      "src_routes_api_public_whatsapp_webhook",
+      "src_routes_api_public_whatsapp_webhook_extracttext",
+      "src_routes_api_public_whatsapp_webhook_handleevent",
+      "src_routes_api_public_whatsapp_webhook_json",
+      "src_routes_api_public_whatsapp_webhook_mapstatus",
+      "src_routes_api_public_whatsapp_webhook_route",
+      "src_routes_api_public_whatsapp_webhook_supabaseadmin",
+      "src_routes_api_public_whatsapp_webhook_timingsafeequal"
+    ],
+    "38": [
+      "src_components_ui_card",
+      "src_components_ui_card_card",
+      "src_components_ui_card_cardcontent",
+      "src_components_ui_card_carddescription",
+      "src_components_ui_card_cardfooter",
+      "src_components_ui_card_cardheader",
+      "src_components_ui_card_cardtitle"
+    ],
+    "39": [
+      "src_components_ui_toggle",
+      "src_components_ui_toggle_group",
+      "src_components_ui_toggle_group_togglegroup",
+      "src_components_ui_toggle_group_togglegroupcontext",
+      "src_components_ui_toggle_group_togglegroupitem",
+      "src_components_ui_toggle_toggle",
+      "src_components_ui_toggle_togglevariants"
+    ],
+    "40": [
+      "src_lib_ai_gateway_server",
+      "src_lib_ai_gateway_server_createlovableaigatewayprovider",
+      "src_lib_ai_gateway_server_requirelovableapikey",
+      "src_routes_api_live_coach",
+      "src_routes_api_live_coach_body",
+      "src_routes_api_live_coach_route"
+    ],
+    "41": [
+      "src_routes_live",
+      "src_routes_live_exercises",
+      "src_routes_live_livepage",
+      "src_routes_live_sensortile",
+      "src_routes_live_telemetry",
+      "src_routes_live_zoneof"
+    ],
+    "42": [
+      "src_components_ui_alert",
+      "src_components_ui_alert_alert",
+      "src_components_ui_alert_alertdescription",
+      "src_components_ui_alert_alerttitle",
+      "src_components_ui_alert_alertvariants"
+    ],
+    "43": [
+      "src_components_ui_input_otp",
+      "src_components_ui_input_otp_inputotp",
+      "src_components_ui_input_otp_inputotpgroup",
+      "src_components_ui_input_otp_inputotpseparator",
+      "src_components_ui_input_otp_inputotpslot"
+    ],
+    "44": [
+      "src_router",
+      "src_router_getrouter",
+      "src_routetree_gen_register",
+      "src_routetree_gen_routetree",
+      "src_start_startinstance"
+    ],
+    "45": [
+      "src_components_ui_accordion",
+      "src_components_ui_accordion_accordioncontent",
+      "src_components_ui_accordion_accordionitem",
+      "src_components_ui_accordion_accordiontrigger"
+    ],
+    "46": [
+      "src_components_ui_avatar",
+      "src_components_ui_avatar_avatar",
+      "src_components_ui_avatar_avatarfallback",
+      "src_components_ui_avatar_avatarimage"
+    ],
+    "47": [
+      "src_components_ui_badge",
+      "src_components_ui_badge_badge",
+      "src_components_ui_badge_badgeprops",
+      "src_components_ui_badge_badgevariants"
+    ],
+    "48": [
+      "src_components_ui_tabs",
+      "src_components_ui_tabs_tabscontent",
+      "src_components_ui_tabs_tabslist",
+      "src_components_ui_tabs_tabstrigger"
+    ],
+    "49": [
+      "src_components_animatedlogo",
+      "src_components_animatedlogo_animatedlogo",
+      "src_components_animatedlogo_props"
+    ],
+    "50": [
+      "src_components_ui_sonner",
+      "src_components_ui_sonner_toaster",
+      "src_components_ui_sonner_toasterprops"
+    ],
+    "51": [
+      "src_routes_api_coach_tts",
+      "src_routes_api_coach_tts_body",
+      "src_routes_api_coach_tts_route"
+    ],
+    "52": [
+      "src_routes_done",
+      "src_routes_done_congratulationpage",
+      "src_routes_done_route"
+    ],
+    "53": [
+      "src_routes_ready",
+      "src_routes_ready_getreadypage",
+      "src_routes_ready_route"
+    ],
+    "54": [
+      "ai_sdk_openai_compatible",
+      "package_dependencies_ai_sdk_openai_compatible"
+    ],
+    "55": [
+      "ai_sdk_react",
+      "package_dependencies_ai_sdk_react"
+    ],
+    "56": [
+      "clsx",
+      "package_dependencies_clsx"
+    ],
+    "57": [
+      "cmdk",
+      "package_dependencies_cmdk"
+    ],
+    "58": [
+      "date_fns",
+      "package_dependencies_date_fns"
+    ],
+    "59": [
+      "embla_carousel_react",
+      "package_dependencies_embla_carousel_react"
+    ],
+    "60": [
+      "framer_motion",
+      "package_dependencies_framer_motion"
+    ],
+    "61": [
+      "hookform_resolvers",
+      "package_dependencies_hookform_resolvers"
+    ],
+    "62": [
+      "input_otp",
+      "package_dependencies_input_otp"
+    ],
+    "63": [
+      "lovable_dev_cloud_auth_js",
+      "package_dependencies_lovable_dev_cloud_auth_js"
+    ],
+    "64": [
+      "lucide_react",
+      "package_dependencies_lucide_react"
+    ],
+    "65": [
+      "package_dependencies_radix_ui_react_accordion",
+      "radix_ui_react_accordion"
+    ],
+    "66": [
+      "package_dependencies_radix_ui_react_aspect_ratio",
+      "radix_ui_react_aspect_ratio"
+    ],
+    "67": [
+      "package_dependencies_radix_ui_react_checkbox",
+      "radix_ui_react_checkbox"
+    ],
+    "68": [
+      "package_dependencies_radix_ui_react_collapsible",
+      "radix_ui_react_collapsible"
+    ],
+    "69": [
+      "package_dependencies_radix_ui_react_dialog",
+      "radix_ui_react_dialog"
+    ],
+    "70": [
+      "package_dependencies_radix_ui_react_dropdown_menu",
+      "radix_ui_react_dropdown_menu"
+    ],
+    "71": [
+      "package_dependencies_radix_ui_react_hover_card",
+      "radix_ui_react_hover_card"
+    ],
+    "72": [
+      "package_dependencies_radix_ui_react_label",
+      "radix_ui_react_label"
+    ],
+    "73": [
+      "package_dependencies_radix_ui_react_menubar",
+      "radix_ui_react_menubar"
+    ],
+    "74": [
+      "package_dependencies_radix_ui_react_navigation_menu",
+      "radix_ui_react_navigation_menu"
+    ],
+    "75": [
+      "package_dependencies_radix_ui_react_progress",
+      "radix_ui_react_progress"
+    ],
+    "76": [
+      "package_dependencies_radix_ui_react_radio_group",
+      "radix_ui_react_radio_group"
+    ],
+    "77": [
+      "package_dependencies_radix_ui_react_scroll_area",
+      "radix_ui_react_scroll_area"
+    ],
+    "78": [
+      "package_dependencies_radix_ui_react_select",
+      "radix_ui_react_select"
+    ],
+    "79": [
+      "package_dependencies_radix_ui_react_separator",
+      "radix_ui_react_separator"
+    ],
+    "80": [
+      "package_dependencies_radix_ui_react_slider",
+      "radix_ui_react_slider"
+    ],
+    "81": [
+      "package_dependencies_radix_ui_react_slot",
+      "radix_ui_react_slot"
+    ],
+    "82": [
+      "package_dependencies_radix_ui_react_switch",
+      "radix_ui_react_switch"
+    ],
+    "83": [
+      "package_dependencies_radix_ui_react_tabs",
+      "radix_ui_react_tabs"
+    ],
+    "84": [
+      "package_dependencies_radix_ui_react_toggle",
+      "radix_ui_react_toggle"
+    ],
+    "85": [
+      "package_dependencies_radix_ui_react_toggle_group",
+      "radix_ui_react_toggle_group"
+    ],
+    "86": [
+      "package_dependencies_radix_ui_react_tooltip",
+      "radix_ui_react_tooltip"
+    ],
+    "87": [
+      "package_dependencies_react_day_picker",
+      "react_day_picker"
+    ],
+    "88": [
+      "package_dependencies_react_dom",
+      "react_dom"
+    ],
+    "89": [
+      "package_dependencies_react_hook_form",
+      "react_hook_form"
+    ],
+    "90": [
+      "package_dependencies_react_markdown",
+      "react_markdown"
+    ],
+    "91": [
+      "package_dependencies_react_resizable_panels",
+      "react_resizable_panels"
+    ],
+    "92": [
+      "package_dependencies_react_three_drei",
+      "react_three_drei"
+    ],
+    "93": [
+      "package_dependencies_react_three_fiber",
+      "react_three_fiber"
+    ],
+    "94": [
+      "package_dependencies_recharts",
+      "recharts"
+    ],
+    "95": [
+      "package_dependencies_sonner",
+      "sonner"
+    ],
+    "96": [
+      "package_dependencies_supabase_supabase_js",
+      "supabase_supabase_js"
+    ],
+    "97": [
+      "package_dependencies_tailwind_merge",
+      "tailwind_merge"
+    ],
+    "98": [
+      "package_dependencies_tailwindcss",
+      "tailwindcss"
+    ],
+    "99": [
+      "package_dependencies_tailwindcss_vite",
+      "tailwindcss_vite"
+    ],
+    "100": [
+      "package_dependencies_tanstack_react_query",
+      "tanstack_react_query"
+    ],
+    "101": [
+      "package_dependencies_tanstack_react_router",
+      "tanstack_react_router"
+    ],
+    "102": [
+      "package_dependencies_tanstack_react_start",
+      "tanstack_react_start"
+    ],
+    "103": [
+      "package_dependencies_tanstack_router_plugin",
+      "tanstack_router_plugin"
+    ],
+    "104": [
+      "package_dependencies_three",
+      "three"
+    ],
+    "105": [
+      "package_dependencies_tw_animate_css",
+      "tw_animate_css"
+    ],
+    "106": [
+      "package_dependencies_vaul",
+      "vaul"
+    ],
+    "107": [
+      "package_dependencies_zod",
+      "zod"
+    ],
+    "108": [
+      "src_components_ui_input",
+      "src_components_ui_input_input"
+    ],
+    "109": [
+      "src_routes_api_tts",
+      "src_routes_api_tts_route"
+    ],
+    "110": [
+      "src_routes_progress",
+      "src_routes_progress_route"
+    ],
+    "111": [
+      "src_routes_root_route",
+      "src_routetree_gen_fileroutesbyid"
+    ],
+    "112": [
+      "eslint_config"
+    ],
+    "113": [
+      "src_components_ui_aspect_ratio"
+    ],
+    "114": [
+      "src_components_ui_collapsible"
+    ],
+    "115": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05660377358490566,
+    "1": 0.0425531914893617,
+    "2": 0.05555555555555555,
+    "3": 0.16989247311827957,
+    "4": 0.06881720430107527,
+    "5": 0.07407407407407407,
+    "6": 0.09116809116809117,
+    "7": 0.09538461538461539,
+    "8": 0.12681159420289856,
+    "9": 0.10822510822510822,
+    "10": 0.09523809523809523,
+    "11": 0.1761904761904762,
+    "12": 0.1631578947368421,
+    "13": 0.10526315789473684,
+    "14": 0.16339869281045752,
+    "15": 0.125,
+    "16": 0.11764705882352941,
+    "17": 0.16666666666666666,
+    "18": 0.13333333333333333,
+    "19": 0.20952380952380953,
+    "20": 0.15384615384615385,
+    "21": 0.14285714285714285,
+    "22": 0.15384615384615385,
+    "23": 0.19696969696969696,
+    "24": 0.32727272727272727,
+    "25": 0.2545454545454545,
+    "26": 0.2,
+    "27": 0.2,
+    "28": 0.2,
+    "29": 0.2222222222222222,
+    "30": 0.2222222222222222,
+    "31": 0.3055555555555556,
+    "32": 0.25,
+    "33": 0.25,
+    "34": 0.25,
+    "35": 0.25,
+    "36": 0.25,
+    "37": 0.32142857142857145,
+    "38": 0.2857142857142857,
+    "39": 0.3333333333333333,
+    "40": 0.4,
+    "41": 0.4,
+    "42": 0.4,
+    "43": 0.4,
+    "44": 0.4,
+    "45": 0.5,
+    "46": 0.5,
+    "47": 0.6666666666666666,
+    "48": 0.5,
+    "49": 0.6666666666666666,
+    "50": 0.6666666666666666,
+    "51": 0.6666666666666666,
+    "52": 0.6666666666666666,
+    "53": 0.6666666666666666,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_lib_utils_cn",
+      "label": "cn()",
+      "degree": 69
+    },
+    {
+      "id": "src_routetree_gen_fileroutesbypath",
+      "label": "FileRoutesByPath",
+      "degree": 31
+    },
+    {
+      "id": "src_components_mobileframe_mobileframe",
+      "label": "MobileFrame()",
+      "degree": 19
+    },
+    {
+      "id": "src_components_statusbar_statusbar",
+      "label": "StatusBar()",
+      "degree": 19
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 17
+    },
+    {
+      "id": "src_components_screenheader_screenheader",
+      "label": "ScreenHeader()",
+      "degree": 16
+    },
+    {
+      "id": "src_components_bottomnav_bottomnav",
+      "label": "BottomNav()",
+      "degree": 14
+    },
+    {
+      "id": "src_hooks_useauth_useauth",
+      "label": "useAuth()",
+      "degree": 12
+    },
+    {
+      "id": "src_lib_auth_functions_getme",
+      "label": "getMe",
+      "degree": 9
+    },
+    {
+      "id": "package_dependencies_react",
+      "label": "react",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "CalendarDayButton()",
+      "target": "react",
+      "source_files": [
+        "src/components/ui/calendar.tsx",
+        "package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "useCarousel()",
+      "target": "react",
+      "source_files": [
+        "src/components/ui/carousel.tsx",
+        "package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `useCarousel()` unexpectedly reaches hub `react`"
+    },
+    {
+      "source": "useChart()",
+      "target": "react",
+      "source_files": [
+        "src/components/ui/chart.tsx",
+        "package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `useChart()` unexpectedly reaches hub `react`"
+    },
+    {
+      "source": "useFormField()",
+      "target": "react",
+      "source_files": [
+        "src/components/ui/form.tsx",
+        "package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `useFormField()` unexpectedly reaches hub `react`"
+    },
+    {
+      "source": "useSidebar()",
+      "target": "react",
+      "source_files": [
+        "src/components/ui/sidebar.tsx",
+        "package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `useSidebar()` unexpectedly reaches hub `react`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `dependencies` connect `Community 18` to `Community 1`, `Community 32`, `Community 54`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 59`, `Community 60`, `Community 61`, `Community 62`, `Community 63`, `Community 64`, `Community 65`, `Community 66`, `Community 67`, `Community 68`, `Community 69`, `Community 70`, `Community 71`, `Community 72`, `Community 73`, `Community 74`, `Community 75`, `Community 76`, `Community 77`, `Community 78`, `Community 79`, `Community 80`, `Community 81`, `Community 82`, `Community 83`, `Community 84`, `Community 85`, `Community 86`, `Community 87`, `Community 88`, `Community 89`, `Community 90`, `Community 91`, `Community 92`, `Community 93`, `Community 94`, `Community 95`, `Community 96`, `Community 97`, `Community 98`, `Community 99`, `Community 100`, `Community 101`, `Community 102`, `Community 103`, `Community 104`, `Community 105`, `Community 106`, `Community 107`?",
+      "why": "High betweenness centrality (0.156) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `cn()` connect `Community 19` to `Community 4`, `Community 10`, `Community 15`, `Community 16`, `Community 17`, `Community 20`, `Community 22`, `Community 26`, `Community 27`, `Community 28`, `Community 29`, `Community 30`, `Community 33`, `Community 34`, `Community 35`, `Community 36`, `Community 38`, `Community 39`, `Community 42`, `Community 43`, `Community 45`, `Community 46`, `Community 47`, `Community 48`, `Community 108`?",
+      "why": "High betweenness centrality (0.134) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `react` connect `Community 32` to `Community 17`, `Community 18`?",
+      "why": "High betweenness centrality (0.123) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `$schema`, `style`, `rsc` to the rest of the system?",
+      "why": "399 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.05660377358490566 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.05555555555555555 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
