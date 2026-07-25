@@ -35,6 +35,10 @@ import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
+import { Route as ApiBotEnviarCodigoRouteImport } from './routes/api/bot/enviar-codigo'
+import { Route as ApiBotHealthRouteImport } from './routes/api/bot/health'
+import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
+import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
@@ -170,6 +174,26 @@ const WorkoutIdRoute = WorkoutIdRouteImport.update({
   path: '/workout/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBotEnviarCodigoRoute = ApiBotEnviarCodigoRouteImport.update({
+  id: '/api/bot/enviar-codigo',
+  path: '/api/bot/enviar-codigo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotHealthRoute = ApiBotHealthRouteImport.update({
+  id: '/api/bot/health',
+  path: '/api/bot/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotSendRoute = ApiBotSendRouteImport.update({
+  id: '/api/bot/send',
+  path: '/api/bot/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotStatusRoute = ApiBotStatusRouteImport.update({
+  id: '/api/bot/status',
+  path: '/api/bot/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
   id: '/api/coach/tts',
   path: '/api/coach/tts',
@@ -219,6 +243,10 @@ export interface FileRoutesByFullPath {
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
+  '/api/bot/enviar-codigo': typeof ApiBotEnviarCodigoRoute
+  '/api/bot/health': typeof ApiBotHealthRoute
+  '/api/bot/send': typeof ApiBotSendRoute
+  '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -251,6 +279,10 @@ export interface FileRoutesByTo {
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach': typeof CoachIndexRoute
+  '/api/bot/enviar-codigo': typeof ApiBotEnviarCodigoRoute
+  '/api/bot/health': typeof ApiBotHealthRoute
+  '/api/bot/send': typeof ApiBotSendRoute
+  '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -284,6 +316,10 @@ export interface FileRoutesById {
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
+  '/api/bot/enviar-codigo': typeof ApiBotEnviarCodigoRoute
+  '/api/bot/health': typeof ApiBotHealthRoute
+  '/api/bot/send': typeof ApiBotSendRoute
+  '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -318,6 +354,10 @@ export interface FileRouteTypes {
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
+    | '/api/bot/enviar-codigo'
+    | '/api/bot/health'
+    | '/api/bot/send'
+    | '/api/bot/status'
     | '/api/coach/tts'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -350,6 +390,10 @@ export interface FileRouteTypes {
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach'
+    | '/api/bot/enviar-codigo'
+    | '/api/bot/health'
+    | '/api/bot/send'
+    | '/api/bot/status'
     | '/api/coach/tts'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -382,6 +426,10 @@ export interface FileRouteTypes {
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
+    | '/api/bot/enviar-codigo'
+    | '/api/bot/health'
+    | '/api/bot/send'
+    | '/api/bot/status'
     | '/api/coach/tts'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -414,6 +462,10 @@ export interface RootRouteChildren {
   TrainerIdRoute: typeof TrainerIdRoute
   WorkoutIdRoute: typeof WorkoutIdRoute
   CoachIndexRoute: typeof CoachIndexRoute
+  ApiBotEnviarCodigoRoute: typeof ApiBotEnviarCodigoRoute
+  ApiBotHealthRoute: typeof ApiBotHealthRoute
+  ApiBotSendRoute: typeof ApiBotSendRoute
+  ApiBotStatusRoute: typeof ApiBotStatusRoute
   ApiCoachTtsRoute: typeof ApiCoachTtsRoute
   CoachSessionSessionIdRoute: typeof CoachSessionSessionIdRoute
   CoachSummarySessionIdRoute: typeof CoachSummarySessionIdRoute
@@ -604,6 +656,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkoutIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bot/enviar-codigo': {
+      id: '/api/bot/enviar-codigo'
+      path: '/api/bot/enviar-codigo'
+      fullPath: '/api/bot/enviar-codigo'
+      preLoaderRoute: typeof ApiBotEnviarCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/health': {
+      id: '/api/bot/health'
+      path: '/api/bot/health'
+      fullPath: '/api/bot/health'
+      preLoaderRoute: typeof ApiBotHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/send': {
+      id: '/api/bot/send'
+      path: '/api/bot/send'
+      fullPath: '/api/bot/send'
+      preLoaderRoute: typeof ApiBotSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/status': {
+      id: '/api/bot/status'
+      path: '/api/bot/status'
+      fullPath: '/api/bot/status'
+      preLoaderRoute: typeof ApiBotStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/coach/tts': {
       id: '/api/coach/tts'
       path: '/api/coach/tts'
@@ -671,6 +751,10 @@ const rootRouteChildren: RootRouteChildren = {
   TrainerIdRoute: TrainerIdRoute,
   WorkoutIdRoute: WorkoutIdRoute,
   CoachIndexRoute: CoachIndexRoute,
+  ApiBotEnviarCodigoRoute: ApiBotEnviarCodigoRoute,
+  ApiBotHealthRoute: ApiBotHealthRoute,
+  ApiBotSendRoute: ApiBotSendRoute,
+  ApiBotStatusRoute: ApiBotStatusRoute,
   ApiCoachTtsRoute: ApiCoachTtsRoute,
   CoachSessionSessionIdRoute: CoachSessionSessionIdRoute,
   CoachSummarySessionIdRoute: CoachSummarySessionIdRoute,

@@ -3,8 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
- * Vinculação de WhatsApp via bot externo.
- * Secrets (server-only): BOT_URL, BOT_TOKEN.
+ * Vinculação de WhatsApp — envio e verificação de código.
+ * Usa Evolution API diretamente (sem dependência de bot externo).
  */
 
 const whatsappSchema = z
@@ -25,17 +25,11 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
     z.object({ whatsapp: whatsappSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const BOT_URL = process.env.BOT_URL;
-    const BOT_TOKEN = process.env.BOT_TOKEN;
-    if (!BOT_URL || !BOT_TOKEN) {
-      console.error("[wa-link] BOT_URL/BOT_TOKEN ausentes");
-      return { ok: false as const, error: "Bot não configurado. Contate o administrador." };
-    }
-
     const { supabase, userId } = context;
     const codigo = gerarCodigo();
     const expiraEm = new Date(Date.now() + 10 * 60_000).toISOString();
 
+    // 1. Salvar código no banco
     const { error: insErr } = await supabase.from("whatsapp_verifications").insert({
       user_id: userId,
       whatsapp: data.whatsapp,
@@ -47,15 +41,55 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Falha ao registrar código. Tente novamente." };
     }
 
+    // 2. Tentar enviar via Evolution API (prioridade)
+    try {
+      const { readEvolutionEnv, evolutionFetch, toJid } = await import("./evolution.server");
+      const env = readEvolutionEnv();
+      if (env) {
+        const jid = toJid(data.whatsapp);
+        await evolutionFetch(env, `/message/sendText/${encodeURIComponent(env.instance)}`, {
+          method: "POST",
+          body: JSON.stringify({
+            number: jid,
+            text: `🔐 *Código de verificação Pulse Fit*\n\nSeu código é: *${codigo}*\n\nEste código expira em 10 minutos.\nNão compartilhe com ninguém.`,
+          }),
+        });
+
+        // Log
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        await supabaseAdmin.from("whatsapp_messages").insert({
+          direction: "outbound",
+          remote_jid: jid,
+          content: "Código de verificação enviado",
+          template_name: "verification_code",
+          status: "sent",
+        });
+
+        return { ok: true as const, expira_em: expiraEm };
+      }
+    } catch (evoErr) {
+      console.warn("[wa-link] Evolution API falhou, tentando bot externo:", evoErr);
+    }
+
+    // 3. Fallback: bot externo
+    const BOT_URL = process.env.BOT_URL;
+    const BOT_TOKEN = process.env.BOT_TOKEN;
+
+    if (!BOT_URL) {
+      console.error("[wa-link] Sem Evolution API e sem BOT_URL");
+      return { ok: false as const, error: "Serviço de envio indisponível. Contate o administrador." };
+    }
+
     try {
       const url = BOT_URL.replace(/\/$/, "") + "/enviar-codigo";
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${BOT_TOKEN}`,
+          Authorization: `Bearer ${BOT_TOKEN || ""}`,
         },
         body: JSON.stringify({ whatsapp: data.whatsapp, codigo }),
+        signal: AbortSignal.timeout(15000),
       });
       if (!res.ok) {
         const body = await res.text().catch(() => "");
@@ -67,7 +101,6 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Bot indisponível. Tente novamente em instantes." };
     }
 
-    // NUNCA devolver o código ao cliente.
     return { ok: true as const, expira_em: expiraEm };
   });
 
@@ -108,7 +141,7 @@ export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Erro ao confirmar o código." };
     }
 
-    // Atualiza app_users (tabela principal do app).
+    // Atualiza app_users
     const { error: upAppUserErr } = await supabase
       .from("app_users")
       .update({ whatsapp_number: data.whatsapp, whatsapp_verified: true })
@@ -118,7 +151,7 @@ export const verificarCodigoWhatsapp = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Não foi possível salvar o WhatsApp no perfil." };
     }
 
-    // Compat: mantém profiles em sincronia (schema legado).
+    // Compat: mantém profiles em sincronia
     await supabase
       .from("profiles")
       .update({ whatsapp: data.whatsapp, whatsapp_verificado: true })
