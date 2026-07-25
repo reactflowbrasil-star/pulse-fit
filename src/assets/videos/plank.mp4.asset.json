@@ -1,9 +1,9 @@
 {
-  "version": 1,
   "asset_id": "066f0f77-f5b8-42d3-aba5-5a79116f721d",
-  "project_id": "098b7ea2-536d-465c-90ab-17053513cb5a",
-  "url": "/__l5e/assets-v1/066f0f77-f5b8-42d3-aba5-5a79116f721d/plank.mp4",
+  "created_at": "2026-07-24T03:34:51Z",
   "original_filename": "plank.mp4",
+  "project_id": "01e883bc-ebd8-46fc-9ba5-03c01e0647fb",
   "size": 6522820,
-  "created_at": "2026-07-24T03:34:51Z"
+  "url": "/__l5e/assets-v1/066f0f77-f5b8-42d3-aba5-5a79116f721d/plank.mp4",
+  "version": 1
 }

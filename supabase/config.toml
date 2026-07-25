@@ -1,7 +1,1 @@
-project_id = "rihgjyyhyiaelpalejfk"
-
-[auth.external.google]
-enabled = true
-client_id = "939104088488-p0ghsrt4ammt5t8uqcpjj4pg0n0jr7ji.apps.googleusercontent.com"
-secret = "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"
-redirect_uri = "https://rihgjyyhyiaelpalejfk.supabase.co/auth/v1/callback"
+project_id = "bmjhhganmcpqsglnuaxb"
