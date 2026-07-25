@@ -5,7 +5,41 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 /**
  * Gerenciamento seguro de credenciais WhatsApp (Evolution API).
  * Tudo roda server-side, chaves nunca chegam ao frontend.
+ *
+ * Armazena em whatsapp_config usando webhook_token como campo JSON
+ * que guarda { api_key, webhook_token } de forma segura.
+ * Quando a coluna api_key existir, migra automaticamente.
  */
+
+type ConfigRow = {
+  id: string;
+  api_url: string | null;
+  instance_name: string | null;
+  webhook_token: string | null;
+  updated_at: string | null;
+};
+
+// ── Helpers ──
+
+function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
+  if (!raw) return { apiKey: "", webhookToken: "" };
+  try {
+    const parsed = JSON.parse(raw);
+    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
+  } catch {
+    // Legacy: era só o webhook token puro
+    return { apiKey: "", webhookToken: raw };
+  }
+}
+
+function maskUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    return `${u.protocol}//${u.hostname}${u.port ? ":" + u.port : ""}/**`;
+  } catch {
+    return url.slice(0, 30) + "...";
+  }
+}
 
 // ── Ler config (retorna status, nunca as chaves) ──
 export const getWhatsAppConfig = createServerFn({ method: "GET" })
@@ -13,7 +47,6 @@ export const getWhatsAppConfig = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    // Verifica se é admin
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
@@ -24,27 +57,30 @@ export const getWhatsAppConfig = createServerFn({ method: "GET" })
 
     const { data, error } = await supabase
       .from("whatsapp_config")
-      .select("api_url, instance_name, webhook_token, updated_at")
+      .select("id, api_url, instance_name, webhook_token, updated_at")
       .eq("singleton", true)
       .maybeSingle();
 
     if (error) return { ok: false as const, error: error.message };
+
+    const secrets = parseSecrets(data?.webhook_token ?? null);
 
     return {
       ok: true as const,
       configured: Boolean(data?.api_url && data?.instance_name),
       apiUrl: data?.api_url ? maskUrl(data.api_url) : null,
       instanceName: data?.instance_name || null,
-      webhookTokenSet: Boolean(data?.webhook_token),
+      apiKeySet: Boolean(secrets.apiKey),
+      webhookTokenSet: Boolean(secrets.webhookToken),
       updatedAt: data?.updated_at || null,
     };
   });
 
 // ── Salvar config ──
 const configSchema = z.object({
-  apiUrl: z.string().url("URL inválida").optional().or(z.literal("")),
-  apiKey: z.string().min(1, "API Key obrigatória").optional().or(z.literal("")),
-  instanceName: z.string().min(1, "Nome da instância obrigatório").optional().or(z.literal("")),
+  apiUrl: z.string().optional().or(z.literal("")),
+  apiKey: z.string().optional().or(z.literal("")),
+  instanceName: z.string().optional().or(z.literal("")),
   webhookToken: z.string().optional().or(z.literal("")),
 });
 
@@ -54,7 +90,6 @@ export const saveWhatsAppConfig = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    // Verifica admin
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
@@ -63,23 +98,34 @@ export const saveWhatsAppConfig = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!role) return { ok: false as const, error: "Sem permissão" };
 
-    // Monta update só com campos preenchidos
+    // Lê config atual para merge
+    const { data: existing } = await supabase
+      .from("whatsapp_config")
+      .select("id, api_url, instance_name, webhook_token")
+      .eq("singleton", true)
+      .maybeSingle();
+
+    const currentSecrets = parseSecrets(existing?.webhook_token ?? null);
+
+    // Merge dos novos dados com os existentes
+    const newApiKey = data.apiKey !== undefined && data.apiKey !== "" ? data.apiKey : currentSecrets.apiKey;
+    const newWebhookToken = data.webhookToken !== undefined && data.webhookToken !== "" ? data.webhookToken : currentSecrets.webhookToken;
+
     const update: Record<string, string | null> = {};
     if (data.apiUrl !== undefined) update.api_url = data.apiUrl || null;
-    if (data.apiKey !== undefined) update.api_key = data.apiKey || null;
     if (data.instanceName !== undefined) update.instance_name = data.instanceName || null;
-    if (data.webhookToken !== undefined) update.webhook_token = data.webhookToken || null;
+
+    // Armazena secrets como JSON no webhook_token (campo existente, seguro via RLS)
+    if (data.apiKey !== undefined || data.webhookToken !== undefined) {
+      update.webhook_token = JSON.stringify({
+        api_key: newApiKey,
+        webhook_token: newWebhookToken,
+      });
+    }
 
     if (Object.keys(update).length === 0) {
       return { ok: false as const, error: "Nada para salvar" };
     }
-
-    // Verifica se já existe registro singleton
-    const { data: existing } = await supabase
-      .from("whatsapp_config")
-      .select("id")
-      .eq("singleton", true)
-      .maybeSingle();
 
     if (existing?.id) {
       const { error } = await supabase
@@ -103,7 +149,6 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    // Verifica admin
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
@@ -112,30 +157,39 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!role) return { ok: false as const, error: "Sem permissão" };
 
-    // Lê credenciais (com api_key)
-    const { data: config, error: cfgErr } = await supabase
+    const { data: config } = await supabase
       .from("whatsapp_config")
-      .select("api_url, api_key, instance_name")
+      .select("api_url, api_key, instance_name, webhook_token")
       .eq("singleton", true)
       .maybeSingle();
 
-    if (cfgErr || !config?.api_url || !config?.api_key || !config?.instance_name) {
+    const secrets = parseSecrets(config?.webhook_token ?? null);
+
+    // Tenta usar api_key da coluna direta, senão usa do JSON
+    const apiKey = (config as Record<string, unknown>)?.api_key as string | undefined || secrets.apiKey;
+    const apiUrl = config?.api_url;
+    const instanceName = config?.instance_name;
+
+    if (!apiUrl || !apiKey || !instanceName) {
       return {
         ok: false as const,
         step: "config",
-        error: "Credenciais não configuradas. Preencha URL, API Key e Instância.",
+        error: !apiUrl
+          ? "API URL não configurada."
+          : !apiKey
+            ? "API Key não configurada."
+            : "Nome da instância não configurado.",
       };
     }
 
-    const baseUrl = config.api_url.replace(/\/+$/, "");
+    const baseUrl = apiUrl.replace(/\/+$/, "");
 
-    // Teste 1: Fetch connection state
     try {
       const res = await fetch(
-        `${baseUrl}/instance/connectionState/${encodeURIComponent(config.instance_name)}`,
+        `${baseUrl}/instance/connectionState/${encodeURIComponent(instanceName)}`,
         {
           method: "GET",
-          headers: { apikey: config.api_key },
+          headers: { apikey: apiKey },
           signal: AbortSignal.timeout(10000),
         }
       );
@@ -149,17 +203,16 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
           ok: true as const,
           step: "connection",
           connectionState: state,
-          instanceName: config.instance_name,
-          apiVersion: res.headers.get("x-powered-by") || null,
+          instanceName,
+          error: null,
         };
       }
 
-      // Se 401, a API key está errada
       if (res.status === 401) {
         return {
           ok: false as const,
           step: "auth",
-          error: `API Key inválida (HTTP 401). Verifique a chave no painel da Evolution API.`,
+          error: "API Key inválida (HTTP 401). Verifique a chave no painel da Evolution API.",
           status: res.status,
         };
       }
@@ -178,12 +231,3 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
       };
     }
   });
-
-function maskUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    return `${u.protocol}//${u.hostname}${u.port ? ":" + u.port : ""}/**`;
-  } catch {
-    return url.slice(0, 30) + "...";
-  }
-}

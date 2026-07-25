@@ -33,7 +33,7 @@ export const requestWhatsappVerification = createServerFn({ method: "POST" })
         import("@/integrations/supabase/client.server"),
       ]);
 
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
     if (!env) return { ok: false as const, error: "Configuração da Evolution API ausente." };
 
     const jid = toJid(data.phone);
@@ -105,7 +105,7 @@ export const confirmWhatsappVerification = createServerFn({ method: "POST" })
       .update({ whatsapp_verified: true, whatsapp_code: null, whatsapp_code_expires_at: null })
       .eq("user_id", userId);
 
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
     if (env) {
       const nome = row.full_name?.split(" ")[0] ?? "aluno";
       try {
@@ -176,7 +176,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
         import("./evolution.server"),
         import("@/integrations/supabase/client.server"),
       ]);
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
     if (!env) return { ok: false as const, error: "Evolution API não configurada." };
 
     const { data: target } = await supabaseAdmin
@@ -214,7 +214,7 @@ export const adminBroadcast = createServerFn({ method: "POST" })
       import("./evolution.server"),
       import("@/integrations/supabase/client.server"),
     ]);
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
     if (!env) return { ok: false as const, error: "Evolution API não configurada.", sent: 0, failed: 0 };
 
     const { data: targets } = await supabaseAdmin

@@ -147,7 +147,7 @@ export async function resolverBot(db: SupabaseAdmin, remoteJid: string, textoBru
 /** Envia texto pela Evolution e registra no banco. */
 export async function botReply(db: SupabaseAdmin, remoteJid: string, text: string) {
   const { readEvolutionEnv, evolutionFetch } = await import("./evolution.server");
-  const env = readEvolutionEnv();
+  const env = await readEvolutionEnv();
   if (!env) {
     console.warn("[wa-bot] Evolution não configurada; resposta suprimida");
     return;

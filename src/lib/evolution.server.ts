@@ -1,6 +1,10 @@
 /**
  * Cliente da Evolution API (WhatsApp) — usado apenas em código server-side.
  * Faz chamadas HTTP à instância configurada com tratamento de erro e retries simples.
+ *
+ * Leitura de credenciais:
+ *  1. Variáveis de ambiente (EVOLUTION_API_URL, etc.)
+ *  2. Banco de dados (whatsapp_config table) — fallback
  */
 
 export type EvolutionEnv = {
@@ -9,12 +13,75 @@ export type EvolutionEnv = {
   instance: string;
 };
 
-export function readEvolutionEnv(): EvolutionEnv | null {
-  const apiUrl = process.env.EVOLUTION_API_URL;
-  const apiKey = process.env.EVOLUTION_API_KEY;
-  const instance = process.env.EVOLUTION_INSTANCE;
-  if (!apiUrl || !apiKey || !instance) return null;
-  return { apiUrl: apiUrl.replace(/\/+$/, ""), apiKey, instance };
+let _cachedConfig: EvolutionEnv | null = null;
+let _cacheTs = 0;
+const CACHE_TTL = 30_000; // 30s
+
+export async function readEvolutionEnv(): Promise<EvolutionEnv | null> {
+  // 1. Variáveis de ambiente (prioridade)
+  const envUrl = process.env.EVOLUTION_API_URL;
+  const envKey = process.env.EVOLUTION_API_KEY;
+  const envInstance = process.env.EVOLUTION_INSTANCE;
+  if (envUrl && envKey && envInstance) {
+    return { apiUrl: envUrl.replace(/\/+$/, ""), apiKey: envKey, instance: envInstance };
+  }
+
+  // 2. Cache (evita DB hit a cada chamada)
+  if (_cachedConfig && Date.now() - _cacheTs < CACHE_TTL) {
+    return _cachedConfig;
+  }
+
+  // 3. Banco de dados (whatsapp_config table)
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("whatsapp_config")
+      .select("api_url, instance_name, webhook_token")
+      .eq("singleton", true)
+      .maybeSingle();
+
+    if (data?.api_url && data?.instance_name) {
+      const secrets = parseSecrets(data.webhook_token);
+      if (secrets.apiKey) {
+        const config: EvolutionEnv = {
+          apiUrl: data.api_url.replace(/\/+$/, ""),
+          apiKey: secrets.apiKey,
+          instance: data.instance_name,
+        };
+        _cachedConfig = config;
+        _cacheTs = Date.now();
+        return config;
+      }
+    }
+  } catch (err) {
+    console.error("[evolution] falha ao ler config do banco:", err);
+  }
+
+  return null;
+}
+
+// Síncrona — para compatibilidade com código existente que chama readEvolutionEnv() sem await
+export function readEvolutionEnvSync(): EvolutionEnv | null {
+  const envUrl = process.env.EVOLUTION_API_URL;
+  const envKey = process.env.EVOLUTION_API_KEY;
+  const envInstance = process.env.EVOLUTION_INSTANCE;
+  if (envUrl && envKey && envInstance) {
+    return { apiUrl: envUrl.replace(/\/+$/, ""), apiKey: envKey, instance: envInstance };
+  }
+  if (_cachedConfig && Date.now() - _cacheTs < CACHE_TTL) {
+    return _cachedConfig;
+  }
+  return null;
+}
+
+function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
+  if (!raw) return { apiKey: "", webhookToken: "" };
+  try {
+    const parsed = JSON.parse(raw);
+    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
+  } catch {
+    return { apiKey: "", webhookToken: raw };
+  }
 }
 
 export async function evolutionFetch(
@@ -38,7 +105,6 @@ export async function evolutionFetch(
       let json: unknown = null;
       try { json = text ? JSON.parse(text) : null; } catch { /* not json */ }
       if (!res.ok) {
-        // Só faz retry em 5xx / rede
         if (res.status >= 500 && attempt < retries) {
           await sleep(200 * (attempt + 1));
           continue;
@@ -76,16 +142,11 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Normaliza um número BR para o JID esperado pela Evolution.
- *  - Remove tudo que não for dígito
- *  - Se vier sem DDI, prepende 55 (Brasil) para números de 10 ou 11 dígitos (DDD + fixo/celular)
- */
+/** Normaliza um número BR para o JID esperado pela Evolution. */
 export function toJid(phone: string): string {
   if (phone.includes("@")) return phone;
   let digits = phone.replace(/\D+/g, "");
-  // Remove zeros iniciais / prefixo internacional "00"
   digits = digits.replace(/^0+/, "");
-  // 10 dígitos (DDD + fixo) ou 11 (DDD + celular com 9): faltando DDI Brasil
   if (digits.length === 10 || digits.length === 11) {
     digits = `55${digits}`;
   }

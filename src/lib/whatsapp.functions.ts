@@ -21,7 +21,7 @@ export const sendWhatsappMessage = createServerFn({ method: "POST" })
         import("@/integrations/supabase/client.server"),
       ]);
 
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
     if (!env) {
       return {
         ok: false as const,
@@ -116,7 +116,7 @@ export const listWhatsappSessions = createServerFn({ method: "GET" }).handler(as
 
 export const getWhatsappStatus = createServerFn({ method: "GET" }).handler(async () => {
   const { readEvolutionEnv, evolutionFetch } = await import("./evolution.server");
-  const env = readEvolutionEnv();
+  const env = await readEvolutionEnv();
   const webhookTokenSet = Boolean(process.env.WHATSAPP_WEBHOOK_TOKEN);
   if (!env) {
     return {
