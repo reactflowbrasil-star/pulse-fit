@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Loader2, Key, Cpu, Settings, Plus, Trash2, Check, X, RefreshCw,
-  ShieldCheck, ShieldX, Eye, EyeOff, Server, Zap, ChevronDown, ChevronUp,
+  Loader2, Key, Cpu, Settings, Plus, Trash2, RefreshCw,
+  ShieldCheck, ShieldX, Eye, EyeOff, Zap, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -21,7 +21,7 @@ import {
 export const Route = createFileRoute("/admin/nvidia")({
   head: () => ({
     meta: [
-      { title: "NVIDIA API — Admin", },
+      { title: "NVIDIA API — Admin" },
       { name: "description", content: "Gerenciamento da API NVIDIA (VIN)." },
     ],
   }),
@@ -70,8 +70,6 @@ function NvidiaAdminPage() {
   );
 }
 
-// ─── Tab Bar ───────────────────────────────────────────────
-
 function TabBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "keys", label: "Chaves", icon: <Key className="h-4 w-4" /> },
@@ -85,9 +83,7 @@ function TabBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
           key={t.id}
           onClick={() => setTab(t.id)}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold transition ${
-            tab === t.id
-              ? "bg-primary text-primary-foreground"
-              : "bg-surface text-text-tertiary"
+            tab === t.id ? "bg-primary text-primary-foreground" : "bg-surface text-text-tertiary"
           }`}
         >
           {t.icon} {t.label}
@@ -97,32 +93,37 @@ function TabBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
   );
 }
 
-// ─── Keys Tab ──────────────────────────────────────────────
+/* ─── Keys Tab ────────────────────────────────────────── */
 
 function KeysTab() {
   const qc = useQueryClient();
   const keys = useQuery({ queryKey: ["nvidia", "keys"], queryFn: () => listNvidiaApiKeys() });
+
+  const createFn = useServerFn(createNvidiaApiKey);
+  const deleteFn = useServerFn(deleteNvidiaApiKey);
+  const toggleFn = useServerFn(toggleNvidiaApiKey);
+  const validateFn = useServerFn(validateNvidiaApiKey);
+
   const createMut = useMutation({
-    mutationFn: (d: { name: string; api_key: string }) => useServerFn(createNvidiaApiKey)({ data: d }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }); setShowAdd(false); },
+    mutationFn: (d: { name: string; api_key: string }) => createFn({ data: d }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }); setShowAdd(false); setNewName(""); setNewKey(""); },
   });
   const deleteMut = useMutation({
-    mutationFn: (id: string) => useServerFn(deleteNvidiaApiKey)({ data: { id } }),
+    mutationFn: (id: string) => deleteFn({ data: { id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }),
   });
   const toggleMut = useMutation({
-    mutationFn: (d: { id: string; is_active: boolean }) => useServerFn(toggleNvidiaApiKey)({ data: d }),
+    mutationFn: (d: { id: string; is_active: boolean }) => toggleFn({ data: d }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }),
   });
   const validateMut = useMutation({
-    mutationFn: (id: string) => useServerFn(validateNvidiaApiKey)({ data: { id } }),
+    mutationFn: (id: string) => validateFn({ data: { id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }),
   });
 
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newKey, setNewKey] = useState("");
-  const [showKey, setShowKey] = useState<Record<string, boolean>>({});
 
   return (
     <div className="space-y-4">
@@ -221,19 +222,23 @@ function KeysTab() {
   );
 }
 
-// ─── Models Tab ────────────────────────────────────────────
+/* ─── Models Tab ──────────────────────────────────────── */
 
 function ModelsTab() {
   const qc = useQueryClient();
   const models = useQuery({ queryKey: ["nvidia", "models"], queryFn: () => listNvidiaModels() });
+  const toggleFn = useServerFn(toggleNvidiaModel);
+  const fetchRemoteFn = useServerFn(fetchNvidiaRemoteModels);
+
   const toggleMut = useMutation({
-    mutationFn: (d: { id: string; is_enabled: boolean }) => useServerFn(toggleNvidiaModel)({ data: d }),
+    mutationFn: (d: { id: string; is_enabled: boolean }) => toggleFn({ data: d }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["nvidia", "models"] }),
   });
   const fetchRemoteMut = useMutation({
-    mutationFn: () => useServerFn(fetchNvidiaRemoteModels)(),
-    onSuccess: (data) => {
-      alert(`${data.length} modelos encontrados na NVIDIA API`);
+    mutationFn: () => fetchRemoteFn(),
+    onSuccess: (data: unknown) => {
+      const count = Array.isArray(data) ? data.length : 0;
+      alert(`${count} modelos encontrados na NVIDIA API`);
       qc.invalidateQueries({ queryKey: ["nvidia", "models"] });
     },
   });
@@ -281,9 +286,7 @@ function ModelsTab() {
                     <button
                       onClick={() => toggleMut.mutate({ id: m.id, is_enabled: !m.is_enabled })}
                       className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${
-                        m.is_enabled
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-surface-elevated text-text-tertiary"
+                        m.is_enabled ? "bg-green-500/20 text-green-400" : "bg-surface-elevated text-text-tertiary"
                       }`}
                     >
                       {m.is_enabled ? "ON" : "OFF"}
@@ -299,13 +302,15 @@ function ModelsTab() {
   );
 }
 
-// ─── Settings Tab ──────────────────────────────────────────
+/* ─── Settings Tab ────────────────────────────────────── */
 
 function SettingsTab() {
   const qc = useQueryClient();
   const settings = useQuery({ queryKey: ["nvidia", "settings"], queryFn: () => getNvidiaSettings() });
+  const updateFn = useServerFn(updateNvidiaSetting);
+
   const updateMut = useMutation({
-    mutationFn: (d: { key: string; value: unknown }) => useServerFn(updateNvidiaSetting)({ data: d }),
+    mutationFn: (d: { key: string; value: unknown }) => updateFn({ data: d }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["nvidia", "settings"] }),
   });
 
@@ -337,14 +342,12 @@ function SettingsTab() {
           </div>
         ))}
       </div>
-      <p className="text-[11px] text-text-tertiary text-center">
-        Alterações são salvas automaticamente.
-      </p>
+      <p className="text-[11px] text-text-tertiary text-center">Alterações são salvas automaticamente.</p>
     </div>
   );
 }
 
-// ─── Helpers ───────────────────────────────────────────────
+/* ─── Helpers ─────────────────────────────────────────── */
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
