@@ -142,9 +142,9 @@ function StudentDashboard() {
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe() });
   const displayName = me.data?.profile?.full_name || user?.user_metadata?.full_name || "Atleta";
 
-  const calories = dashboard.rings.calories;
-  const steps = dashboard.rings.steps;
-  const activeMin = dashboard.rings.activeMinutes;
+  const calories = dashboard.calories;
+  const steps = dashboard.steps;
+  const activeMin = dashboard.activeMinutes;
   const workouts = dashboard.recentWorkouts ?? [];
   const achievements = dashboard.achievements ?? 0;
 
