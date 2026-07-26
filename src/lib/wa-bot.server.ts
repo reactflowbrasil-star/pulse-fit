@@ -34,15 +34,16 @@ function mockResumo(nome: string): Resumo {
 }
 
 async function fetchContexto(db: SupabaseAdmin, remoteJid: string): Promise<{ nome: string; treinos: Treino[]; resumo: Resumo }> {
-  const phone = remoteJid.split("@")[0];
+    const phone = normalizePhone(remoteJid);
   let nome = "Atleta";
   let treinos: Treino[] = [];
 
-  const { data: user } = await db
+  const { data: matches } = await db
     .from("app_users")
     .select("user_id, full_name")
-    .eq("whatsapp_number", phone)
-    .maybeSingle();
+    .in("whatsapp_number", phoneVariants(phone))
+    .limit(1);
+  const user = matches?.[0] ?? null;
 
   if (user?.full_name) nome = user.full_name.split(" ")[0];
 
@@ -188,4 +189,27 @@ export async function botReply(db: SupabaseAdmin, remoteJid: string, text: strin
     }
     console.error("[wa-bot] falha ao responder:", msg);
   }
+}
+
+/** Extrai apenas os digitos do JID (remove sufixo de dispositivo e dominio). */
+function normalizePhone(remoteJid: string): string {
+  return remoteJid.split("@")[0].split(":")[0].replace(/\D+/g, "");
+}
+
+/**
+ * Numeros brasileiros circulam com e sem o nono digito.
+ * Gera as duas formas para casar com o que foi salvo no cadastro do aluno.
+ */
+function phoneVariants(digits: string): string[] {
+  if (!digits) return [];
+  const out = new Set<string>([digits]);
+  if (digits.startsWith("55")) {
+    const ddd = digits.slice(2, 4);
+    const rest = digits.slice(4);
+    if (rest.length === 9 && rest.startsWith("9")) out.add(`55${ddd}${rest.slice(1)}`);
+    if (rest.length === 8) out.add(`55${ddd}9${rest}`);
+  } else {
+    out.add(`55${digits}`);
+  }
+  return Array.from(out);
 }

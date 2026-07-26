@@ -14,7 +14,8 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook")({
       GET: async () => new Response("ok"),
       POST: async ({ request }) => {
         const url = new URL(request.url);
-        const expectedToken = process.env.WHATSAPP_WEBHOOK_TOKEN;
+                const { readWebhookToken } = await import("@/lib/evolution.server");
+        const expectedToken = await readWebhookToken();
         if (!expectedToken) {
           console.error("[wa-webhook] WHATSAPP_WEBHOOK_TOKEN ausente");
           return json({ ok: false, error: "server_not_configured" }, 500);

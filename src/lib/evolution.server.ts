@@ -160,3 +160,31 @@ export function friendlyEvolutionError(err: unknown): string {
   if (typeof msg === "string") return msg;
   return err.message;
 }
+
+/**
+ * Token compartilhado usado para autenticar o webhook publico da Evolution.
+ * Ordem: 1) env WHATSAPP_WEBHOOK_TOKEN  2) whatsapp_config (painel admin)
+ */
+export async function readWebhookToken(): Promise<string | null> {
+  const envToken = process.env.WHATSAPP_WEBHOOK_TOKEN;
+  if (isReal(envToken)) return envToken!.trim();
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("whatsapp_config")
+      .select("webhook_token")
+      .eq("singleton", true)
+      .maybeSingle();
+    const secrets = parseSecrets(data?.webhook_token ?? null);
+    return secrets.webhookToken || null;
+  } catch (err) {
+    console.error("[evolution] falha ao ler webhook token:", err);
+    return null;
+  }
+}
+
+/** Limpa o cache de credenciais (usar apos salvar no painel admin). */
+export function clearEvolutionCache(): void {
+  _cachedConfig = null;
+  _cacheTs = 0;
+}

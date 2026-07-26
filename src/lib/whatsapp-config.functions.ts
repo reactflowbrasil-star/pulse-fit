@@ -159,7 +159,7 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
 
     const { data: config } = await supabase
       .from("whatsapp_config")
-      .select("api_url, api_key, instance_name, webhook_token")
+      .select("api_url, instance_name, webhook_token")
       .eq("singleton", true)
       .maybeSingle();
 
@@ -229,5 +229,133 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
         step: "network",
         error: `Falha de rede: ${err instanceof Error ? err.message : "timeout ou DNS"}`,
       };
+    }
+  });
+
+// ══════════════════════════════════════════════════════════════
+// Webhook em tempo real (Evolution API  ->  app Pulse Fit)
+// ══════════════════════════════════════════════════════════════
+
+const EVOLUTION_WEBHOOK_EVENTS = [
+  "MESSAGES_UPSERT",
+  "MESSAGES_UPDATE",
+  "CONNECTION_UPDATE",
+];
+
+const WEBHOOK_PATH = "/api/public/whatsapp/webhook";
+
+function maskToken(url: string): string {
+  return url.replace(/token=[^&]+/i, "token=***");
+}
+
+// ── Consultar o webhook atual da instancia ──
+export const getEvolutionWebhook = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!role) return { ok: false as const, error: "Sem permissao" };
+
+    const { readEvolutionEnv, evolutionFetch } = await import("./evolution.server");
+    const env = await readEvolutionEnv();
+    if (!env) return { ok: false as const, error: "Evolution API nao configurada." };
+
+    try {
+      const info = (await evolutionFetch(
+        env,
+        `/webhook/find/${encodeURIComponent(env.instance)}`,
+        { method: "GET" },
+      )) as Record<string, unknown> | null;
+
+      const raw = ((info?.webhook as Record<string, unknown>) ?? info ?? {}) as Record<string, unknown>;
+      const url = typeof raw.url === "string" ? raw.url : "";
+      const enabled = Boolean(raw.enabled ?? raw.webhook_enabled ?? url);
+      const events = Array.isArray(raw.events) ? (raw.events as string[]) : [];
+
+      return {
+        ok: true as const,
+        instance: env.instance,
+        enabled,
+        url: url ? maskToken(url) : null,
+        events,
+      };
+    } catch (err) {
+      return {
+        ok: false as const,
+        error: err instanceof Error ? err.message : "Falha ao consultar o webhook",
+      };
+    }
+  });
+
+// ── Registrar o webhook do app na Evolution API ──
+export const setEvolutionWebhook = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { origin: string }) =>
+    z.object({ origin: z.string().url() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!role) return { ok: false as const, error: "Sem permissao" };
+
+    const { readEvolutionEnv, readWebhookToken, evolutionFetch } = await import("./evolution.server");
+    const env = await readEvolutionEnv();
+    if (!env) return { ok: false as const, error: "Evolution API nao configurada." };
+
+    const token = await readWebhookToken();
+    if (!token) {
+      return {
+        ok: false as const,
+        error: "Webhook Token ausente. Salve um Webhook Token no formulario acima e tente de novo.",
+      };
+    }
+
+    const origin = data.origin.replace(/\/+$/, "");
+    const url = `${origin}${WEBHOOK_PATH}?token=${encodeURIComponent(token)}`;
+    const path = `/webhook/set/${encodeURIComponent(env.instance)}`;
+
+    const payloadV2 = {
+      webhook: {
+        enabled: true,
+        url,
+        headers: { "Content-Type": "application/json", "x-evolution-token": token },
+        byEvents: false,
+        base64: false,
+        events: EVOLUTION_WEBHOOK_EVENTS,
+      },
+    };
+
+    const payloadV1 = {
+      enabled: true,
+      url,
+      webhook_by_events: false,
+      webhook_base64: false,
+      events: EVOLUTION_WEBHOOK_EVENTS,
+    };
+
+    try {
+      await evolutionFetch(env, path, { method: "POST", body: JSON.stringify(payloadV2) });
+      return { ok: true as const, url: maskToken(url), events: EVOLUTION_WEBHOOK_EVENTS };
+    } catch (errV2) {
+      try {
+        await evolutionFetch(env, path, { method: "POST", body: JSON.stringify(payloadV1) });
+        return { ok: true as const, url: maskToken(url), events: EVOLUTION_WEBHOOK_EVENTS };
+      } catch (errV1) {
+        const m2 = errV2 instanceof Error ? errV2.message : "erro";
+        const m1 = errV1 instanceof Error ? errV1.message : "erro";
+        return { ok: false as const, error: `Falha ao configurar o webhook. v2: ${m2} | v1: ${m1}` };
+      }
     }
   });

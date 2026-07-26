@@ -29,7 +29,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   getWhatsAppConfig,
   saveWhatsAppConfig,
-  testWhatsAppConnection,
+  testWhatsAppConnection,  getEvolutionWebhook,  setEvolutionWebhook,
 } from "@/lib/whatsapp-config.functions";
 
 export const Route = createFileRoute("/admin/whatsapp-integration")({
@@ -54,6 +54,13 @@ function WhatsAppIntegrationPage() {
 
   const saveFn = useServerFn(saveWhatsAppConfig);
   const testFn = useServerFn(testWhatsAppConnection);
+  const setWebhookFn = useServerFn(setEvolutionWebhook);
+
+  const webhook = useQuery({
+    queryKey: ["wa", "webhook"],
+    queryFn: () => getEvolutionWebhook(),
+    enabled: !!session,
+  });
 
   const [apiUrl, setApiUrl] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -101,6 +108,18 @@ function WhatsAppIntegrationPage() {
         });
       } else {
         setFeedback({ type: "err", msg: d?.error || "Falha no teste" });
+      }
+    },
+    onError: (e) => setFeedback({ type: "err", msg: e.message }),
+  });
+  const webhookMut = useMutation({
+    mutationFn: () => setWebhookFn({ data: { origin: window.location.origin } }),
+    onSuccess: (r) => {
+      if (r?.ok) {
+        setFeedback({ type: "ok", msg: `Webhook ativo em ${r.url}` });
+        qc.invalidateQueries({ queryKey: ["wa", "webhook"] });
+      } else {
+        setFeedback({ type: "err", msg: r?.error || "Falha ao configurar o webhook" });
       }
     },
     onError: (e) => setFeedback({ type: "err", msg: e.message }),
@@ -216,6 +235,29 @@ function WhatsAppIntegrationPage() {
               <span>{feedback.msg}</span>
             </motion.div>
           )}
+
+          <Card variant="default" className="p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Webhook em tempo real</p>
+            </div>
+            <p className="text-[11px] text-text-secondary">Registra na Evolution API a URL que recebe as mensagens do aluno, para o bot responder na hora.</p>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-text-secondary">Status</span>
+              <span className={`text-xs font-medium ${webhook.data?.ok && webhook.data.enabled ? "text-success" : "text-text-muted"}`}>
+                {webhook.isLoading ? "Carregando..." : webhook.data?.ok ? (webhook.data.enabled ? "Ativo" : "Inativo") : "Indisponivel"}
+              </span>
+            </div>
+            {webhook.data?.ok && webhook.data.url ? (
+              <p className="break-all rounded-xl bg-surface-elevated px-2 py-1.5 font-mono text-[10px] text-text-tertiary">{webhook.data.url}</p>
+            ) : null}
+            {webhook.data?.ok && webhook.data.events.length > 0 ? (
+              <p className="text-[10px] text-text-muted">Eventos: {webhook.data.events.join(", ")}</p>
+            ) : null}
+            <Button variant="outline" className="w-full" onClick={() => webhookMut.mutate()} loading={webhookMut.isPending}>
+              <Link2 className="h-4 w-4" /> Configurar webhook automaticamente
+            </Button>
+          </Card>
 
           <Card variant="default" className="p-4">
             <p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary mb-2">Ajuda rápida</p>
