@@ -132,12 +132,12 @@ export const saveWhatsAppConfig = createServerFn({ method: "POST" })
     }
 
     if (existing?.id) {
-      const { error } = await supabase.from("whatsapp_config").update(update).eq("id", existing.id);
+      const { error } = await supabase.from("whatsapp_config").update(update as never).eq("id", existing.id);
       if (error) return { ok: false as const, error: error.message };
     } else {
       const { error } = await supabase
         .from("whatsapp_config")
-        .insert({ ...update, singleton: true });
+        .insert({ ...update, singleton: true } as never);
       if (error) return { ok: false as const, error: error.message };
     }
 

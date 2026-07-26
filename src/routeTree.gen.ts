@@ -32,6 +32,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
 import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
+import { Route as CoachLiveRouteImport } from './routes/coach.live'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
 import { Route as AdminWhatsappIntegrationRouteImport } from './routes/admin.whatsapp-integration'
@@ -39,6 +40,7 @@ import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as ApiTrainerChatRouteImport } from './routes/api/trainer/chat'
+import { Route as ApiCoachVisionRouteImport } from './routes/api/coach/vision'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
 import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
 import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
@@ -161,6 +163,11 @@ const TrainerIdRoute = TrainerIdRouteImport.update({
   path: '/trainer/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachLiveRoute = CoachLiveRouteImport.update({
+  id: '/coach/live',
+  path: '/coach/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTtsRoute = ApiTtsRouteImport.update({
   id: '/api/tts',
   path: '/api/tts',
@@ -195,6 +202,11 @@ const CoachSessionSessionIdRoute = CoachSessionSessionIdRouteImport.update({
 const ApiTrainerChatRoute = ApiTrainerChatRouteImport.update({
   id: '/api/trainer/chat',
   path: '/api/trainer/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoachVisionRoute = ApiCoachVisionRouteImport.update({
+  id: '/api/coach/vision',
+  path: '/api/coach/vision',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
@@ -254,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/coach/live': typeof CoachLiveRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
@@ -262,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -292,6 +306,7 @@ export interface FileRoutesByTo {
   '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/coach/live': typeof CoachLiveRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach': typeof CoachIndexRoute
@@ -300,6 +315,7 @@ export interface FileRoutesByTo {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -331,6 +347,7 @@ export interface FileRoutesById {
   '/admin/whatsapp-integration': typeof AdminWhatsappIntegrationRoute
   '/api/live-coach': typeof ApiLiveCoachRoute
   '/api/tts': typeof ApiTtsRoute
+  '/coach/live': typeof CoachLiveRoute
   '/trainer/$id': typeof TrainerIdRoute
   '/workout/$id': typeof WorkoutIdRoute
   '/coach/': typeof CoachIndexRoute
@@ -339,6 +356,7 @@ export interface FileRoutesById {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -371,6 +389,7 @@ export interface FileRouteTypes {
     | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
+    | '/coach/live'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
@@ -379,6 +398,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -409,6 +429,7 @@ export interface FileRouteTypes {
     | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
+    | '/coach/live'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach'
@@ -417,6 +438,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -447,6 +469,7 @@ export interface FileRouteTypes {
     | '/admin/whatsapp-integration'
     | '/api/live-coach'
     | '/api/tts'
+    | '/coach/live'
     | '/trainer/$id'
     | '/workout/$id'
     | '/coach/'
@@ -455,6 +478,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -484,6 +508,7 @@ export interface RootRouteChildren {
   WhatsappSetupRoute: typeof WhatsappSetupRoute
   ApiLiveCoachRoute: typeof ApiLiveCoachRoute
   ApiTtsRoute: typeof ApiTtsRoute
+  CoachLiveRoute: typeof CoachLiveRoute
   TrainerIdRoute: typeof TrainerIdRoute
   WorkoutIdRoute: typeof WorkoutIdRoute
   CoachIndexRoute: typeof CoachIndexRoute
@@ -492,6 +517,7 @@ export interface RootRouteChildren {
   ApiBotSendRoute: typeof ApiBotSendRoute
   ApiBotStatusRoute: typeof ApiBotStatusRoute
   ApiCoachTtsRoute: typeof ApiCoachTtsRoute
+  ApiCoachVisionRoute: typeof ApiCoachVisionRoute
   ApiTrainerChatRoute: typeof ApiTrainerChatRoute
   CoachSessionSessionIdRoute: typeof CoachSessionSessionIdRoute
   CoachSummarySessionIdRoute: typeof CoachSummarySessionIdRoute
@@ -661,6 +687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coach/live': {
+      id: '/coach/live'
+      path: '/coach/live'
+      fullPath: '/coach/live'
+      preLoaderRoute: typeof CoachLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/tts': {
       id: '/api/tts'
       path: '/api/tts'
@@ -708,6 +741,13 @@ declare module '@tanstack/react-router' {
       path: '/api/trainer/chat'
       fullPath: '/api/trainer/chat'
       preLoaderRoute: typeof ApiTrainerChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coach/vision': {
+      id: '/api/coach/vision'
+      path: '/api/coach/vision'
+      fullPath: '/api/coach/vision'
+      preLoaderRoute: typeof ApiCoachVisionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/coach/tts': {
@@ -790,6 +830,7 @@ const rootRouteChildren: RootRouteChildren = {
   WhatsappSetupRoute: WhatsappSetupRoute,
   ApiLiveCoachRoute: ApiLiveCoachRoute,
   ApiTtsRoute: ApiTtsRoute,
+  CoachLiveRoute: CoachLiveRoute,
   TrainerIdRoute: TrainerIdRoute,
   WorkoutIdRoute: WorkoutIdRoute,
   CoachIndexRoute: CoachIndexRoute,
@@ -798,6 +839,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotSendRoute: ApiBotSendRoute,
   ApiBotStatusRoute: ApiBotStatusRoute,
   ApiCoachTtsRoute: ApiCoachTtsRoute,
+  ApiCoachVisionRoute: ApiCoachVisionRoute,
   ApiTrainerChatRoute: ApiTrainerChatRoute,
   CoachSessionSessionIdRoute: CoachSessionSessionIdRoute,
   CoachSummarySessionIdRoute: CoachSummarySessionIdRoute,
@@ -806,13 +848,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

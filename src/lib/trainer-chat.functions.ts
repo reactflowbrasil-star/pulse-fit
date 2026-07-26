@@ -49,16 +49,16 @@ export const trainerChat = createServerFn({ method: "POST" })
     const result = streamText({
       model: gateway("google/gemini-3.6-flash"),
       system: systemPrompt,
-      messages: convertToModelMessages(
+      messages: await convertToModelMessages(
         messages.map((m) => ({
           id: crypto.randomUUID(),
           role: m.role,
-          content: m.content,
-        })) as UIMessage[],
+          parts: [{ type: "text", text: m.content }],
+        })) as unknown as UIMessage[],
       ),
     });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   });
 
 /**

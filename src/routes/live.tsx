@@ -69,7 +69,9 @@ function LiveCoachPage() {
         fatigue: Math.min(100, t.fatigue + 0.2),
       }));
     }, 1000);
-    return () => clearInterval(timerRef.current);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [isActive]);
 
   useEffect(() => {
