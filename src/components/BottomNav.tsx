@@ -44,9 +44,8 @@ export function BottomNav() {
             className="-mt-7"
           >
             <Link
-              to="/coach"
-              search={{ trainer: "marcus-power" }}
-              aria-label="Treinador IA"
+              to="/coach/live"
+              aria-label="Treino ao vivo com IA"
               className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-[3px] ring-background-deep animate-[pulse-fab_2.4s_ease-out_infinite]"
             >
               <Sparkles className="h-5 w-5" strokeWidth={2.4} />
