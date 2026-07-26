@@ -39,6 +39,7 @@ import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as ApiTrainerChatRouteImport } from './routes/api/trainer/chat'
+import { Route as ApiCoachVisionRouteImport } from './routes/api/coach/vision'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
 import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
 import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
@@ -197,6 +198,11 @@ const ApiTrainerChatRoute = ApiTrainerChatRouteImport.update({
   path: '/api/trainer/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCoachVisionRoute = ApiCoachVisionRouteImport.update({
+  id: '/api/coach/vision',
+  path: '/api/coach/vision',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
   id: '/api/coach/tts',
   path: '/api/coach/tts',
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -339,6 +347,7 @@ export interface FileRoutesById {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/coach/vision': typeof ApiCoachVisionRoute
   '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
@@ -379,6 +388,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/coach/vision'
     | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
@@ -492,6 +504,7 @@ export interface RootRouteChildren {
   ApiBotSendRoute: typeof ApiBotSendRoute
   ApiBotStatusRoute: typeof ApiBotStatusRoute
   ApiCoachTtsRoute: typeof ApiCoachTtsRoute
+  ApiCoachVisionRoute: typeof ApiCoachVisionRoute
   ApiTrainerChatRoute: typeof ApiTrainerChatRoute
   CoachSessionSessionIdRoute: typeof CoachSessionSessionIdRoute
   CoachSummarySessionIdRoute: typeof CoachSummarySessionIdRoute
@@ -710,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrainerChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/coach/vision': {
+      id: '/api/coach/vision'
+      path: '/api/coach/vision'
+      fullPath: '/api/coach/vision'
+      preLoaderRoute: typeof ApiCoachVisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/coach/tts': {
       id: '/api/coach/tts'
       path: '/api/coach/tts'
@@ -798,6 +818,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotSendRoute: ApiBotSendRoute,
   ApiBotStatusRoute: ApiBotStatusRoute,
   ApiCoachTtsRoute: ApiCoachTtsRoute,
+  ApiCoachVisionRoute: ApiCoachVisionRoute,
   ApiTrainerChatRoute: ApiTrainerChatRoute,
   CoachSessionSessionIdRoute: CoachSessionSessionIdRoute,
   CoachSummarySessionIdRoute: CoachSummarySessionIdRoute,
