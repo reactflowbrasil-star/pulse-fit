@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { resolveChatModel } from "@/lib/nvidia.server";
 
 type Body = {
   messages?: unknown;
@@ -22,8 +22,10 @@ export const Route = createFileRoute("/api/live-coach")({
         if (!Array.isArray(messages)) {
           return new Response("messages required", { status: 400 });
         }
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const ai = await resolveChatModel();
+        if (!ai) {
+          return new Response("Nenhuma chave NVIDIA ativa no painel admin", { status: 503 });
+        }
 
         const t = telemetry ?? {};
         const system = `Você é o "Pulse Coach", um personal trainer virtual conversando AO VIVO em português do Brasil durante a sessão de treino do usuário.
@@ -43,9 +45,9 @@ REGRAS:
 - Se o usuário reclamar de dor, pare imediatamente e sugira alternativa segura.
 - Fale como um treinador humano — nada de disclaimers médicos longos.`;
 
-        const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
-          model: gateway("google/gemini-3.6-flash"),
+          model: ai.model,
+          temperature: ai.temperature,
           system,
           messages: await convertToModelMessages(messages as UIMessage[]),
         });
