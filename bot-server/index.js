@@ -2,50 +2,30 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { createServer } from "http";
-import QRCode from "qrcode";
-import makeWASocket, {
-  DisconnectReason,
-  useMultiFileAuthState,
-  fetchLatestBaileysVersion,
-  isJidUser,
-  makeCacheableSignalKeyStore,
-} from "@whiskeysockets/baileys";
-import pino from "pino";
-import { Boom } from "@hapi/boom";
 
 // ─── Config ────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN || "";
 const SUPABASE_URL = process.env.SUPABASE_URL || "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-const AUTH_DIR = "./auth_info";
+
+// Evolution API config — via env ou Supabase
+const EVO_URL = process.env.EVOLUTION_API_URL || "";
+const EVO_KEY = process.env.EVOLUTION_API_KEY || "";
+const EVO_INSTANCE = process.env.EVOLUTION_INSTANCE || "";
 
 // ─── Estado do bot ─────────────────────────────────────────────────────
-let sock = null;
-let qrCode = null;
-let pairingCode = null;
-let connectionState = "disconnected"; // disconnected | connecting | open
-let lastDisconnectReason = null;
-let reconnectAttempts = 0;
-const MAX_RECONNECT = 10;
+let evoConfig = null; // { apiUrl, apiKey, instance }
+let connectionState = "unknown";
 
 // ─── Express ───────────────────────────────────────────────────────────
 const app = express();
 app.use(express.json({ limit: "2mb" }));
-
-const corsOrigins = process.env.CORS_ORIGINS || "*";
-app.use(
-  cors({
-    origin: corsOrigins === "*" ? true : corsOrigins.split(",").map((s) => s.trim()),
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-bot-token"],
-    credentials: true,
-  })
-);
+app.use(cors({ origin: true, methods: ["GET", "POST", "OPTIONS"], credentials: true }));
 
 // ─── Helpers ───────────────────────────────────────────────────────────
 function authBot(req) {
-  if (!BOT_TOKEN) return true; // sem token configurado = aberto (dev)
+  if (!BOT_TOKEN) return true;
   const auth = req.headers.authorization || "";
   const token = req.headers["x-bot-token"] || "";
   const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : auth;
@@ -65,422 +45,225 @@ async function supabaseQuery(path, options = {}) {
     "Content-Type": "application/json",
     Prefer: options.prefer || "return=representation",
   };
-  const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error(`[supabase] ${options.method || "GET"} ${path} => ${res.status}: ${text}`);
+  try {
+    const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+    if (!res.ok) return null;
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) return res.json();
     return null;
-  }
-  const ct = res.headers.get("content-type") || "";
-  if (ct.includes("application/json")) return res.json();
-  return null;
+  } catch { return null; }
 }
 
-// ─── Rotas públicas (sem auth) ────────────────────────────────────────
+async function loadEvoConfig() {
+  if (EVO_URL && EVO_KEY && EVO_INSTANCE) {
+    evoConfig = { apiUrl: EVO_URL, apiKey: EVO_KEY, instance: EVO_INSTANCE };
+    return;
+  }
+  // Ler do Supabase
+  if (!SUPABASE_URL || !SUPABASE_KEY) return;
+  try {
+    const data = await supabaseQuery("whatsapp_config?select=api_url,instance_name,webhook_token&singleton=eq.true&limit=1");
+    const row = data?.[0];
+    if (row?.api_url && row?.instance_name) {
+      let apiKey = "";
+      try { const s = JSON.parse(row.webhook_token || "{}"); apiKey = s.api_key || ""; } catch { apiKey = row.webhook_token || ""; }
+      if (apiKey) evoConfig = { apiUrl: row.api_url, apiKey, instance: row.instance_name };
+    }
+  } catch (e) { console.error("[bot] loadEvoConfig:", e.message); }
+}
 
-// Root
-app.get("/", (_req, res) => {
-  res.type("text/plain").send("Pulse Fit bot online");
-});
+async function evoFetch(path, init = {}) {
+  if (!evoConfig) throw new Error("Evolution API não configurada");
+  const url = `${evoConfig.apiUrl}${path}`;
+  const headers = { apikey: evoConfig.apiKey, "Content-Type": "application/json", ...init.headers };
+  const res = await fetch(url, { ...init, headers });
+  const text = await res.text();
+  let json = null;
+  try { json = text ? JSON.parse(text) : null; } catch {}
+  if (!res.ok) throw new Error(`Evolution ${res.status}: ${text.slice(0, 200)}`);
+  return json;
+}
 
-// Health check
+function normalizeJid(phone) {
+  if (phone.includes("@")) return phone;
+  let d = phone.replace(/\D+/g, "").replace(/^0+/, "");
+  if (d.length === 10 || d.length === 11) d = "55" + d;
+  return d + "@s.whatsapp.net";
+}
+
+// ─── Rotas públicas ───────────────────────────────────────────────────
+app.get("/", (_req, res) => res.type("text/plain").send("Pulse Fit bot online"));
+
 app.get("/health", (_req, res) => {
-  json(res, {
-    ok: true,
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-    connectionState,
-    version: "1.0.0",
-  });
+  json(res, { ok: true, uptime: process.uptime(), timestamp: new Date().toISOString(), version: "2.0.0", evoConfigured: !!evoConfig });
 });
 
-// ─── Rotas protegidas (requerem token) ─────────────────────────────────
+// ─── Rotas protegidas ─────────────────────────────────────────────────
 
-// Status da conexão WhatsApp
-app.get("/status", (req, res) => {
+// Status
+app.get("/status", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
-  json(res, {
-    ok: true,
-    connectionState,
-    qrAvailable: !!qrCode,
-    pairingAvailable: !!pairingCode,
-    lastDisconnectReason,
-    reconnectAttempts,
-    uptime: process.uptime(),
-    phone: sock?.user?.id?.split(":")[0] || null,
-    name: sock?.user?.name || null,
-  });
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, configured: false, connectionState: "unknown", error: "Evolution não configurada" });
+  try {
+    const info = await evoFetch(`/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`);
+    const state = info?.instance?.state || "unknown";
+    connectionState = state;
+    return json(res, { ok: true, configured: true, connectionState: state, instance: evoConfig.instance, phone: info?.instance?.owner?.split(":")[0] || null });
+  } catch (err) {
+    return json(res, { ok: false, configured: true, connectionState: "error", error: err.message });
+  }
 });
 
-// Obter QR Code (retorna imagem base64)
+// QR Code — pega da Evolution API
 app.get("/qr", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
-  if (connectionState === "open") {
-    return json(res, { ok: false, error: "already_connected", message: "Bot já está conectado" });
-  }
-  if (!qrCode) {
-    return json(res, { ok: false, error: "no_qr", message: "QR code não disponível. Tente /connect primeiro." });
-  }
-
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
   try {
-    const dataUrl = await QRCode.toDataURL(qrCode, { width: 300, margin: 2 });
-    json(res, { ok: true, qr: dataUrl, raw: qrCode });
+    // Tenta buscar QR via connect
+    const info = await evoFetch(`/instance/connect/${encodeURIComponent(evoConfig.instance)}`);
+    if (info?.base64) return json(res, { ok: true, qr: info.base64, code: info.code || null });
+    return json(res, { ok: false, error: "QR não disponível. Instance pode já estar conectada." });
   } catch (err) {
-    json(res, { ok: false, error: "qr_generation_failed", message: err.message }, 500);
+    return json(res, { ok: false, error: err.message });
   }
 });
 
-// Obter código de pareamento (para pareamento numérico)
-app.get("/pair", async (req, res) => {
-  if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
-  if (connectionState === "open") {
-    return json(res, { ok: false, error: "already_connected" });
-  }
-
-  const phone = req.query.phone;
-  if (!phone || !/^\d{10,15}$/.test(phone)) {
-    return json(res, { ok: false, error: "invalid_phone", message: "Informe ?phone=55XXXXXXXXXXX" }, 400);
-  }
-
-  try {
-    if (sock?.requestPairingCode) {
-      const code = await sock.requestPairingCode(phone);
-      pairingCode = code;
-      json(res, { ok: true, code, message: "Use este código no WhatsApp > Dispositivos conectados > Vincular dispositivo" });
-    } else {
-      json(res, { ok: false, error: "pairing_not_supported", message: "Pairing code não suportado nesta versão" }, 501);
-    }
-  } catch (err) {
-    json(res, { ok: false, error: "pairing_failed", message: err.message }, 500);
-  }
-});
-
-// Conectar / reconectar
+// Connect
 app.post("/connect", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
-  if (connectionState === "open") {
-    return json(res, { ok: true, message: "Já conectado" });
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
+  try {
+    const info = await evoFetch(`/instance/connect/${encodeURIComponent(evoConfig.instance)}`);
+    return json(res, { ok: true, state: info?.instance?.state || "connecting", qr: info?.base64 || null });
+  } catch (err) {
+    return json(res, { ok: false, error: err.message });
   }
-
-  startBot();
-  json(res, { ok: true, message: "Conexão iniciada. Aguarde e consulte /status ou /qr." });
 });
 
-// Desconectar
+// Disconnect
 app.post("/disconnect", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
   try {
-    if (sock) {
-      await sock.logout();
-      sock.end(undefined);
-      sock = null;
-    }
-    connectionState = "disconnected";
-    qrCode = null;
-    pairingCode = null;
-    reconnectAttempts = 0;
-    json(res, { ok: true, message: "Desconectado" });
+    await evoFetch(`/instance/logout/${encodeURIComponent(evoConfig.instance)}`, { method: "DELETE" });
+    return json(res, { ok: true, message: "Desconectado" });
   } catch (err) {
-    json(res, { ok: false, error: err.message }, 500);
+    return json(res, { ok: false, error: err.message });
+  }
+});
+
+// Pair (código numérico)
+app.get("/pair", async (req, res) => {
+  if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
+  const phone = req.query.phone;
+  if (!phone || !/^\d{10,15}$/.test(phone)) return json(res, { ok: false, error: "Informe ?phone=55XXXXXXXXXXX" }, 400);
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
+  try {
+    const info = await evoFetch(`/instance/connect/${encodeURIComponent(evoConfig.instance)}?number=${phone}`);
+    return json(res, { ok: true, code: info?.code || null, pairingCode: info?.pairingCode || null });
+  } catch (err) {
+    return json(res, { ok: false, error: err.message });
   }
 });
 
 // Enviar código de verificação
 app.post("/enviar-codigo", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
   const { whatsapp, codigo } = req.body || {};
-  if (!whatsapp || !codigo) {
-    return json(res, { ok: false, error: "missing_fields", message: "Envie whatsapp e codigo" }, 400);
-  }
-
-  if (connectionState !== "open") {
-    return json(res, { ok: false, error: "bot_not_connected", message: "Bot não está conectado ao WhatsApp" }, 503);
-  }
-
+  if (!whatsapp || !codigo) return json(res, { ok: false, error: "missing_fields" }, 400);
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" }, 503);
   const jid = normalizeJid(whatsapp);
-
   try {
-    await sock.sendMessage(jid, {
-      text: `🔐 *Código de verificação Pulse Fit*\n\nSeu código é: *${codigo}*\n\nEste código expira em 10 minutos.\nNão compartilhe com ninguém.`,
-    });
-
-    // Log no Supabase
-    await supabaseQuery("whatsapp_messages", {
+    await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig.instance)}`, {
       method: "POST",
-      body: JSON.stringify({
-        direction: "outbound",
-        remote_jid: jid,
-        content: `Código de verificação enviado`,
-        template_name: "verification_code",
-        status: "sent",
-      }),
+      body: JSON.stringify({ number: jid, text: `🔐 *Código de verificação Pulse Fit*\n\nSeu código é: *${codigo}*\n\nExpira em 10 minutos.\nNão compartilhe.` }),
     });
-
-    json(res, { ok: true, message: "Código enviado" });
+    await supabaseQuery("whatsapp_messages", { method: "POST", body: JSON.stringify({ direction: "outbound", remote_jid: jid, content: "Código de verificação enviado", template_name: "verification_code", status: "sent" }) });
+    return json(res, { ok: true, message: "Código enviado" });
   } catch (err) {
-    console.error("[enviar-codigo] falha:", err.message);
-    json(res, { ok: false, error: "send_failed", message: `Falha ao enviar: ${err.message}` }, 500);
+    return json(res, { ok: false, error: err.message }, 500);
   }
 });
 
 // Enviar mensagem genérica
 app.post("/send", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
   const { number, text } = req.body || {};
-  if (!number || !text) {
-    return json(res, { ok: false, error: "missing_fields", message: "Envie number e text" }, 400);
-  }
-
-  if (connectionState !== "open") {
-    return json(res, { ok: false, error: "bot_not_connected" }, 503);
-  }
-
+  if (!number || !text) return json(res, { ok: false, error: "missing_fields" }, 400);
+  if (!evoConfig) await loadEvoConfig();
+  if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" }, 503);
   const jid = normalizeJid(number);
-
   try {
-    const result = await sock.sendMessage(jid, { text });
-    json(res, { ok: true, messageId: result?.key?.id || null });
+    const result = await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig.instance)}`, {
+      method: "POST",
+      body: JSON.stringify({ number: jid, text }),
+    });
+    return json(res, { ok: true, messageId: result?.key?.id || null });
   } catch (err) {
-    json(res, { ok: false, error: err.message }, 500);
+    return json(res, { ok: false, error: err.message }, 500);
   }
 });
 
-// Webhook receptor (recebe eventos de outros serviços)
+// Webhook receptor
 app.post("/webhook", async (req, res) => {
-  console.log("[webhook] evento recebido:", JSON.stringify(req.body).slice(0, 500));
-
-  // Armazena mensagem no Supabase se for mensagem recebida
+  console.log("[webhook]", req.body?.event || "unknown");
   const payload = req.body;
-  if (payload?.event === "messages.upsert" && payload?.data) {
+  if (payload?.event === "MESSAGES_UPSERT" && payload?.data) {
     const key = payload.data.key;
     if (key && !key.fromMe) {
       const text = extractText(payload.data.message) || null;
-      await supabaseQuery("whatsapp_messages", {
-        method: "POST",
-        body: JSON.stringify({
-          direction: "inbound",
-          remote_jid: key.remoteJid || "unknown",
-          message_id: key.id || null,
-          content: text,
-          status: "received",
-          raw: payload.data,
-        }),
-      });
+      const jid = key.remoteJid || "unknown";
+      await supabaseQuery("whatsapp_messages", { method: "POST", body: JSON.stringify({ direction: "inbound", remote_jid: jid, message_id: key.id || null, content: text, status: "received", raw: payload.data }) });
+      // Bot auto-reply básico
+      if (text) {
+        const t = text.trim().toLowerCase();
+        if (["oi", "olá", "ola"].includes(t)) {
+          try { await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, { method: "POST", body: JSON.stringify({ number: jid, text: "Oi! 👋 Bem-vindo ao *Pulse Fit*. Digite *menu* para ver opções." }) }); } catch {}
+        }
+        if (t === "menu" || t === "ajuda") {
+          try { await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, { method: "POST", body: JSON.stringify({ number: jid, text: "🏋️ *Pulse Fit*\n\n1️⃣ resumo\n2️⃣ passos\n3️⃣ água\n4️⃣ treinos\n5️⃣ ajuda" }) }); } catch {}
+        }
+      }
     }
   }
-
   json(res, { ok: true });
 });
 
-// Listar mensagens (proxy Supabase)
+// Listar mensagens
 app.get("/messages", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
-
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
-  const jid = req.query.jid;
-
-  let path = `whatsapp_messages?order=created_at.desc&limit=${limit}`;
-  if (jid) path += `&remote_jid=eq.${encodeURIComponent(jid)}`;
-
-  const data = await supabaseQuery(path);
+  const data = await supabaseQuery(`whatsapp_messages?order=created_at.desc&limit=${limit}`);
   json(res, { ok: true, messages: data || [] });
 });
-
-// ─── Bot logic ─────────────────────────────────────────────────────────
-
-function normalizeJid(phone) {
-  if (phone.includes("@")) return phone;
-  let digits = phone.replace(/\D+/g, "").replace(/^0+/, "");
-  if (digits.length === 10 || digits.length === 11) {
-    digits = `55${digits}`;
-  }
-  return `${digits}@s.whatsapp.net`;
-}
 
 function extractText(msg) {
   if (!msg) return null;
   if (typeof msg.conversation === "string") return msg.conversation;
   if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
   if (msg.imageMessage?.caption) return msg.imageMessage.caption;
-  if (msg.videoMessage?.caption) return msg.videoMessage.caption;
-  if (msg.buttonsResponseMessage?.selectedButtonId) return msg.buttonsResponseMessage.selectedButtonId;
-  if (msg.listResponseMessage?.singleSelectReply?.selectedRowId) return msg.listResponseMessage.singleSelectReply.selectedRowId;
   return null;
 }
 
-async function handleIncomingMessage(msg) {
-  const jid = msg.key?.remoteJid;
-  if (!jid || !isJidUser(jid) || msg.key?.fromMe) return;
-
-  const text = extractText(msg.message);
-  if (!text) return;
-
-  console.log(`[msg] ${jid}: ${text}`);
-
-  // Log no Supabase
-  await supabaseQuery("whatsapp_messages", {
-    method: "POST",
-    body: JSON.stringify({
-      direction: "inbound",
-      remote_jid: jid,
-      message_id: msg.key?.id || null,
-      content: text,
-      status: "received",
-      raw: msg,
-    }),
-  });
-
-  // Bot auto-reply básico
-  const t = text.trim().toLowerCase();
-  if (["oi", "olá", "ola", "bom dia", "boa tarde", "boa noite"].includes(t)) {
-    try {
-      await sock.sendMessage(jid, {
-        text: "Oi! 👋 Bem-vindo ao *Pulse Fit*.\n\nDigite *menu* para ver as opções.",
-      });
-    } catch (err) {
-      console.error("[bot] falha reply:", err.message);
-    }
-  }
-
-  if (t === "menu" || t === "ajuda" || t === "help") {
-    try {
-      await sock.sendMessage(jid, {
-        text: [
-          "🏋️ *Pulse Fit — Assistente*",
-          "",
-          "Escolha uma opção (envie o número ou a palavra):",
-          "1️⃣ *resumo* — seu dia de hoje",
-          "2️⃣ *passos* — meta de passos",
-          "3️⃣ *agua* — hidratação",
-          "4️⃣ *treinos* — treinos recentes",
-          "5️⃣ *ajuda* — ver este menu",
-        ].join("\n"),
-      });
-    } catch (err) {
-      console.error("[bot] falha menu:", err.message);
-    }
-  }
-}
-
-// ─── Conexão WhatsApp (Baileys) ────────────────────────────────────────
-
-async function startBot() {
-  if (connectionState === "connecting") return;
-
-  connectionState = "connecting";
-  qrCode = null;
-  pairingCode = null;
-
-  const logger = pino({ level: "silent" });
-
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
-  const { version } = await fetchLatestBaileysVersion();
-
-  sock = makeWASocket({
-    version,
-    auth: {
-      creds: state.creds,
-      keys: makeCacheableSignalKeyStore(state.keys, logger),
-    },
-    logger,
-    printQRInTerminal: true,
-    browser: ["Pulse Fit Bot", "Chrome", "4.0.0"],
-    generateHighQualityLinkPreview: false,
-  });
-
-  // Salvar credenciais ao atualizar
-  sock.ev.on("creds.update", saveCreds);
-
-  // QR Code
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect, qr } = update;
-
-    if (qr) {
-      qrCode = qr;
-      pairingCode = null;
-      console.log("[bot] QR code disponível — consulte GET /qr");
-    }
-
-    if (connection === "close") {
-      const reason = lastDisconnect?.error?.output?.statusCode;
-      lastDisconnectReason = reason;
-      connectionState = "disconnected";
-      qrCode = null;
-
-      console.log(`[bot] Conexão fechada. Razão: ${reason}`);
-
-      if (reason !== DisconnectReason.loggedOut && reconnectAttempts < MAX_RECONNECT) {
-        reconnectAttempts++;
-        const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
-        console.log(`[bot] Reconectando em ${delay}ms (tentativa ${reconnectAttempts}/${MAX_RECONNECT})`);
-        setTimeout(startBot, delay);
-      } else if (reason === DisconnectReason.loggedOut) {
-        console.log("[bot] Deslogado. Limpe auth_info e reconecte.");
-        reconnectAttempts = 0;
-      } else {
-        console.log("[bot] Máximo de reconexões atingido.");
-      }
-    }
-
-    if (connection === "open") {
-      connectionState = "open";
-      qrCode = null;
-      pairingCode = null;
-      reconnectAttempts = 0;
-      console.log(`[bot] ✅ Conectado como ${sock.user?.id}`);
-    }
-  });
-
-  // Mensagens recebidas
-  sock.ev.on("messages.upsert", async (upsert) => {
-    if (upsert.type !== "notify") return;
-    for (const msg of upsert.messages) {
-      await handleIncomingMessage(msg);
-    }
-  });
-
-  // Status de entrega
-  sock.ev.on("messages.update", async (updates) => {
-    for (const update of updates) {
-      const messageId = update.key?.id;
-      const status = update.update?.status;
-      if (!messageId || status === undefined) continue;
-
-      let mappedStatus = null;
-      if (status >= 4) mappedStatus = "read";
-      else if (status === 3) mappedStatus = "delivered";
-      else if (status === 2) mappedStatus = "sent";
-
-      if (mappedStatus) {
-        await supabaseQuery(`whatsapp_messages?message_id=eq.${messageId}`, {
-          method: "PATCH",
-          body: JSON.stringify({ status: mappedStatus }),
-        });
-      }
-    }
-  });
-}
-
-// ─── Iniciar ───────────────────────────────────────────────────────────
-
+// ─── Start ─────────────────────────────────────────────────────────────
 const server = createServer(app);
-
-server.listen(PORT, () => {
-  console.log(`\n🚀 Pulse Fit Bot Server rodando na porta ${PORT}`);
-  console.log(`   Health: http://localhost:${PORT}/health`);
-  console.log(`   Status: http://localhost:${PORT}/status`);
-  console.log(`   QR:     http://localhost:${PORT}/qr`);
-  console.log(`   Connect: POST http://localhost:${PORT}/connect\n`);
-
-  // Auto-connect se houver sessão salva
-  startBot().catch((err) => {
-    console.error("[bot] falha ao iniciar:", err.message);
-  });
+server.listen(PORT, async () => {
+  console.log(`🚀 Pulse Fit Bot v2.0 na porta ${PORT}`);
+  await loadEvoConfig();
+  if (evoConfig) {
+    console.log(`   Evolution: ${evoConfig.apiUrl} (${evoConfig.instance})`);
+    try {
+      const info = await evoFetch(`/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`);
+      connectionState = info?.instance?.state || "unknown";
+      console.log(`   Estado: ${connectionState}`);
+    } catch { console.log("   Estado: erro ao consultar"); }
+  } else {
+    console.log("   Evolution: não configurada (adicione BOT_URL ao .env do app)");
+  }
 });
