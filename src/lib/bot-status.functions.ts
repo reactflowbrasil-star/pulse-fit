@@ -12,7 +12,7 @@ export const getBotStatus = createServerFn({ method: "GET" }).handler(async () =
       return {
         ok: false as const,
         configured: false,
-        connectionState: "unknown",
+        connectionState: "unknown" as const,
         error: "Evolution API não configurada",
         phone: null,
         name: null,
@@ -25,8 +25,8 @@ export const getBotStatus = createServerFn({ method: "GET" }).handler(async () =
 
     return {
       ok: true as const,
-      configured: true,
-      connectionState: info?.instance?.state ?? "unknown",
+      configured: true as const,
+      connectionState: (info?.instance?.state ?? "unknown") as string,
       phone: info?.instance?.owner?.split(":")[0] || null,
       name: null,
       qrAvailable: false,
@@ -36,8 +36,8 @@ export const getBotStatus = createServerFn({ method: "GET" }).handler(async () =
   } catch (err) {
     return {
       ok: false as const,
-      configured: true,
-      connectionState: "error",
+      configured: false as const,
+      connectionState: "error" as const,
       phone: null,
       name: null,
       error: err instanceof Error ? err.message : "Erro ao consultar status",
@@ -47,7 +47,6 @@ export const getBotStatus = createServerFn({ method: "GET" }).handler(async () =
 
 /**
  * Envia comando para o bot server externo (connect, disconnect, etc.)
- * Usado apenas quando o bot externo está configurado.
  */
 export const sendBotCommand = createServerFn({ method: "POST" })
   .validator((input: { command: string; payload?: Record<string, unknown> }) => input)
@@ -56,7 +55,7 @@ export const sendBotCommand = createServerFn({ method: "POST" })
     const BOT_TOKEN = process.env.BOT_TOKEN;
 
     if (!BOT_URL) {
-      return { ok: false as const, error: "BOT_URL não configurado. Comando indisponível." };
+      return { ok: false as const, error: "BOT_URL não configurado" };
     }
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -79,18 +78,12 @@ export const sendBotCommand = createServerFn({ method: "POST" })
     }
   });
 
-/**
- * Obtém QR code do bot externo
- */
 export const getBotQr = createServerFn({ method: "GET" }).handler(async () => {
   const BOT_URL = process.env.BOT_URL;
   const BOT_TOKEN = process.env.BOT_TOKEN;
-
   if (!BOT_URL) return { ok: false as const, error: "BOT_URL não configurado" };
-
   const headers: Record<string, string> = {};
   if (BOT_TOKEN) headers["x-bot-token"] = BOT_TOKEN;
-
   try {
     const res = await fetch(`${BOT_URL.replace(/\/$/, "")}/qr`, {
       method: "GET",

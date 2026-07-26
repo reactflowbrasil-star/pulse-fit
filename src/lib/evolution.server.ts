@@ -16,50 +16,85 @@ let _cachedConfig: EvolutionEnv | null = null;
 let _cacheTs = 0;
 const CACHE_TTL = 30_000;
 
-function isReal(v: string | undefined): boolean {
-  return Boolean(v && v !== "undefined" && v !== "null" && v.trim() !== "");
+function isReal(v: unknown): v is string {
+  return typeof v === "string" && v.length > 0 && v !== "undefined" && v !== "null" && v !== "NaN";
+}
+
+function isValidConfig(c: EvolutionEnv | null): c is EvolutionEnv {
+  if (!c) return false;
+  return isReal(c.apiUrl) && isReal(c.apiKey) && isReal(c.instance);
+}
+
+function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
+  if (!raw) return { apiKey: "", webhookToken: "" };
+  try {
+    const parsed = JSON.parse(raw);
+    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
+  } catch {
+    return { apiKey: "", webhookToken: raw };
+  }
 }
 
 export async function readEvolutionEnv(): Promise<EvolutionEnv | null> {
   // 1. Variáveis de ambiente (prioridade)
-  const envUrl = process.env.EVOLUTION_API_URL;
-  const envKey = process.env.EVOLUTION_API_KEY;
-  const envInstance = process.env.EVOLUTION_INSTANCE;
-  if (isReal(envUrl) && isReal(envKey) && isReal(envInstance)) {
-    return { apiUrl: envUrl!.replace(/\/+$/, ""), apiKey: envKey!, instance: envInstance! };
-  }
+  try {
+    const envUrl = process.env?.EVOLUTION_API_URL;
+    const envKey = process.env?.EVOLUTION_API_KEY;
+    const envInstance = process.env?.EVOLUTION_INSTANCE;
+    if (isReal(envUrl) && isReal(envKey) && isReal(envInstance)) {
+      const config: EvolutionEnv = {
+        apiUrl: envUrl!.replace(/\/+$/, ""),
+        apiKey: envKey!,
+        instance: envInstance!,
+      };
+      if (isValidConfig(config)) {
+        _cachedConfig = config;
+        _cacheTs = Date.now();
+        return config;
+      }
+    }
+  } catch { /* process.env might not exist in some runtimes */ }
 
   // 2. Cache
-  if (_cachedConfig && Date.now() - _cacheTs < CACHE_TTL) {
+  if (isValidConfig(_cachedConfig) && Date.now() - _cacheTs < CACHE_TTL) {
     return _cachedConfig;
   }
 
   // 3. Banco de dados
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("whatsapp_config")
       .select("api_url, instance_name, webhook_token")
       .eq("singleton", true)
       .maybeSingle();
 
-    if (data?.api_url && data?.instance_name) {
+    if (error) {
+      console.error("[evolution] DB query error:", error.message);
+      return null;
+    }
+
+    if (data && isReal(data.api_url) && isReal(data.instance_name)) {
       const secrets = parseSecrets(data.webhook_token);
-      if (secrets.apiKey) {
+      if (isReal(secrets.apiKey)) {
         const config: EvolutionEnv = {
           apiUrl: data.api_url.replace(/\/+$/, ""),
           apiKey: secrets.apiKey,
           instance: data.instance_name,
         };
-        _cachedConfig = config;
-        _cacheTs = Date.now();
-        return config;
+        if (isValidConfig(config)) {
+          _cachedConfig = config;
+          _cacheTs = Date.now();
+          return config;
+        }
       }
     }
   } catch (err) {
-    console.error("[evolution] falha ao ler config do banco:", err);
+    console.error("[evolution] DB read failed:", err);
   }
 
+  // Invalidar cache se chegou aqui
+  _cachedConfig = null;
   return null;
 }
 
@@ -69,6 +104,10 @@ export async function evolutionFetch(
   init: RequestInit = {},
   retries = 2,
 ) {
+  if (!isValidConfig(env)) {
+    throw new EvolutionError("Evolution API não configurada (credenciais inválidas)", 0, null);
+  }
+
   const url = `${env.apiUrl}${path}`;
   const headers = new Headers(init.headers);
   headers.set("apikey", env.apiKey);
@@ -129,16 +168,6 @@ export function toJid(phone: string): string {
     digits = `55${digits}`;
   }
   return `${digits}@s.whatsapp.net`;
-}
-
-function parseSecrets(raw: string | null): { apiKey: string; webhookToken: string } {
-  if (!raw) return { apiKey: "", webhookToken: "" };
-  try {
-    const parsed = JSON.parse(raw);
-    return { apiKey: parsed.api_key || "", webhookToken: parsed.webhook_token || "" };
-  } catch {
-    return { apiKey: "", webhookToken: raw };
-  }
 }
 
 export function friendlyEvolutionError(err: unknown): string {

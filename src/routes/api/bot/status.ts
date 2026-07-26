@@ -29,14 +29,12 @@ export const Route = createFileRoute("/api/bot/status")({
             connectionState: info?.instance?.state ?? "unknown",
             phone: info?.instance?.owner?.split(":")[0] || null,
             name: null,
-            qrAvailable: false,
-            uptime: 0,
             error: null,
           });
         } catch (err) {
           return json({
             ok: false,
-            configured: true,
+            configured: false,
             connectionState: "error",
             error: err instanceof Error ? err.message : "Erro ao consultar status",
             phone: null,
