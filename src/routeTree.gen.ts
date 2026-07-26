@@ -41,6 +41,7 @@ import { Route as ApiBotHealthRouteImport } from './routes/api/bot/health'
 import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
 import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
 import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
+import { Route as ApiTrainerChatRouteImport } from './routes/api/trainer/chat'
 import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
@@ -206,6 +207,11 @@ const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
   path: '/api/coach/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTrainerChatRoute = ApiTrainerChatRouteImport.update({
+  id: '/api/trainer/chat',
+  path: '/api/trainer/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoachSessionSessionIdRoute = CoachSessionSessionIdRouteImport.update({
   id: '/coach/session/$sessionId',
   path: '/coach/session/$sessionId',
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -293,6 +300,7 @@ export interface FileRoutesByTo {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -331,6 +339,7 @@ export interface FileRoutesById {
   '/api/bot/send': typeof ApiBotSendRoute
   '/api/bot/status': typeof ApiBotStatusRoute
   '/api/coach/tts': typeof ApiCoachTtsRoute
+  '/api/trainer/chat': typeof ApiTrainerChatRoute
   '/coach/session/$sessionId': typeof CoachSessionSessionIdRoute
   '/coach/summary/$sessionId': typeof CoachSummarySessionIdRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -370,6 +379,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
@@ -407,6 +417,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
@@ -444,6 +455,7 @@ export interface FileRouteTypes {
     | '/api/bot/send'
     | '/api/bot/status'
     | '/api/coach/tts'
+    | '/api/trainer/chat'
     | '/coach/session/$sessionId'
     | '/coach/summary/$sessionId'
     | '/api/public/whatsapp/webhook'
@@ -480,6 +492,7 @@ export interface RootRouteChildren {
   ApiBotSendRoute: typeof ApiBotSendRoute
   ApiBotStatusRoute: typeof ApiBotStatusRoute
   ApiCoachTtsRoute: typeof ApiCoachTtsRoute
+  ApiTrainerChatRoute: typeof ApiTrainerChatRoute
   CoachSessionSessionIdRoute: typeof CoachSessionSessionIdRoute
   CoachSummarySessionIdRoute: typeof CoachSummarySessionIdRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
@@ -711,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCoachTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/trainer/chat': {
+      id: '/api/trainer/chat'
+      path: '/api/trainer/chat'
+      fullPath: '/api/trainer/chat'
+      preLoaderRoute: typeof ApiTrainerChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coach/session/$sessionId': {
       id: '/coach/session/$sessionId'
       path: '/coach/session/$sessionId'
@@ -778,6 +798,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotSendRoute: ApiBotSendRoute,
   ApiBotStatusRoute: ApiBotStatusRoute,
   ApiCoachTtsRoute: ApiCoachTtsRoute,
+  ApiTrainerChatRoute: ApiTrainerChatRoute,
   CoachSessionSessionIdRoute: CoachSessionSessionIdRoute,
   CoachSummarySessionIdRoute: CoachSummarySessionIdRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,

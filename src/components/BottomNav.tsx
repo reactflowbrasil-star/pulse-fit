@@ -1,12 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, UtensilsCrossed, BarChart3, MessageCircle, Sparkles } from "lucide-react";
+import { Home, BarChart3, User, MessageCircle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 const items = [
   { to: "/", icon: Home, label: "Início" },
-  { to: "/meal", icon: UtensilsCrossed, label: "Dieta" },
+  { to: "/browse", icon: MessageCircle, label: "Treinos" },
   { to: "/stats", icon: BarChart3, label: "Progresso" },
-  { to: "/whatsapp", icon: MessageCircle, label: "Suporte" },
+  { to: "/trainers", icon: User, label: "Coach" },
 ] as const;
 
 const spring = { type: "spring" as const, stiffness: 380, damping: 26, mass: 0.7 };
@@ -45,6 +45,7 @@ export function BottomNav() {
           >
             <Link
               to="/coach"
+              search={{ trainer: "marcus-power" }}
               aria-label="Treinador IA"
               className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-[3px] ring-background-deep animate-[pulse-fab_2.4s_ease-out_infinite]"
             >
