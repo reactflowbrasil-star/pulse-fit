@@ -1,9 +1,10 @@
 /**
  * POST /api/trainer/chat — streams AI response from the selected trainer.
+ * O modelo e a chave vem da configuracao NVIDIA do painel admin.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { resolveChatModel } from "@/lib/nvidia.server";
 import { getTrainerSystemPrompt } from "@/data/trainers";
 
 type Body = {
@@ -28,15 +29,17 @@ export const Route = createFileRoute("/api/trainer/chat")({
           return new Response("trainerId and messages required", { status: 400 });
         }
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("LOVABLE_API_KEY não configurada", { status: 500 });
+        const ai = await resolveChatModel();
+        if (!ai) {
+          return new Response("Nenhuma chave NVIDIA ativa no painel admin", { status: 503 });
+        }
 
         const systemPrompt = getTrainerSystemPrompt(trainerId, userProfile);
-        const gateway = createLovableAiGatewayProvider(key);
 
         const result = streamText({
-          model: gateway("google/gemini-3.6-flash"),
+          model: ai.model,
           system: systemPrompt,
+          temperature: ai.temperature,
           messages: await convertToModelMessages(messages as UIMessage[]),
         });
 
