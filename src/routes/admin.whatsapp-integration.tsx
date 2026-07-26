@@ -78,13 +78,13 @@ function WhatsAppIntegrationPage() {
       return saveFn({ data: payload as never });
     },
     onSuccess: (r) => {
-      if (r?.data?.ok) {
+      if (r?.ok) {
         setFeedback({ type: "ok", msg: "Configuração salva com sucesso!" });
         setApiKey("");
         setWebhookToken("");
         qc.invalidateQueries({ queryKey: ["wa", "config"] });
       } else {
-        setFeedback({ type: "err", msg: r?.data?.error || "Erro ao salvar" });
+        setFeedback({ type: "err", msg: r?.error || "Erro ao salvar" });
       }
     },
     onError: (e) => setFeedback({ type: "err", msg: e.message }),
@@ -93,7 +93,7 @@ function WhatsAppIntegrationPage() {
   const testMut = useMutation({
     mutationFn: () => testFn({ data: undefined as never }),
     onSuccess: (r) => {
-      const d = r?.data;
+      const d = r;
       if (d?.ok) {
         setFeedback({
           type: "ok",

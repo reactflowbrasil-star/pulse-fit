@@ -6,7 +6,7 @@ import { createServerFn } from "@tanstack/react-start";
 export const getBotStatus = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const { readEvolutionEnv, evolutionFetch } = await import("./evolution.server");
-    const env = readEvolutionEnv();
+    const env = await readEvolutionEnv();
 
     if (!env) {
       return {

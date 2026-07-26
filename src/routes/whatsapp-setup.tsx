@@ -73,12 +73,12 @@ function WhatsAppSetupPage() {
     try {
       const result = await enviarCodigoWhatsapp({ data: { whatsapp: digits } });
 
-      if (result?.data?.ok) {
-        setExpiresAt(new Date(result.data.expira_em));
+      if (result?.ok) {
+        setExpiresAt(new Date(result.expira_em));
         setStep("verify");
       } else {
         setStep("error");
-        setError(result?.data?.error || "Falha ao enviar código. Tente novamente.");
+        setError(result?.error || "Falha ao enviar código. Tente novamente.");
       }
     } catch (err) {
       setStep("error");
@@ -101,7 +101,7 @@ function WhatsAppSetupPage() {
         data: { whatsapp: phone.replace(/\D/g, ""), codigo: code },
       });
 
-      if (result?.data?.ok) {
+      if (result?.ok) {
         setStep("done");
       } else {
         setAttempts((a) => a + 1);

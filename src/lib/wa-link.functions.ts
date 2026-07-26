@@ -44,7 +44,7 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
     // 2. Tentar enviar via Evolution API (prioridade)
     try {
       const { readEvolutionEnv, evolutionFetch, toJid } = await import("./evolution.server");
-      const env = readEvolutionEnv();
+      const env = await readEvolutionEnv();
       if (env) {
         const jid = toJid(data.whatsapp);
         await evolutionFetch(env, `/message/sendText/${encodeURIComponent(env.instance)}`, {

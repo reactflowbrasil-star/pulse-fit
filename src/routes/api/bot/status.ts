@@ -6,7 +6,7 @@ export const Route = createFileRoute("/api/bot/status")({
       GET: async () => {
         try {
           const { readEvolutionEnv, evolutionFetch } = await import("@/lib/evolution.server");
-          const env = readEvolutionEnv();
+          const env = await readEvolutionEnv();
 
           if (!env) {
             return json({

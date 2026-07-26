@@ -34,7 +34,7 @@ export const Route = createFileRoute("/api/bot/send")({
 
         try {
           const { readEvolutionEnv, evolutionFetch, toJid } = await import("@/lib/evolution.server");
-          const env = readEvolutionEnv();
+          const env = await readEvolutionEnv();
 
           if (!env) {
             return corsResponse({ ok: false, error: "evolution_not_configured" }, 503);
