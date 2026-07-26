@@ -9,131 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as BrowseRouteImport } from './routes/browse'
-import { Route as DoneRouteImport } from './routes/done'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as LiveRouteImport } from './routes/live'
-import { Route as MealRouteImport } from './routes/meal'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as PlayerRouteImport } from './routes/player'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as ProgressRouteImport } from './routes/progress'
-import { Route as ReadyRouteImport } from './routes/ready'
-import { Route as RewardsRouteImport } from './routes/rewards'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SplashRouteImport } from './routes/splash'
-import { Route as StatsRouteImport } from './routes/stats'
-import { Route as TrainersRouteImport } from './routes/trainers'
-import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as WhatsappSetupRouteImport } from './routes/whatsapp-setup'
-import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
-import { Route as AdminWhatsappIntegrationRouteImport } from './routes/admin.whatsapp-integration'
-import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
-import { Route as ApiTtsRouteImport } from './routes/api/tts'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
+import { Route as TrainersRouteImport } from './routes/trainers'
+import { Route as StatsRouteImport } from './routes/stats'
+import { Route as SplashRouteImport } from './routes/splash'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ReadyRouteImport } from './routes/ready'
+import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PlayerRouteImport } from './routes/player'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MealRouteImport } from './routes/meal'
+import { Route as LiveRouteImport } from './routes/live'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DoneRouteImport } from './routes/done'
+import { Route as BrowseRouteImport } from './routes/browse'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoachIndexRouteImport } from './routes/coach.index'
-import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
 import { Route as WorkoutIdRouteImport } from './routes/workout.$id'
-import { Route as ApiBotEnviarCodigoRouteImport } from './routes/api/bot/enviar-codigo'
-import { Route as ApiBotHealthRouteImport } from './routes/api/bot/health'
-import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
-import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
-import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
-import { Route as ApiTrainerChatRouteImport } from './routes/api/trainer/chat'
-import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
+import { Route as TrainerIdRouteImport } from './routes/trainer.$id'
+import { Route as ApiTtsRouteImport } from './routes/api/tts'
+import { Route as ApiLiveCoachRouteImport } from './routes/api/live-coach'
+import { Route as AdminWhatsappIntegrationRouteImport } from './routes/admin.whatsapp-integration'
+import { Route as AdminNvidiaRouteImport } from './routes/admin.nvidia'
 import { Route as CoachSummarySessionIdRouteImport } from './routes/coach.summary.$sessionId'
+import { Route as CoachSessionSessionIdRouteImport } from './routes/coach.session.$sessionId'
+import { Route as ApiTrainerChatRouteImport } from './routes/api/trainer/chat'
+import { Route as ApiCoachTtsRouteImport } from './routes/api/coach/tts'
+import { Route as ApiBotStatusRouteImport } from './routes/api/bot/status'
+import { Route as ApiBotSendRouteImport } from './routes/api/bot/send'
+import { Route as ApiBotHealthRouteImport } from './routes/api/bot/health'
+import { Route as ApiBotEnviarCodigoRouteImport } from './routes/api/bot/enviar-codigo'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrowseRoute = BrowseRouteImport.update({
-  id: '/browse',
-  path: '/browse',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DoneRoute = DoneRouteImport.update({
-  id: '/done',
-  path: '/done',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiveRoute = LiveRouteImport.update({
-  id: '/live',
-  path: '/live',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MealRoute = MealRouteImport.update({
-  id: '/meal',
-  path: '/meal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlayerRoute = PlayerRouteImport.update({
-  id: '/player',
-  path: '/player',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgressRoute = ProgressRouteImport.update({
-  id: '/progress',
-  path: '/progress',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReadyRoute = ReadyRouteImport.update({
-  id: '/ready',
-  path: '/ready',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RewardsRoute = RewardsRouteImport.update({
-  id: '/rewards',
-  path: '/rewards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SplashRoute = SplashRouteImport.update({
-  id: '/splash',
-  path: '/splash',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StatsRoute = StatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TrainersRoute = TrainersRouteImport.update({
-  id: '/trainers',
-  path: '/trainers',
+const WhatsappSetupRoute = WhatsappSetupRouteImport.update({
+  id: '/whatsapp-setup',
+  path: '/whatsapp-setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhatsappRoute = WhatsappRouteImport.update({
@@ -141,30 +56,94 @@ const WhatsappRoute = WhatsappRouteImport.update({
   path: '/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WhatsappSetupRoute = WhatsappSetupRouteImport.update({
-  id: '/whatsapp-setup',
-  path: '/whatsapp-setup',
+const TrainersRoute = TrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminNvidiaRoute = AdminNvidiaRouteImport.update({
-  id: '/nvidia',
-  path: '/nvidia',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWhatsappIntegrationRoute =
-  AdminWhatsappIntegrationRouteImport.update({
-    id: '/whatsapp-integration',
-    path: '/whatsapp-integration',
-    getParentRoute: () => AdminRoute,
-  } as any)
-const ApiLiveCoachRoute = ApiLiveCoachRouteImport.update({
-  id: '/api/live-coach',
-  path: '/api/live-coach',
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTtsRoute = ApiTtsRouteImport.update({
-  id: '/api/tts',
-  path: '/api/tts',
+const SplashRoute = SplashRouteImport.update({
+  id: '/splash',
+  path: '/splash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadyRoute = ReadyRouteImport.update({
+  id: '/ready',
+  path: '/ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerRoute = PlayerRouteImport.update({
+  id: '/player',
+  path: '/player',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealRoute = MealRouteImport.update({
+  id: '/meal',
+  path: '/meal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoneRoute = DoneRouteImport.update({
+  id: '/done',
+  path: '/done',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrowseRoute = BrowseRouteImport.update({
+  id: '/browse',
+  path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoachIndexRoute = CoachIndexRouteImport.update({
@@ -172,44 +151,40 @@ const CoachIndexRoute = CoachIndexRouteImport.update({
   path: '/coach/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TrainerIdRoute = TrainerIdRouteImport.update({
-  id: '/trainer/$id',
-  path: '/trainer/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const WorkoutIdRoute = WorkoutIdRouteImport.update({
   id: '/workout/$id',
   path: '/workout/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBotEnviarCodigoRoute = ApiBotEnviarCodigoRouteImport.update({
-  id: '/api/bot/enviar-codigo',
-  path: '/api/bot/enviar-codigo',
+const TrainerIdRoute = TrainerIdRouteImport.update({
+  id: '/trainer/$id',
+  path: '/trainer/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBotHealthRoute = ApiBotHealthRouteImport.update({
-  id: '/api/bot/health',
-  path: '/api/bot/health',
+const ApiTtsRoute = ApiTtsRouteImport.update({
+  id: '/api/tts',
+  path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBotSendRoute = ApiBotSendRouteImport.update({
-  id: '/api/bot/send',
-  path: '/api/bot/send',
+const ApiLiveCoachRoute = ApiLiveCoachRouteImport.update({
+  id: '/api/live-coach',
+  path: '/api/live-coach',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBotStatusRoute = ApiBotStatusRouteImport.update({
-  id: '/api/bot/status',
-  path: '/api/bot/status',
-  getParentRoute: () => rootRouteImport,
+const AdminWhatsappIntegrationRoute =
+  AdminWhatsappIntegrationRouteImport.update({
+    id: '/whatsapp-integration',
+    path: '/whatsapp-integration',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminNvidiaRoute = AdminNvidiaRouteImport.update({
+  id: '/nvidia',
+  path: '/nvidia',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
-  id: '/api/coach/tts',
-  path: '/api/coach/tts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiTrainerChatRoute = ApiTrainerChatRouteImport.update({
-  id: '/api/trainer/chat',
-  path: '/api/trainer/chat',
+const CoachSummarySessionIdRoute = CoachSummarySessionIdRouteImport.update({
+  id: '/coach/summary/$sessionId',
+  path: '/coach/summary/$sessionId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoachSessionSessionIdRoute = CoachSessionSessionIdRouteImport.update({
@@ -217,9 +192,34 @@ const CoachSessionSessionIdRoute = CoachSessionSessionIdRouteImport.update({
   path: '/coach/session/$sessionId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoachSummarySessionIdRoute = CoachSummarySessionIdRouteImport.update({
-  id: '/coach/summary/$sessionId',
-  path: '/coach/summary/$sessionId',
+const ApiTrainerChatRoute = ApiTrainerChatRouteImport.update({
+  id: '/api/trainer/chat',
+  path: '/api/trainer/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoachTtsRoute = ApiCoachTtsRouteImport.update({
+  id: '/api/coach/tts',
+  path: '/api/coach/tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotStatusRoute = ApiBotStatusRouteImport.update({
+  id: '/api/bot/status',
+  path: '/api/bot/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotSendRoute = ApiBotSendRouteImport.update({
+  id: '/api/bot/send',
+  path: '/api/bot/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotHealthRoute = ApiBotHealthRouteImport.update({
+  id: '/api/bot/health',
+  path: '/api/bot/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBotEnviarCodigoRoute = ApiBotEnviarCodigoRouteImport.update({
+  id: '/api/bot/enviar-codigo',
+  path: '/api/bot/enviar-codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicWhatsappWebhookRoute =
@@ -500,130 +500,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/browse': {
-      id: '/browse'
-      path: '/browse'
-      fullPath: '/browse'
-      preLoaderRoute: typeof BrowseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/done': {
-      id: '/done'
-      path: '/done'
-      fullPath: '/done'
-      preLoaderRoute: typeof DoneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/history': {
-      id: '/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live': {
-      id: '/live'
-      path: '/live'
-      fullPath: '/live'
-      preLoaderRoute: typeof LiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/meal': {
-      id: '/meal'
-      path: '/meal'
-      fullPath: '/meal'
-      preLoaderRoute: typeof MealRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/player': {
-      id: '/player'
-      path: '/player'
-      fullPath: '/player'
-      preLoaderRoute: typeof PlayerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/progress': {
-      id: '/progress'
-      path: '/progress'
-      fullPath: '/progress'
-      preLoaderRoute: typeof ProgressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ready': {
-      id: '/ready'
-      path: '/ready'
-      fullPath: '/ready'
-      preLoaderRoute: typeof ReadyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rewards': {
-      id: '/rewards'
-      path: '/rewards'
-      fullPath: '/rewards'
-      preLoaderRoute: typeof RewardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/splash': {
-      id: '/splash'
-      path: '/splash'
-      fullPath: '/splash'
-      preLoaderRoute: typeof SplashRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stats': {
-      id: '/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof StatsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trainers': {
-      id: '/trainers'
-      path: '/trainers'
-      fullPath: '/trainers'
-      preLoaderRoute: typeof TrainersRouteImport
+    '/whatsapp-setup': {
+      id: '/whatsapp-setup'
+      path: '/whatsapp-setup'
+      fullPath: '/whatsapp-setup'
+      preLoaderRoute: typeof WhatsappSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whatsapp': {
@@ -633,39 +514,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/whatsapp-setup': {
-      id: '/whatsapp-setup'
-      path: '/whatsapp-setup'
-      fullPath: '/whatsapp-setup'
-      preLoaderRoute: typeof WhatsappSetupRouteImport
+    '/trainers': {
+      id: '/trainers'
+      path: '/trainers'
+      fullPath: '/trainers'
+      preLoaderRoute: typeof TrainersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/nvidia': {
-      id: '/admin/nvidia'
-      path: '/nvidia'
-      fullPath: '/admin/nvidia'
-      preLoaderRoute: typeof AdminNvidiaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/whatsapp-integration': {
-      id: '/admin/whatsapp-integration'
-      path: '/whatsapp-integration'
-      fullPath: '/admin/whatsapp-integration'
-      preLoaderRoute: typeof AdminWhatsappIntegrationRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/api/live-coach': {
-      id: '/api/live-coach'
-      path: '/api/live-coach'
-      fullPath: '/api/live-coach'
-      preLoaderRoute: typeof ApiLiveCoachRouteImport
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/tts': {
-      id: '/api/tts'
-      path: '/api/tts'
-      fullPath: '/api/tts'
-      preLoaderRoute: typeof ApiTtsRouteImport
+    '/splash': {
+      id: '/splash'
+      path: '/splash'
+      fullPath: '/splash'
+      preLoaderRoute: typeof SplashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ready': {
+      id: '/ready'
+      path: '/ready'
+      fullPath: '/ready'
+      preLoaderRoute: typeof ReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player': {
+      id: '/player'
+      path: '/player'
+      fullPath: '/player'
+      preLoaderRoute: typeof PlayerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meal': {
+      id: '/meal'
+      path: '/meal'
+      fullPath: '/meal'
+      preLoaderRoute: typeof MealRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/done': {
+      id: '/done'
+      path: '/done'
+      fullPath: '/done'
+      preLoaderRoute: typeof DoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/browse': {
+      id: '/browse'
+      path: '/browse'
+      fullPath: '/browse'
+      preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coach/': {
@@ -675,13 +647,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoachIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/trainer/$id': {
-      id: '/trainer/$id'
-      path: '/trainer/$id'
-      fullPath: '/trainer/$id'
-      preLoaderRoute: typeof TrainerIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/workout/$id': {
       id: '/workout/$id'
       path: '/workout/$id'
@@ -689,46 +654,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkoutIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bot/enviar-codigo': {
-      id: '/api/bot/enviar-codigo'
-      path: '/api/bot/enviar-codigo'
-      fullPath: '/api/bot/enviar-codigo'
-      preLoaderRoute: typeof ApiBotEnviarCodigoRouteImport
+    '/trainer/$id': {
+      id: '/trainer/$id'
+      path: '/trainer/$id'
+      fullPath: '/trainer/$id'
+      preLoaderRoute: typeof TrainerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bot/health': {
-      id: '/api/bot/health'
-      path: '/api/bot/health'
-      fullPath: '/api/bot/health'
-      preLoaderRoute: typeof ApiBotHealthRouteImport
+    '/api/tts': {
+      id: '/api/tts'
+      path: '/api/tts'
+      fullPath: '/api/tts'
+      preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bot/send': {
-      id: '/api/bot/send'
-      path: '/api/bot/send'
-      fullPath: '/api/bot/send'
-      preLoaderRoute: typeof ApiBotSendRouteImport
+    '/api/live-coach': {
+      id: '/api/live-coach'
+      path: '/api/live-coach'
+      fullPath: '/api/live-coach'
+      preLoaderRoute: typeof ApiLiveCoachRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bot/status': {
-      id: '/api/bot/status'
-      path: '/api/bot/status'
-      fullPath: '/api/bot/status'
-      preLoaderRoute: typeof ApiBotStatusRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/whatsapp-integration': {
+      id: '/admin/whatsapp-integration'
+      path: '/whatsapp-integration'
+      fullPath: '/admin/whatsapp-integration'
+      preLoaderRoute: typeof AdminWhatsappIntegrationRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/api/coach/tts': {
-      id: '/api/coach/tts'
-      path: '/api/coach/tts'
-      fullPath: '/api/coach/tts'
-      preLoaderRoute: typeof ApiCoachTtsRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/nvidia': {
+      id: '/admin/nvidia'
+      path: '/nvidia'
+      fullPath: '/admin/nvidia'
+      preLoaderRoute: typeof AdminNvidiaRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/api/trainer/chat': {
-      id: '/api/trainer/chat'
-      path: '/api/trainer/chat'
-      fullPath: '/api/trainer/chat'
-      preLoaderRoute: typeof ApiTrainerChatRouteImport
+    '/coach/summary/$sessionId': {
+      id: '/coach/summary/$sessionId'
+      path: '/coach/summary/$sessionId'
+      fullPath: '/coach/summary/$sessionId'
+      preLoaderRoute: typeof CoachSummarySessionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coach/session/$sessionId': {
@@ -738,11 +703,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoachSessionSessionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/coach/summary/$sessionId': {
-      id: '/coach/summary/$sessionId'
-      path: '/coach/summary/$sessionId'
-      fullPath: '/coach/summary/$sessionId'
-      preLoaderRoute: typeof CoachSummarySessionIdRouteImport
+    '/api/trainer/chat': {
+      id: '/api/trainer/chat'
+      path: '/api/trainer/chat'
+      fullPath: '/api/trainer/chat'
+      preLoaderRoute: typeof ApiTrainerChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coach/tts': {
+      id: '/api/coach/tts'
+      path: '/api/coach/tts'
+      fullPath: '/api/coach/tts'
+      preLoaderRoute: typeof ApiCoachTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/status': {
+      id: '/api/bot/status'
+      path: '/api/bot/status'
+      fullPath: '/api/bot/status'
+      preLoaderRoute: typeof ApiBotStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/send': {
+      id: '/api/bot/send'
+      path: '/api/bot/send'
+      fullPath: '/api/bot/send'
+      preLoaderRoute: typeof ApiBotSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/health': {
+      id: '/api/bot/health'
+      path: '/api/bot/health'
+      fullPath: '/api/bot/health'
+      preLoaderRoute: typeof ApiBotHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/enviar-codigo': {
+      id: '/api/bot/enviar-codigo'
+      path: '/api/bot/enviar-codigo'
+      fullPath: '/api/bot/enviar-codigo'
+      preLoaderRoute: typeof ApiBotEnviarCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/whatsapp/webhook': {
