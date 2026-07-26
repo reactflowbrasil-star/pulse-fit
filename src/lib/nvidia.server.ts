@@ -1,12 +1,13 @@
-/**
- * NVIDIA AI — resolve o modelo de respostas a partir da configuracao do painel admin.
- *
- * Le a chave ativa em `nvidia_api_keys` e os defaults em `nvidia_settings`
- * (base_url, default_model, max_tokens_default, temperature_default).
- * Server-only: usa a service role do Supabase, nunca importe isto no cliente.
- */
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+
+/**
+ * NVIDIA NIM provider factory.
+ * Le a chave ativa em nvidia_api_keys e os defaults em nvidia_settings
+ * (base_url, default_model, max_tokens_default, temperature_default).
+ * Nunca expor no browser.
+ */
 
 const FALLBACK_BASE_URL = "https://integrate.api.nvidia.com/v1";
 const FALLBACK_MODEL = "nvidia/llama-3.1-nemotron-70b-instruct";
@@ -21,9 +22,20 @@ export type NvidiaConfig = {
   temperature: number;
 };
 
-/** Configuracao NVIDIA salva pelo admin. Retorna null se nao houver chave ativa. */
+export type NvidiaOptions = { structuredOutputs?: boolean };
+
+/** Aceita "0.7" e "0,7"; usa o fallback quando o valor nao e numerico. */
+function toNumber(value: unknown, fallback: number): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const parsed = Number(value.trim().replace(",", "."));
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return fallback;
+}
+
 export async function getNvidiaConfig(): Promise<NvidiaConfig | null> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // As tabelas nvidia_* nao existem nos types gerados do Supabase.
   const db = supabaseAdmin as unknown as SupabaseClient;
 
   const [keysRes, settingsRes] = await Promise.all([
@@ -40,37 +52,45 @@ export async function getNvidiaConfig(): Promise<NvidiaConfig | null> {
   if (!activeKey) return null;
 
   const settings: Record<string, unknown> = {};
-  for (const row of settingsRes.data ?? []) settings[row.key as string] = row.value;
+  for (const row of settingsRes.data ?? []) {
+    settings[(row as { key: string }).key] = (row as { value: unknown }).value;
+  }
 
   return {
     apiKey: activeKey,
     baseURL: (settings.base_url as string) || FALLBACK_BASE_URL,
     model: (settings.default_model as string) || FALLBACK_MODEL,
-    maxTokens: Number(settings.max_tokens_default ?? FALLBACK_MAX_TOKENS),
-    temperature: Number(settings.temperature_default ?? FALLBACK_TEMPERATURE),
+    maxTokens: Math.trunc(toNumber(settings.max_tokens_default, FALLBACK_MAX_TOKENS)),
+    temperature: toNumber(settings.temperature_default, FALLBACK_TEMPERATURE),
   };
 }
 
-/** Provider OpenAI-compatible apontando para a API da NVIDIA. */
-export function createNvidiaProvider(config: NvidiaConfig) {
+export function createNvidiaProvider(
+  config: NvidiaConfig,
+  options?: NvidiaOptions,
+) {
   return createOpenAICompatible({
     name: "nvidia",
     baseURL: config.baseURL,
-    headers: { Authorization: `Bearer ${config.apiKey}` },
+    supportsStructuredOutputs: options?.structuredOutputs ?? false,
+    headers: {
+      Authorization: `Bearer ${config.apiKey}`,
+    },
   });
 }
 
 /**
- * Modelo usado por todas as respostas de IA do app.
+ * Resolve o modelo de chat usado pelas respostas da IA.
  * A NVIDIA configurada no admin e a fonte primaria; o Lovable AI Gateway
- * fica apenas como rede de seguranca quando nao existe chave NVIDIA ativa.
+ * fica apenas como fallback quando nenhuma chave NVIDIA esta ativa.
  */
-export async function resolveChatModel() {
+export async function resolveChatModel(options?: NvidiaOptions) {
   const config = await getNvidiaConfig();
   if (config) {
+    const provider = createNvidiaProvider(config, options);
     return {
       provider: "nvidia" as const,
-      model: createNvidiaProvider(config)(config.model),
+      model: provider(config.model),
       temperature: config.temperature,
       maxTokens: config.maxTokens,
     };
@@ -81,7 +101,9 @@ export async function resolveChatModel() {
     const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
     return {
       provider: "lovable" as const,
-      model: createLovableAiGatewayProvider(lovableKey)("google/gemini-3.6-flash"),
+      model: createLovableAiGatewayProvider(lovableKey, options)(
+        "google/gemini-3.6-flash",
+      ),
       temperature: FALLBACK_TEMPERATURE,
       maxTokens: FALLBACK_MAX_TOKENS,
     };
@@ -89,4 +111,3 @@ export async function resolveChatModel() {
 
   return null;
 }
-
