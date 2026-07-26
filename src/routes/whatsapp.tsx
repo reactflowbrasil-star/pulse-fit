@@ -191,9 +191,9 @@ function WhatsappPage() {
                     Evolution API: {evoStatus.data?.state || "desconhecido"}
                   </span>
                 </div>
-                {evoStatus.data?.phone && (
+                {(evoStatus.data as { phone?: string } | undefined)?.phone && (
                   <span className="text-[11px] text-text-muted font-mono">
-                    {evoStatus.data.phone}
+                    {(evoStatus.data as { phone?: string }).phone}
                   </span>
                 )}
               </div>

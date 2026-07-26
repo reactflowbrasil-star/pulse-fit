@@ -201,7 +201,7 @@ export const nvidiaChat = createServerFn({ method: "POST" })
     const key = keysRes.data?.[0]?.api_key;
     if (!key) throw new Error("No active NVIDIA API key configured");
 
-    const settings: Record<string, string> = {};
+    const settings: Record<string, unknown> = {};
     for (const row of settingsRes.data ?? []) settings[row.key] = row.value;
 
     const model =
