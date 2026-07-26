@@ -1,6 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+// Tabelas nvidia_* não existem nos types gerados do Supabase.
+const asDb = (client: unknown) => client as SupabaseClient;
 
 const NVIDIA_BASE = "https://integrate.api.nvidia.com/v1";
 
@@ -9,7 +13,7 @@ const NVIDIA_BASE = "https://integrate.api.nvidia.com/v1";
 export const listNvidiaApiKeys = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data, error } = await supabase
       .from("nvidia_api_keys")
       .select("id, name, is_active, last_validated_at, last_validation_ok, created_at")
@@ -24,7 +28,7 @@ export const createNvidiaApiKey = createServerFn({ method: "POST" })
     z.object({ name: z.string().min(1), api_key: z.string().min(1) }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data: row, error } = await supabase
       .from("nvidia_api_keys")
       .insert({ name: data.name, api_key: data.api_key })
@@ -38,7 +42,7 @@ export const deleteNvidiaApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { error } = await supabase.from("nvidia_api_keys").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
@@ -50,7 +54,7 @@ export const toggleNvidiaApiKey = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), is_active: z.boolean() }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { error } = await supabase
       .from("nvidia_api_keys")
       .update({ is_active: data.is_active })
@@ -65,7 +69,7 @@ export const validateNvidiaApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data: key } = await supabase
       .from("nvidia_api_keys")
       .select("api_key")
@@ -97,7 +101,7 @@ export const validateNvidiaApiKey = createServerFn({ method: "POST" })
 export const listNvidiaModels = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data, error } = await supabase
       .from("nvidia_models")
       .select("*")
@@ -113,7 +117,7 @@ export const toggleNvidiaModel = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), is_enabled: z.boolean() }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { error } = await supabase
       .from("nvidia_models")
       .update({ is_enabled: data.is_enabled })
@@ -125,7 +129,7 @@ export const toggleNvidiaModel = createServerFn({ method: "POST" })
 export const fetchNvidiaRemoteModels = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data: keys } = await supabase
       .from("nvidia_api_keys")
       .select("api_key")
@@ -147,10 +151,10 @@ export const fetchNvidiaRemoteModels = createServerFn({ method: "POST" })
 export const getNvidiaSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { data, error } = await supabase.from("nvidia_settings").select("*");
     if (error) throw error;
-    const settings: Record<string, unknown> = {};
+    const settings: Record<string, string> = {};
     for (const row of data ?? []) settings[row.key] = row.value;
     return settings;
   });
@@ -159,7 +163,7 @@ export const updateNvidiaSetting = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ key: z.string(), value: z.any() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
     const { error } = await supabase
       .from("nvidia_settings")
       .upsert({ key: data.key, value: data.value, updated_at: new Date().toISOString() });
@@ -182,7 +186,7 @@ export const nvidiaChat = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const supabase = asDb(context.supabase);
 
     const [keysRes, settingsRes] = await Promise.all([
       supabase
@@ -197,7 +201,7 @@ export const nvidiaChat = createServerFn({ method: "POST" })
     const key = keysRes.data?.[0]?.api_key;
     if (!key) throw new Error("No active NVIDIA API key configured");
 
-    const settings: Record<string, unknown> = {};
+    const settings: Record<string, string> = {};
     for (const row of settingsRes.data ?? []) settings[row.key] = row.value;
 
     const model =
