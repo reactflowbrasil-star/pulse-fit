@@ -1,7 +1,11 @@
 import { validateEnvironment } from "./lib/env-validation";
 
 // Valida variáveis de ambiente no startup
-try { validateEnvironment(); } catch (e) { console.error("[env] validation failed:", e); }
+try {
+  validateEnvironment();
+} catch (e) {
+  console.error("[env] validation failed:", e);
+}
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";

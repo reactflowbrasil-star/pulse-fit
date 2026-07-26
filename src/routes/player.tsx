@@ -93,7 +93,9 @@ function PlayerPage() {
 
         <div className="flex flex-1 flex-col justify-end px-5 pb-8 pt-6">
           <div className="mb-4 flex items-center justify-between text-xs font-semibold text-text-tertiary">
-            <span>Exercício {i + 1} de {exercises.length}</span>
+            <span>
+              Exercício {i + 1} de {exercises.length}
+            </span>
             <span>{Math.round(pct)}%</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-white/8">
@@ -105,9 +107,7 @@ function PlayerPage() {
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
-              onClick={() =>
-                i > 0 && navigate({ to: "/player", search: { workout, i: i - 1 } })
-              }
+              onClick={() => i > 0 && navigate({ to: "/player", search: { workout, i: i - 1 } })}
               disabled={i === 0}
               className="rounded-full bg-surface-elevated py-4 text-sm font-bold text-primary transition-transform active:scale-[0.98] disabled:opacity-40"
             >

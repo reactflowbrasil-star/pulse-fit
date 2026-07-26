@@ -14,16 +14,14 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook")({
       GET: async () => new Response("ok"),
       POST: async ({ request }) => {
         const url = new URL(request.url);
-                const { readWebhookToken } = await import("@/lib/evolution.server");
+        const { readWebhookToken } = await import("@/lib/evolution.server");
         const expectedToken = await readWebhookToken();
         if (!expectedToken) {
           console.error("[wa-webhook] WHATSAPP_WEBHOOK_TOKEN ausente");
           return json({ ok: false, error: "server_not_configured" }, 500);
         }
         const provided =
-          url.searchParams.get("token") ??
-          request.headers.get("x-evolution-token") ??
-          "";
+          url.searchParams.get("token") ?? request.headers.get("x-evolution-token") ?? "";
         if (!timingSafeEqual(provided, expectedToken)) {
           return json({ ok: false, error: "unauthorized" }, 401);
         }
@@ -48,15 +46,13 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook")({
   },
 });
 
-type SupabaseAdmin = typeof import("@/integrations/supabase/client.server")["supabaseAdmin"];
+type SupabaseAdmin = (typeof import("@/integrations/supabase/client.server"))["supabaseAdmin"];
 
 async function handleEvent(payload: unknown, db: SupabaseAdmin) {
   if (!payload || typeof payload !== "object") return;
   const evt = payload as Record<string, unknown>;
   const eventName =
-    (evt.event as string | undefined) ??
-    (evt.type as string | undefined) ??
-    "unknown";
+    (evt.event as string | undefined) ?? (evt.type as string | undefined) ?? "unknown";
   const data = (evt.data ?? evt) as Record<string, unknown>;
 
   // Log bruto sempre
@@ -80,16 +76,14 @@ async function handleEvent(payload: unknown, db: SupabaseAdmin) {
         raw: evt as never,
       });
 
-      await db
-        .from("whatsapp_sessions")
-        .upsert(
-          {
-            remote_jid: remoteJid,
-            display_name: (data.pushName as string | undefined) ?? null,
-            last_message_at: new Date().toISOString(),
-          },
-          { onConflict: "remote_jid" },
-        );
+      await db.from("whatsapp_sessions").upsert(
+        {
+          remote_jid: remoteJid,
+          display_name: (data.pushName as string | undefined) ?? null,
+          last_message_at: new Date().toISOString(),
+        },
+        { onConflict: "remote_jid" },
+      );
 
       // Bot: gera resposta e envia via Evolution
       if (remoteJid !== "unknown" && messageContent) {
@@ -109,7 +103,9 @@ async function handleEvent(payload: unknown, db: SupabaseAdmin) {
   if (eventName.includes("messages.update") || eventName.includes("status")) {
     const key = data.key as { id?: string } | undefined;
     const messageId = key?.id ?? (data.messageId as string | undefined);
-    const rawStatus = (data.status as string | number | undefined) ?? (data.update as Record<string, unknown> | undefined)?.status;
+    const rawStatus =
+      (data.status as string | number | undefined) ??
+      (data.update as Record<string, unknown> | undefined)?.status;
     const status = mapStatus(rawStatus);
     if (messageId && status) {
       await db

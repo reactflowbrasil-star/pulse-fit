@@ -29,7 +29,9 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   getWhatsAppConfig,
   saveWhatsAppConfig,
-  testWhatsAppConnection,  getEvolutionWebhook,  setEvolutionWebhook,
+  testWhatsAppConnection,
+  getEvolutionWebhook,
+  setEvolutionWebhook,
 } from "@/lib/whatsapp-config.functions";
 
 export const Route = createFileRoute("/admin/whatsapp-integration")({
@@ -70,7 +72,9 @@ function WhatsAppIntegrationPage() {
   const [showWebhook, setShowWebhook] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  const hasAnyField = Boolean(apiUrl.trim() || apiKey.trim() || instanceName.trim() || webhookToken.trim());
+  const hasAnyField = Boolean(
+    apiUrl.trim() || apiKey.trim() || instanceName.trim() || webhookToken.trim(),
+  );
 
   const saveMut = useMutation({
     mutationFn: async () => {
@@ -153,20 +157,30 @@ function WhatsAppIntegrationPage() {
           <Card variant="default" className="p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs text-text-secondary">Status</span>
-              <span className={`text-xs font-medium ${config.data?.configured ? "text-success" : "text-text-muted"}`}>
-                {config.isLoading ? "Carregando..." : config.data?.configured ? "Configurado" : "Não configurado"}
+              <span
+                className={`text-xs font-medium ${config.data?.configured ? "text-success" : "text-text-muted"}`}
+              >
+                {config.isLoading
+                  ? "Carregando..."
+                  : config.data?.configured
+                    ? "Configurado"
+                    : "Não configurado"}
               </span>
             </div>
             {config.data?.instanceName && (
               <div className="mt-1 flex items-center justify-between">
                 <span className="text-xs text-text-secondary">Instância</span>
-                <span className="text-xs text-text-tertiary font-mono">{config.data.instanceName}</span>
+                <span className="text-xs text-text-tertiary font-mono">
+                  {config.data.instanceName}
+                </span>
               </div>
             )}
             {config.data?.updatedAt && (
               <div className="mt-1 flex items-center justify-between">
                 <span className="text-xs text-text-secondary">Atualizado</span>
-                <span className="text-xs text-text-tertiary">{new Date(config.data.updatedAt).toLocaleString("pt-BR")}</span>
+                <span className="text-xs text-text-tertiary">
+                  {new Date(config.data.updatedAt).toLocaleString("pt-BR")}
+                </span>
               </div>
             )}
           </Card>
@@ -181,8 +195,18 @@ function WhatsAppIntegrationPage() {
               <label className="flex items-center gap-1.5 text-[11px] font-semibold text-text-secondary">
                 <Link2 className="h-3 w-3" /> API URL
               </label>
-              <Input placeholder="https://sua-evolution-api.com.br" value={apiUrl} onChange={(e) => { setApiUrl(e.target.value); setFeedback(null); }} inputMode="url" />
-              <p className="text-[10px] text-text-muted">URL base da sua Evolution API (ex: https://evo.exemplo.com)</p>
+              <Input
+                placeholder="https://sua-evolution-api.com.br"
+                value={apiUrl}
+                onChange={(e) => {
+                  setApiUrl(e.target.value);
+                  setFeedback(null);
+                }}
+                inputMode="url"
+              />
+              <p className="text-[10px] text-text-muted">
+                URL base da sua Evolution API (ex: https://evo.exemplo.com)
+              </p>
             </div>
 
             <div className="space-y-1.5">
@@ -190,20 +214,44 @@ function WhatsAppIntegrationPage() {
                 <Key className="h-3 w-3" /> API Key
               </label>
               <div className="relative">
-                <Input placeholder={config.data?.apiKeySet ? "(já salva)" : "Sua API key"} value={apiKey} onChange={(e) => { setApiKey(e.target.value); setFeedback(null); }} type={showApiKey ? "text" : "password"} className="pr-10" />
-                <button type="button" onClick={() => setShowApiKey(!showApiKey)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
+                <Input
+                  placeholder={config.data?.apiKeySet ? "(já salva)" : "Sua API key"}
+                  value={apiKey}
+                  onChange={(e) => {
+                    setApiKey(e.target.value);
+                    setFeedback(null);
+                  }}
+                  type={showApiKey ? "text" : "password"}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
+                >
                   {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              <p className="text-[10px] text-text-muted">Encontre em Evolution API {'>'} Settings {'>'} API Key</p>
+              <p className="text-[10px] text-text-muted">
+                Encontre em Evolution API {">"} Settings {">"} API Key
+              </p>
             </div>
 
             <div className="space-y-1.5">
               <label className="flex items-center gap-1.5 text-[11px] font-semibold text-text-secondary">
                 <Hash className="h-3 w-3" /> Nome da Instância
               </label>
-              <Input placeholder="pulsefit" value={instanceName} onChange={(e) => { setInstanceName(e.target.value); setFeedback(null); }} />
-              <p className="text-[10px] text-text-muted">Nome da instância criada na Evolution API</p>
+              <Input
+                placeholder="pulsefit"
+                value={instanceName}
+                onChange={(e) => {
+                  setInstanceName(e.target.value);
+                  setFeedback(null);
+                }}
+              />
+              <p className="text-[10px] text-text-muted">
+                Nome da instância criada na Evolution API
+              </p>
             </div>
 
             <div className="space-y-1.5">
@@ -211,27 +259,61 @@ function WhatsAppIntegrationPage() {
                 <Lock className="h-3 w-3" /> Webhook Token
               </label>
               <div className="relative">
-                <Input placeholder="Token para validar webhooks" value={webhookToken} onChange={(e) => { setWebhookToken(e.target.value); setFeedback(null); }} type={showWebhook ? "text" : "password"} className="pr-10" />
-                <button type="button" onClick={() => setShowWebhook(!showWebhook)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
+                <Input
+                  placeholder="Token para validar webhooks"
+                  value={webhookToken}
+                  onChange={(e) => {
+                    setWebhookToken(e.target.value);
+                    setFeedback(null);
+                  }}
+                  type={showWebhook ? "text" : "password"}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowWebhook(!showWebhook)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
+                >
                   {showWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              <p className="text-[10px] text-text-muted">Token compartilhado para autenticar o webhook (opcional)</p>
+              <p className="text-[10px] text-text-muted">
+                Token compartilhado para autenticar o webhook (opcional)
+              </p>
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button variant="primary" className="flex-1" onClick={() => saveMut.mutate()} loading={saveMut.isPending} disabled={!hasAnyField}>
+              <Button
+                variant="primary"
+                className="flex-1"
+                onClick={() => saveMut.mutate()}
+                loading={saveMut.isPending}
+                disabled={!hasAnyField}
+              >
                 <Save className="h-4 w-4" /> Salvar
               </Button>
-              <Button variant="outline" className="flex-1" onClick={() => testMut.mutate()} loading={testMut.isPending}>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => testMut.mutate()}
+                loading={testMut.isPending}
+              >
                 <TestTube className="h-4 w-4" /> Testar
               </Button>
             </div>
           </Card>
 
           {feedback && (
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`flex items-start gap-2 rounded-2xl p-3 text-xs ${feedback.type === "ok" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>
-              {feedback.type === "ok" ? <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" /> : <XCircle className="h-4 w-4 shrink-0 mt-0.5" />}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex items-start gap-2 rounded-2xl p-3 text-xs ${feedback.type === "ok" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}
+            >
+              {feedback.type === "ok" ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+              ) : (
+                <XCircle className="h-4 w-4 shrink-0 mt-0.5" />
+              )}
               <span>{feedback.msg}</span>
             </motion.div>
           )}
@@ -241,32 +323,61 @@ function WhatsAppIntegrationPage() {
               <Link2 className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Webhook em tempo real</p>
             </div>
-            <p className="text-[11px] text-text-secondary">Registra na Evolution API a URL que recebe as mensagens do aluno, para o bot responder na hora.</p>
+            <p className="text-[11px] text-text-secondary">
+              Registra na Evolution API a URL que recebe as mensagens do aluno, para o bot responder
+              na hora.
+            </p>
             <div className="flex items-center justify-between">
               <span className="text-xs text-text-secondary">Status</span>
-              <span className={`text-xs font-medium ${webhook.data?.ok && webhook.data.enabled ? "text-success" : "text-text-muted"}`}>
-                {webhook.isLoading ? "Carregando..." : webhook.data?.ok ? (webhook.data.enabled ? "Ativo" : "Inativo") : "Indisponivel"}
+              <span
+                className={`text-xs font-medium ${webhook.data?.ok && webhook.data.enabled ? "text-success" : "text-text-muted"}`}
+              >
+                {webhook.isLoading
+                  ? "Carregando..."
+                  : webhook.data?.ok
+                    ? webhook.data.enabled
+                      ? "Ativo"
+                      : "Inativo"
+                    : "Indisponivel"}
               </span>
             </div>
             {webhook.data?.ok && webhook.data.url ? (
-              <p className="break-all rounded-xl bg-surface-elevated px-2 py-1.5 font-mono text-[10px] text-text-tertiary">{webhook.data.url}</p>
+              <p className="break-all rounded-xl bg-surface-elevated px-2 py-1.5 font-mono text-[10px] text-text-tertiary">
+                {webhook.data.url}
+              </p>
             ) : null}
             {webhook.data?.ok && webhook.data.events.length > 0 ? (
-              <p className="text-[10px] text-text-muted">Eventos: {webhook.data.events.join(", ")}</p>
+              <p className="text-[10px] text-text-muted">
+                Eventos: {webhook.data.events.join(", ")}
+              </p>
             ) : null}
-            <Button variant="outline" className="w-full" onClick={() => webhookMut.mutate()} loading={webhookMut.isPending}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => webhookMut.mutate()}
+              loading={webhookMut.isPending}
+            >
               <Link2 className="h-4 w-4" /> Configurar webhook automaticamente
             </Button>
           </Card>
 
           <Card variant="default" className="p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary mb-2">Ajuda rápida</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary mb-2">
+              Ajuda rápida
+            </p>
             <ul className="space-y-1.5 text-[11px] text-text-secondary">
               <li>1. Crie uma instância na Evolution API</li>
               <li>2. Copie a API Key em Settings</li>
               <li>3. Cole os dados acima e clique Salvar</li>
               <li>4. Clique em Testar para validar</li>
-              <li>5. Configure o webhook: <code className="rounded bg-surface-elevated px-1 py-0.5 text-[10px]">{typeof window !== "undefined" ? `${window.location.origin}/api/public/whatsapp/webhook` : "/api/public/whatsapp/webhook"}</code></li>
+              <li>
+                5. Configure o webhook:{" "}
+                <code className="rounded bg-surface-elevated px-1 py-0.5 text-[10px]">
+                  {typeof window !== "undefined"
+                    ? `${window.location.origin}/api/public/whatsapp/webhook`
+                    : "/api/public/whatsapp/webhook"}
+                </code>
+              </li>
             </ul>
           </Card>
         </main>

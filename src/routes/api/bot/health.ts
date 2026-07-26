@@ -15,7 +15,7 @@ export const Route = createFileRoute("/api/bot/health")({
           {
             status: 200,
             headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-          }
+          },
         );
       },
     },

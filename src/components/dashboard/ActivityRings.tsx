@@ -7,13 +7,7 @@ export type Ring = {
   color: string; // CSS color
 };
 
-export function ActivityRings({
-  rings,
-  size = 140,
-}: {
-  rings: [Ring, Ring, Ring];
-  size?: number;
-}) {
+export function ActivityRings({ rings, size = 140 }: { rings: [Ring, Ring, Ring]; size?: number }) {
   const reduced = useReducedMotion();
   const [progress, setProgress] = useState(reduced ? 1 : 0);
 

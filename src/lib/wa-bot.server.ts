@@ -3,7 +3,7 @@
  * Roda apenas server-side (importado pelo webhook).
  */
 
-type SupabaseAdmin = typeof import("@/integrations/supabase/client.server")["supabaseAdmin"];
+type SupabaseAdmin = (typeof import("@/integrations/supabase/client.server"))["supabaseAdmin"];
 
 const bar = (pct: number) => {
   const clamped = Math.max(0, Math.min(100, Math.round(pct)));
@@ -33,8 +33,11 @@ function mockResumo(nome: string): Resumo {
   };
 }
 
-async function fetchContexto(db: SupabaseAdmin, remoteJid: string): Promise<{ nome: string; treinos: Treino[]; resumo: Resumo }> {
-    const phone = normalizePhone(remoteJid);
+async function fetchContexto(
+  db: SupabaseAdmin,
+  remoteJid: string,
+): Promise<{ nome: string; treinos: Treino[]; resumo: Resumo }> {
+  const phone = normalizePhone(remoteJid);
   let nome = "Atleta";
   let treinos: Treino[] = [];
 
@@ -133,7 +136,11 @@ function treinosMsg(list: Treino[]) {
   return ["🏃 *Treinos recentes*", "", ...linhas].join("\n");
 }
 
-export async function resolverBot(db: SupabaseAdmin, remoteJid: string, textoBruto: string | null): Promise<string> {
+export async function resolverBot(
+  db: SupabaseAdmin,
+  remoteJid: string,
+  textoBruto: string | null,
+): Promise<string> {
   const t = (textoBruto || "").trim().toLowerCase();
   const ctx = await fetchContexto(db, remoteJid);
 
@@ -141,7 +148,21 @@ export async function resolverBot(db: SupabaseAdmin, remoteJid: string, textoBru
   if (["2", "passos", "passo"].includes(t)) return passosMsg(ctx.resumo);
   if (["3", "agua", "água", "hidratacao", "hidratação"].includes(t)) return aguaMsg(ctx.resumo);
   if (["4", "treinos", "treino"].includes(t)) return treinosMsg(ctx.treinos);
-  if (["5", "ajuda", "menu", "oi", "olá", "ola", "start", "bom dia", "boa tarde", "boa noite"].includes(t)) return menu();
+  if (
+    [
+      "5",
+      "ajuda",
+      "menu",
+      "oi",
+      "olá",
+      "ola",
+      "start",
+      "bom dia",
+      "boa tarde",
+      "boa noite",
+    ].includes(t)
+  )
+    return menu();
   return `Não entendi 🤔\n\n${menu()}`;
 }
 
@@ -166,10 +187,14 @@ export async function botReply(db: SupabaseAdmin, remoteJid: string, text: strin
     .maybeSingle();
 
   try {
-    const result = (await evolutionFetch(env, `/message/sendText/${encodeURIComponent(env.instance)}`, {
-      method: "POST",
-      body: JSON.stringify({ number: remoteJid, text }),
-    })) as { key?: { id?: string }; messageId?: string } | null;
+    const result = (await evolutionFetch(
+      env,
+      `/message/sendText/${encodeURIComponent(env.instance)}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ number: remoteJid, text }),
+      },
+    )) as { key?: { id?: string }; messageId?: string } | null;
 
     const messageId =
       (result && typeof result === "object" && "key" in result && result.key?.id) ||
@@ -185,7 +210,10 @@ export async function botReply(db: SupabaseAdmin, remoteJid: string, text: strin
   } catch (err) {
     const msg = err instanceof Error ? err.message : "erro";
     if (logRow?.id) {
-      await db.from("whatsapp_messages").update({ status: "failed", error: msg }).eq("id", logRow.id);
+      await db
+        .from("whatsapp_messages")
+        .update({ status: "failed", error: msg })
+        .eq("id", logRow.id);
     }
     console.error("[wa-bot] falha ao responder:", msg);
   }

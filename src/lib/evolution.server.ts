@@ -53,7 +53,9 @@ export async function readEvolutionEnv(): Promise<EvolutionEnv | null> {
         return config;
       }
     }
-  } catch { /* process.env might not exist in some runtimes */ }
+  } catch {
+    /* process.env might not exist in some runtimes */
+  }
 
   // 2. Cache
   if (isValidConfig(_cachedConfig) && Date.now() - _cacheTs < CACHE_TTL) {
@@ -121,7 +123,11 @@ export async function evolutionFetch(
       const res = await fetch(url, { ...init, headers });
       const text = await res.text();
       let json: unknown = null;
-      try { json = text ? JSON.parse(text) : null; } catch { /* not json */ }
+      try {
+        json = text ? JSON.parse(text) : null;
+      } catch {
+        /* not json */
+      }
       if (!res.ok) {
         if (res.status >= 500 && attempt < retries) {
           await sleep(200 * (attempt + 1));
@@ -174,9 +180,9 @@ export function friendlyEvolutionError(err: unknown): string {
   if (!(err instanceof EvolutionError)) {
     return err instanceof Error ? err.message : "Falha desconhecida";
   }
-  const payload = err.payload as
-    | { response?: { message?: Array<{ exists?: boolean; number?: string; jid?: string }> | string } }
-    | null;
+  const payload = err.payload as {
+    response?: { message?: Array<{ exists?: boolean; number?: string; jid?: string }> | string };
+  } | null;
   const msg = payload?.response?.message;
   if (Array.isArray(msg)) {
     const notFound = msg.find((m) => m && m.exists === false);

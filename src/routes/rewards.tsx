@@ -14,10 +14,30 @@ export const Route = createFileRoute("/rewards")({
 
 function RewardsPage() {
   const badges = [
-    { icon: <Star className="h-6 w-6" />, title: "Primeiro Treino", desc: "Complete seu primeiro treino", unlocked: true },
-    { icon: <Medal className="h-6 w-6" />, title: "5 Dias Seguidos", desc: "Treine 5 dias consecutivos", unlocked: false },
-    { icon: <Award className="h-6 w-6" />, title: "10 Treinos", desc: "Complete 10 treinos no total", unlocked: false },
-    { icon: <Trophy className="h-6 w-6" />, title: "Maratona", desc: "Complete 30 treinos", unlocked: false },
+    {
+      icon: <Star className="h-6 w-6" />,
+      title: "Primeiro Treino",
+      desc: "Complete seu primeiro treino",
+      unlocked: true,
+    },
+    {
+      icon: <Medal className="h-6 w-6" />,
+      title: "5 Dias Seguidos",
+      desc: "Treine 5 dias consecutivos",
+      unlocked: false,
+    },
+    {
+      icon: <Award className="h-6 w-6" />,
+      title: "10 Treinos",
+      desc: "Complete 10 treinos no total",
+      unlocked: false,
+    },
+    {
+      icon: <Trophy className="h-6 w-6" />,
+      title: "Maratona",
+      desc: "Complete 30 treinos",
+      unlocked: false,
+    },
   ];
 
   return (
@@ -28,8 +48,13 @@ function RewardsPage() {
           <StaggerContainer className="grid grid-cols-2 gap-3">
             {badges.map((b) => (
               <StaggerItem key={b.title}>
-                <Card variant={b.unlocked ? "gradient" : "default"} className={`p-4 text-center ${!b.unlocked ? "opacity-50" : ""}`}>
-                  <div className={`mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl ${b.unlocked ? "bg-primary/15 text-primary" : "bg-surface-elevated text-text-muted"}`}>
+                <Card
+                  variant={b.unlocked ? "gradient" : "default"}
+                  className={`p-4 text-center ${!b.unlocked ? "opacity-50" : ""}`}
+                >
+                  <div
+                    className={`mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl ${b.unlocked ? "bg-primary/15 text-primary" : "bg-surface-elevated text-text-muted"}`}
+                  >
                     {b.icon}
                   </div>
                   <p className="font-display text-sm font-semibold">{b.title}</p>

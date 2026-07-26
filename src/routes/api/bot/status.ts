@@ -19,9 +19,13 @@ export const Route = createFileRoute("/api/bot/status")({
             });
           }
 
-          const info = (await evolutionFetch(env, `/instance/connectionState/${encodeURIComponent(env.instance)}`, {
-            method: "GET",
-          })) as { instance?: { state?: string; owner?: string } } | null;
+          const info = (await evolutionFetch(
+            env,
+            `/instance/connectionState/${encodeURIComponent(env.instance)}`,
+            {
+              method: "GET",
+            },
+          )) as { instance?: { state?: string; owner?: string } } | null;
 
           return json({
             ok: true,

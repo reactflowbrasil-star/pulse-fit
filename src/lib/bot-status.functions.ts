@@ -34,11 +34,40 @@ export const getBotStatus = createServerFn({ method: "GET" }).handler(async () =
   try {
     const { readEvolutionEnv, evolutionFetch } = await import("./evolution.server");
     const env = await readEvolutionEnv();
-    if (!env) return { ok: false as const, source: "none" as const, configured: false, connectionState: "unknown" as const, error: "Evolution API não configurada", phone: null, name: null };
-    const info = (await evolutionFetch(env, `/instance/connectionState/${encodeURIComponent(env.instance)}`, { method: "GET" })) as { instance?: { state?: string; owner?: string } } | null;
-    return { ok: true as const, source: "evolution" as const, configured: true as const, connectionState: info?.instance?.state ?? "unknown" as string, phone: info?.instance?.owner?.split(":")[0] || null, name: null, error: null };
+    if (!env)
+      return {
+        ok: false as const,
+        source: "none" as const,
+        configured: false,
+        connectionState: "unknown" as const,
+        error: "Evolution API não configurada",
+        phone: null,
+        name: null,
+      };
+    const info = (await evolutionFetch(
+      env,
+      `/instance/connectionState/${encodeURIComponent(env.instance)}`,
+      { method: "GET" },
+    )) as { instance?: { state?: string; owner?: string } } | null;
+    return {
+      ok: true as const,
+      source: "evolution" as const,
+      configured: true as const,
+      connectionState: info?.instance?.state ?? ("unknown" as string),
+      phone: info?.instance?.owner?.split(":")[0] || null,
+      name: null,
+      error: null,
+    };
   } catch (err) {
-    return { ok: false as const, source: "error" as const, configured: false as const, connectionState: "error" as const, phone: null, name: null, error: err instanceof Error ? err.message : "Erro" };
+    return {
+      ok: false as const,
+      source: "error" as const,
+      configured: false as const,
+      connectionState: "error" as const,
+      phone: null,
+      name: null,
+      error: err instanceof Error ? err.message : "Erro",
+    };
   }
 });
 

@@ -31,19 +31,27 @@ export const Route = createFileRoute("/api/bot/enviar-codigo")({
 
         const { whatsapp, codigo } = body;
         if (!whatsapp || !codigo) {
-          return corsResponse({ ok: false, error: "missing_fields", message: "Envie whatsapp e codigo" }, 400);
+          return corsResponse(
+            { ok: false, error: "missing_fields", message: "Envie whatsapp e codigo" },
+            400,
+          );
         }
 
         try {
-          const { readEvolutionEnv, evolutionFetch, toJid } = await import("@/lib/evolution.server");
+          const { readEvolutionEnv, evolutionFetch, toJid } =
+            await import("@/lib/evolution.server");
           const env = await readEvolutionEnv();
 
           if (!env) {
-            return corsResponse({
-              ok: false,
-              error: "evolution_not_configured",
-              message: "Evolution API não configurada. Defina EVOLUTION_API_URL, EVOLUTION_API_KEY e EVOLUTION_INSTANCE.",
-            }, 503);
+            return corsResponse(
+              {
+                ok: false,
+                error: "evolution_not_configured",
+                message:
+                  "Evolution API não configurada. Defina EVOLUTION_API_URL, EVOLUTION_API_KEY e EVOLUTION_INSTANCE.",
+              },
+              503,
+            );
           }
 
           const jid = toJid(whatsapp);
@@ -74,11 +82,14 @@ export const Route = createFileRoute("/api/bot/enviar-codigo")({
           return corsResponse({ ok: true, message: "Código enviado" });
         } catch (err) {
           console.error("[api/bot/enviar-codigo] falha:", err);
-          return corsResponse({
-            ok: false,
-            error: "send_failed",
-            message: err instanceof Error ? err.message : "Falha ao enviar código",
-          }, 500);
+          return corsResponse(
+            {
+              ok: false,
+              error: "send_failed",
+              message: err instanceof Error ? err.message : "Falha ao enviar código",
+            },
+            500,
+          );
         }
       },
     },

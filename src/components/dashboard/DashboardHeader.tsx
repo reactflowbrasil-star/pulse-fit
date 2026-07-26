@@ -27,9 +27,7 @@ export function DashboardHeader({
           <p className="text-[11px] font-semibold uppercase tracking-widest text-text-tertiary">
             {greeting}
           </p>
-          <p className="truncate font-display text-2xl uppercase tracking-wide">
-            {name}
-          </p>
+          <p className="truncate font-display text-2xl uppercase tracking-wide">{name}</p>
         </div>
       </Link>
       <Link

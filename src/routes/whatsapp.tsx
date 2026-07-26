@@ -117,11 +117,19 @@ function WhatsappPage() {
                 <div>
                   <p className="text-sm font-semibold">Bot WhatsApp</p>
                   <p className="text-[11px] text-text-tertiary">
-                    {!botConfigured ? "Evolution API não configurada" : botConnected ? "Conectado" : "Desconectado"}
+                    {!botConfigured
+                      ? "Evolution API não configurada"
+                      : botConnected
+                        ? "Conectado"
+                        : "Desconectado"}
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => qc.invalidateQueries({ queryKey: ["bot"] })}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => qc.invalidateQueries({ queryKey: ["bot"] })}
+              >
                 <RefreshCw className="h-4 w-4" />
               </Button>
             </div>
@@ -176,13 +184,17 @@ function WhatsappPage() {
             <Card variant="default" className="p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`h-2.5 w-2.5 rounded-full ${evoConnected ? "bg-success animate-pulse" : "bg-muted"}`} />
+                  <div
+                    className={`h-2.5 w-2.5 rounded-full ${evoConnected ? "bg-success animate-pulse" : "bg-muted"}`}
+                  />
                   <span className="text-xs text-text-secondary">
                     Evolution API: {evoStatus.data?.state || "desconhecido"}
                   </span>
                 </div>
                 {evoStatus.data?.phone && (
-                  <span className="text-[11px] text-text-muted font-mono">{evoStatus.data.phone}</span>
+                  <span className="text-[11px] text-text-muted font-mono">
+                    {evoStatus.data.phone}
+                  </span>
                 )}
               </div>
             </Card>
@@ -211,9 +223,23 @@ function WhatsappPage() {
           {/* Send Message */}
           <Card variant="default" className="p-4 space-y-3">
             <p className="text-sm font-semibold">Enviar mensagem</p>
-            <Input placeholder="Número (ex: 5511999999999)" value={target} onChange={(e) => setTarget(e.target.value)} />
-            <Input placeholder="Mensagem..." value={text} onChange={(e) => setText(e.target.value)} />
-            <Button variant="primary" className="w-full" onClick={() => sendMut.mutate()} loading={sendMut.isPending} disabled={!target.trim() || !text.trim()}>
+            <Input
+              placeholder="Número (ex: 5511999999999)"
+              value={target}
+              onChange={(e) => setTarget(e.target.value)}
+            />
+            <Input
+              placeholder="Mensagem..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+            <Button
+              variant="primary"
+              className="w-full"
+              onClick={() => sendMut.mutate()}
+              loading={sendMut.isPending}
+              disabled={!target.trim() || !text.trim()}
+            >
               <Send className="h-4 w-4" /> Enviar
             </Button>
           </Card>
@@ -231,7 +257,11 @@ function WhatsappPage() {
                 ))}
               </div>
             ) : (messages.data?.length ?? 0) === 0 ? (
-              <EmptyState icon={<MessageCircle className="h-6 w-6" />} title="Sem mensagens" description="As mensagens recebidas e enviadas aparecerão aqui." />
+              <EmptyState
+                icon={<MessageCircle className="h-6 w-6" />}
+                title="Sem mensagens"
+                description="As mensagens recebidas e enviadas aparecerão aqui."
+              />
             ) : (
               <StaggerContainer className="space-y-2">
                 {messages.data!.slice(0, 10).map((m) => (
@@ -239,12 +269,17 @@ function WhatsappPage() {
                     <div className="rounded-2xl bg-surface-card border border-border p-3">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-[11px] font-semibold text-text-secondary">
-                          {m.direction === "outbound" ? "→" : "←"} {m.remote_jid?.replace(/@.*/, "")}
+                          {m.direction === "outbound" ? "→" : "←"}{" "}
+                          {m.remote_jid?.replace(/@.*/, "")}
                         </span>
                         <StatusIcon status={m.status} />
                       </div>
-                      <p className="mt-1 text-xs text-foreground break-words">{m.content ?? "[mídia]"}</p>
-                      <p className="mt-1 text-[10px] text-text-muted">{new Date(m.created_at).toLocaleString("pt-BR")}</p>
+                      <p className="mt-1 text-xs text-foreground break-words">
+                        {m.content ?? "[mídia]"}
+                      </p>
+                      <p className="mt-1 text-[10px] text-text-muted">
+                        {new Date(m.created_at).toLocaleString("pt-BR")}
+                      </p>
                     </div>
                   </StaggerItem>
                 ))}

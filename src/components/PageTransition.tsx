@@ -29,7 +29,13 @@ export function PageTransition({ children }: { children: ReactNode }) {
   );
 }
 
-export function StaggerContainer({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function StaggerContainer({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <motion.div
       initial="hidden"
@@ -45,7 +51,13 @@ export function StaggerContainer({ children, className = "" }: { children: React
   );
 }
 
-export function StaggerItem({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function StaggerItem({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <motion.div
       variants={{

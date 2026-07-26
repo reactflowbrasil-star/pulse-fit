@@ -1,13 +1,7 @@
 import { Footprints, TrendingUp } from "lucide-react";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 
-export function StepsProgressCard({
-  current,
-  goal,
-}: {
-  current: number;
-  goal: number;
-}) {
+export function StepsProgressCard({ current, goal }: { current: number; goal: number }) {
   const animated = useAnimatedNumber(current, { duration: 1100 });
   const pct = Math.min(100, Math.round((current / goal) * 100));
 

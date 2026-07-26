@@ -108,8 +108,12 @@ export const saveWhatsAppConfig = createServerFn({ method: "POST" })
     const currentSecrets = parseSecrets(existing?.webhook_token ?? null);
 
     // Merge dos novos dados com os existentes
-    const newApiKey = data.apiKey !== undefined && data.apiKey !== "" ? data.apiKey : currentSecrets.apiKey;
-    const newWebhookToken = data.webhookToken !== undefined && data.webhookToken !== "" ? data.webhookToken : currentSecrets.webhookToken;
+    const newApiKey =
+      data.apiKey !== undefined && data.apiKey !== "" ? data.apiKey : currentSecrets.apiKey;
+    const newWebhookToken =
+      data.webhookToken !== undefined && data.webhookToken !== ""
+        ? data.webhookToken
+        : currentSecrets.webhookToken;
 
     const update: Record<string, string | null> = {};
     if (data.apiUrl !== undefined) update.api_url = data.apiUrl || null;
@@ -128,10 +132,7 @@ export const saveWhatsAppConfig = createServerFn({ method: "POST" })
     }
 
     if (existing?.id) {
-      const { error } = await supabase
-        .from("whatsapp_config")
-        .update(update)
-        .eq("id", existing.id);
+      const { error } = await supabase.from("whatsapp_config").update(update).eq("id", existing.id);
       if (error) return { ok: false as const, error: error.message };
     } else {
       const { error } = await supabase
@@ -166,7 +167,8 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
     const secrets = parseSecrets(config?.webhook_token ?? null);
 
     // Tenta usar api_key da coluna direta, senão usa do JSON
-    const apiKey = (config as Record<string, unknown>)?.api_key as string | undefined || secrets.apiKey;
+    const apiKey =
+      ((config as Record<string, unknown>)?.api_key as string | undefined) || secrets.apiKey;
     const apiUrl = config?.api_url;
     const instanceName = config?.instance_name;
 
@@ -191,11 +193,15 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
           method: "GET",
           headers: { apikey: apiKey },
           signal: AbortSignal.timeout(10000),
-        }
+        },
       );
       const text = await res.text();
       let json: Record<string, unknown> = {};
-      try { json = text ? JSON.parse(text) : {}; } catch { /* not json */ }
+      try {
+        json = text ? JSON.parse(text) : {};
+      } catch {
+        /* not json */
+      }
 
       if (res.ok) {
         const state = (json as { instance?: { state?: string } })?.instance?.state ?? "unknown";
@@ -236,11 +242,7 @@ export const testWhatsAppConnection = createServerFn({ method: "POST" })
 // Webhook em tempo real (Evolution API  ->  app Pulse Fit)
 // ══════════════════════════════════════════════════════════════
 
-const EVOLUTION_WEBHOOK_EVENTS = [
-  "MESSAGES_UPSERT",
-  "MESSAGES_UPDATE",
-  "CONNECTION_UPDATE",
-];
+const EVOLUTION_WEBHOOK_EVENTS = ["MESSAGES_UPSERT", "MESSAGES_UPDATE", "CONNECTION_UPDATE"];
 
 const WEBHOOK_PATH = "/api/public/whatsapp/webhook";
 
@@ -267,13 +269,14 @@ export const getEvolutionWebhook = createServerFn({ method: "GET" })
     if (!env) return { ok: false as const, error: "Evolution API nao configurada." };
 
     try {
-      const info = (await evolutionFetch(
-        env,
-        `/webhook/find/${encodeURIComponent(env.instance)}`,
-        { method: "GET" },
-      )) as Record<string, unknown> | null;
+      const info = (await evolutionFetch(env, `/webhook/find/${encodeURIComponent(env.instance)}`, {
+        method: "GET",
+      })) as Record<string, unknown> | null;
 
-      const raw = ((info?.webhook as Record<string, unknown>) ?? info ?? {}) as Record<string, unknown>;
+      const raw = ((info?.webhook as Record<string, unknown>) ?? info ?? {}) as Record<
+        string,
+        unknown
+      >;
       const url = typeof raw.url === "string" ? raw.url : "";
       const enabled = Boolean(raw.enabled ?? raw.webhook_enabled ?? url);
       const events = Array.isArray(raw.events) ? (raw.events as string[]) : [];
@@ -310,7 +313,8 @@ export const setEvolutionWebhook = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!role) return { ok: false as const, error: "Sem permissao" };
 
-    const { readEvolutionEnv, readWebhookToken, evolutionFetch } = await import("./evolution.server");
+    const { readEvolutionEnv, readWebhookToken, evolutionFetch } =
+      await import("./evolution.server");
     const env = await readEvolutionEnv();
     if (!env) return { ok: false as const, error: "Evolution API nao configurada." };
 
@@ -355,7 +359,10 @@ export const setEvolutionWebhook = createServerFn({ method: "POST" })
       } catch (errV1) {
         const m2 = errV2 instanceof Error ? errV2.message : "erro";
         const m1 = errV1 instanceof Error ? errV1.message : "erro";
-        return { ok: false as const, error: `Falha ao configurar o webhook. v2: ${m2} | v1: ${m1}` };
+        return {
+          ok: false as const,
+          error: `Falha ao configurar o webhook. v2: ${m2} | v1: ${m1}`,
+        };
       }
     }
   });

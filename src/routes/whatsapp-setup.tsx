@@ -236,18 +236,10 @@ function WhatsAppSetupPage() {
                     maxLength={6}
                     autoFocus
                   />
-                  <Button
-                    className="w-full"
-                    onClick={handleVerify}
-                    disabled={code.length !== 6}
-                  >
+                  <Button className="w-full" onClick={handleVerify} disabled={code.length !== 6}>
                     <Check className="h-4 w-4" /> Verificar
                   </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full"
-                    onClick={handleResend}
-                  >
+                  <Button variant="ghost" className="w-full" onClick={handleResend}>
                     <RotateCcw className="h-4 w-4" /> Reenviar código
                   </Button>
                   <Button

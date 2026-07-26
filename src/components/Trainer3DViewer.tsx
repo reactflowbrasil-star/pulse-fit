@@ -38,12 +38,23 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
 
   // Targets for damped interpolation → natural, springy motion.
   const target = useRef({
-    rootY: 0, rootZ: 0, rootRotX: 0,
-    torsoRotX: 0, torsoY: 0,
-    armLZ: 0, armLX: 0, armRZ: 0, armRX: 0,
-    forLX: 0, forRX: 0,
-    legLX: 0, legLZ: 0, legRX: 0, legRZ: 0,
-    shinLX: 0, shinRX: 0,
+    rootY: 0,
+    rootZ: 0,
+    rootRotX: 0,
+    torsoRotX: 0,
+    torsoY: 0,
+    armLZ: 0,
+    armLX: 0,
+    armRZ: 0,
+    armRX: 0,
+    forLX: 0,
+    forRX: 0,
+    legLX: 0,
+    legLZ: 0,
+    legRX: 0,
+    legRZ: 0,
+    shinLX: 0,
+    shinRX: 0,
     headY: 0,
   });
 
@@ -56,13 +67,23 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
 
     const tg = target.current;
     // reset targets
-    tg.rootY = 0; tg.rootZ = 0; tg.rootRotX = 0;
+    tg.rootY = 0;
+    tg.rootZ = 0;
+    tg.rootRotX = 0;
     tg.torsoRotX = Math.sin(t * 1.8) * 0.02;
     tg.torsoY = Math.sin(t * 1.8) * 0.015;
-    tg.armLZ = 0; tg.armLX = 0; tg.armRZ = 0; tg.armRX = 0;
-    tg.forLX = 0; tg.forRX = 0;
-    tg.legLX = 0; tg.legLZ = 0; tg.legRX = 0; tg.legRZ = 0;
-    tg.shinLX = 0; tg.shinRX = 0;
+    tg.armLZ = 0;
+    tg.armLX = 0;
+    tg.armRZ = 0;
+    tg.armRX = 0;
+    tg.forLX = 0;
+    tg.forRX = 0;
+    tg.legLX = 0;
+    tg.legLZ = 0;
+    tg.legRX = 0;
+    tg.legRZ = 0;
+    tg.shinLX = 0;
+    tg.shinRX = 0;
     tg.headY = Math.cos(t * 2.2) * 0.06;
 
     const s = Math.sin(t * 2.4);
@@ -71,10 +92,13 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
       case "squat": {
         const d = (Math.sin(t * 1.9) + 1) / 2;
         tg.rootY = -0.38 * d;
-        tg.legLX = -0.95 * d; tg.legRX = -0.95 * d;
-        tg.shinLX = 1.45 * d; tg.shinRX = 1.45 * d;
+        tg.legLX = -0.95 * d;
+        tg.legRX = -0.95 * d;
+        tg.shinLX = 1.45 * d;
+        tg.shinRX = 1.45 * d;
         tg.torsoRotX = 0.28 * d;
-        tg.armLX = -0.6 - 0.45 * d; tg.armRX = -0.6 - 0.45 * d;
+        tg.armLX = -0.6 - 0.45 * d;
+        tg.armRX = -0.6 - 0.45 * d;
         break;
       }
       case "pushup": {
@@ -82,15 +106,19 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         tg.rootY = -0.6;
         const d = (Math.sin(t * 2.6) + 1) / 2;
         tg.rootZ = 0.22 * d;
-        tg.armLZ = 0.62; tg.armRZ = -0.62;
-        tg.forLX = -0.4 - d * 0.95; tg.forRX = -0.4 - d * 0.95;
+        tg.armLZ = 0.62;
+        tg.armRZ = -0.62;
+        tg.forLX = -0.4 - d * 0.95;
+        tg.forRX = -0.4 - d * 0.95;
         break;
       }
       case "plank": {
         tg.rootRotX = Math.PI / 2 - 0.12;
         tg.rootY = -0.6;
-        tg.armLZ = 0.6; tg.armRZ = -0.6;
-        tg.forLX = -0.82; tg.forRX = -0.82;
+        tg.armLZ = 0.6;
+        tg.armRZ = -0.6;
+        tg.forLX = -0.82;
+        tg.forRX = -0.82;
         break;
       }
       case "lunge": {
@@ -98,21 +126,25 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         tg.rootY = -0.28 * d;
         tg.legRX = -0.65 - 0.45 * d;
         tg.shinRX = 0.45 + 0.4 * d;
-        tg.legLX = 0.65; tg.shinLX = -0.65;
+        tg.legLX = 0.65;
+        tg.shinLX = -0.65;
         tg.torsoRotX = 0.12;
         break;
       }
       case "jumpingjack": {
         const open = (Math.sin(t * 6) + 1) / 2;
         tg.rootY = 0.18 * open;
-        tg.armLZ = 0.4 + open * 1.65; tg.armRZ = -0.4 - open * 1.65;
-        tg.legLZ = -0.05 - open * 0.28; tg.legRZ = 0.05 + open * 0.28;
+        tg.armLZ = 0.4 + open * 1.65;
+        tg.armRZ = -0.4 - open * 1.65;
+        tg.legLZ = -0.05 - open * 0.28;
+        tg.legRZ = 0.05 + open * 0.28;
         break;
       }
       case "mountain_climber": {
         tg.rootRotX = Math.PI / 2 - 0.12;
         tg.rootY = -0.6;
-        tg.armLZ = 0.6; tg.armRZ = -0.6;
+        tg.armLZ = 0.6;
+        tg.armRZ = -0.6;
         tg.legLX = -0.2 + s * 0.95;
         tg.legRX = -0.2 - s * 0.95;
         break;
@@ -122,19 +154,24 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         tg.rootY = -0.4;
         const d = (Math.sin(t * 2) + 1) / 2;
         tg.torsoY = d * 0.38;
-        tg.legLX = 1.1; tg.legRX = 1.1;
-        tg.shinLX = -1.1; tg.shinRX = -1.1;
+        tg.legLX = 1.1;
+        tg.legRX = 1.1;
+        tg.shinLX = -1.1;
+        tg.shinRX = -1.1;
         break;
       }
       case "curl": {
         const d = (Math.sin(t * 3) + 1) / 2;
-        tg.armLZ = 0.15; tg.armRZ = -0.15;
-        tg.forLX = -1.65 * d; tg.forRX = -1.65 * d;
+        tg.armLZ = 0.15;
+        tg.armRZ = -0.15;
+        tg.forLX = -1.65 * d;
+        tg.forRX = -1.65 * d;
         break;
       }
       case "lateral_raise": {
         const d = (Math.sin(t * 2.4) + 1) / 2;
-        tg.armLZ = 0.2 + d * 1.55; tg.armRZ = -0.2 - d * 1.55;
+        tg.armLZ = 0.2 + d * 1.55;
+        tg.armRZ = -0.2 - d * 1.55;
         break;
       }
       case "burpee": {
@@ -142,15 +179,19 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         if (phase < 0.25) {
           const p = phase / 0.25;
           tg.rootY = -0.3 * p;
-          tg.legLX = -1.0 * p; tg.legRX = -1.0 * p;
-          tg.shinLX = 1.5 * p; tg.shinRX = 1.5 * p;
+          tg.legLX = -1.0 * p;
+          tg.legRX = -1.0 * p;
+          tg.shinLX = 1.5 * p;
+          tg.shinRX = 1.5 * p;
         } else if (phase < 0.75) {
           tg.rootRotX = Math.PI / 2 - 0.12;
           tg.rootY = -0.6;
-          tg.armLZ = 0.6; tg.armRZ = -0.6;
+          tg.armLZ = 0.6;
+          tg.armRZ = -0.6;
         } else {
           tg.rootY = 0.22 * ((phase - 0.75) / 0.25);
-          tg.armLZ = 1.85; tg.armRZ = -1.85;
+          tg.armLZ = 1.85;
+          tg.armRZ = -1.85;
         }
         break;
       }
@@ -192,7 +233,7 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         roughness: 0.55,
         metalness: 0.02,
       }),
-    []
+    [],
   );
   const shirtMat = useMemo(
     () =>
@@ -203,7 +244,7 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         emissive: new THREE.Color("#b7ff52"),
         emissiveIntensity: 0.04,
       }),
-    []
+    [],
   );
   const shortsMat = useMemo(
     () =>
@@ -212,7 +253,7 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         roughness: 0.8,
         metalness: 0.02,
       }),
-    []
+    [],
   );
   const shoeMat = useMemo(
     () =>
@@ -223,7 +264,7 @@ function Humanoid({ animationId, paused }: { animationId: AnimationId; paused?: 
         emissive: new THREE.Color("#b7ff52"),
         emissiveIntensity: 0.08,
       }),
-    []
+    [],
   );
 
   return (

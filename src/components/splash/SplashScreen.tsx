@@ -2,7 +2,6 @@ import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } f
 import { Sparkles, Volume2, VolumeX, Zap } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
-
 export type SplashScreenProps = {
   appName?: string;
   logo?: ReactNode;
@@ -15,7 +14,6 @@ export type SplashScreenProps = {
   narration?: string | false;
   narrationVoice?: string;
 };
-
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -39,7 +37,6 @@ export function SplashScreen({
   const [needsUnmute, setNeedsUnmute] = useState(false);
   const [muted, setMuted] = useState(false);
 
-
   const [exiting, setExiting] = useState(false);
   const [barDone, setBarDone] = useState(false);
   const firedRef = useRef(false);
@@ -56,9 +53,12 @@ export function SplashScreen({
     if (loading && !loadingComplete && !error) return;
     firedRef.current = true;
     setExiting(true);
-    const t = window.setTimeout(() => {
-      onAnimationComplete?.(destination);
-    }, reduced ? 200 : 500);
+    const t = window.setTimeout(
+      () => {
+        onAnimationComplete?.(destination);
+      },
+      reduced ? 200 : 500,
+    );
     return () => window.clearTimeout(t);
   }, [barDone, loading, loadingComplete, error, destination, onAnimationComplete, reduced]);
 
@@ -149,7 +149,6 @@ export function SplashScreen({
     setMuted(a.muted);
   }, []);
 
-
   return (
     <AnimatePresence>
       {!exiting && (
@@ -200,7 +199,6 @@ export function SplashScreen({
           )}
 
           <div className="relative mx-auto flex h-full max-w-md flex-col items-center justify-between px-6 py-10 sm:py-16">
-
             <div className="h-4 shrink-0" />
 
             {/* Center block */}
@@ -268,9 +266,7 @@ function AnimatedLogo({ reduced, children }: { reduced: boolean; children?: Reac
       <motion.div
         initial={{ opacity: 0, y: 12, scale: 0.75 }}
         animate={
-          reduced
-            ? { opacity: 1, y: 0, scale: 1 }
-            : { opacity: 1, y: 0, scale: [0.75, 1.05, 1] }
+          reduced ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: [0.75, 1.05, 1] }
         }
         transition={{
           duration: reduced ? 0.3 : 0.6,

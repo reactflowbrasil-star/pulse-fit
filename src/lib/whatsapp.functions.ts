@@ -15,17 +15,20 @@ const sendSchema = z.object({
 export const sendWhatsappMessage = createServerFn({ method: "POST" })
   .inputValidator((input) => sendSchema.parse(input))
   .handler(async ({ data }) => {
-    const [{ readEvolutionEnv, evolutionFetch, toJid, EvolutionError, friendlyEvolutionError }, { supabaseAdmin }] =
-      await Promise.all([
-        import("./evolution.server"),
-        import("@/integrations/supabase/client.server"),
-      ]);
+    const [
+      { readEvolutionEnv, evolutionFetch, toJid, EvolutionError, friendlyEvolutionError },
+      { supabaseAdmin },
+    ] = await Promise.all([
+      import("./evolution.server"),
+      import("@/integrations/supabase/client.server"),
+    ]);
 
     const env = await readEvolutionEnv();
     if (!env) {
       return {
         ok: false as const,
-        error: "Configuração da Evolution API ausente. Defina EVOLUTION_API_URL, EVOLUTION_API_KEY e EVOLUTION_INSTANCE.",
+        error:
+          "Configuração da Evolution API ausente. Defina EVOLUTION_API_URL, EVOLUTION_API_KEY e EVOLUTION_INSTANCE.",
       };
     }
 
@@ -44,13 +47,17 @@ export const sendWhatsappMessage = createServerFn({ method: "POST" })
       .single();
 
     try {
-      const result = (await evolutionFetch(env, `/message/sendText/${encodeURIComponent(env.instance)}`, {
-        method: "POST",
-        body: JSON.stringify({
-          number: jid,
-          text: data.message,
-        }),
-      })) as { key?: { id?: string }; messageId?: string } | null;
+      const result = (await evolutionFetch(
+        env,
+        `/message/sendText/${encodeURIComponent(env.instance)}`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            number: jid,
+            text: data.message,
+          }),
+        },
+      )) as { key?: { id?: string }; messageId?: string } | null;
 
       const messageId =
         (result && typeof result === "object" && "key" in result && result.key?.id) ||
@@ -88,13 +95,17 @@ export const sendWhatsappMessage = createServerFn({ method: "POST" })
 
 export const listWhatsappMessages = createServerFn({ method: "GET" })
   .inputValidator((input: { jid?: string; limit?: number } = {}) =>
-    z.object({ jid: z.string().optional(), limit: z.number().int().min(1).max(200).optional() }).parse(input),
+    z
+      .object({ jid: z.string().optional(), limit: z.number().int().min(1).max(200).optional() })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let q = supabaseAdmin
       .from("whatsapp_messages")
-      .select("id, direction, remote_jid, content, media_type, status, error, template_name, message_id, created_at")
+      .select(
+        "id, direction, remote_jid, content, media_type, status, error, template_name, message_id, created_at",
+      )
       .order("created_at", { ascending: false })
       .limit(data.limit ?? 50);
     if (data.jid) q = q.eq("remote_jid", data.jid);
@@ -128,9 +139,13 @@ export const getWhatsappStatus = createServerFn({ method: "GET" }).handler(async
     };
   }
   try {
-    const info = (await evolutionFetch(env, `/instance/connectionState/${encodeURIComponent(env.instance)}`, {
-      method: "GET",
-    })) as { instance?: { state?: string } } | null;
+    const info = (await evolutionFetch(
+      env,
+      `/instance/connectionState/${encodeURIComponent(env.instance)}`,
+      {
+        method: "GET",
+      },
+    )) as { instance?: { state?: string } } | null;
     return {
       configured: true as const,
       webhookTokenSet,

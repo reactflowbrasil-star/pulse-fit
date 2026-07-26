@@ -2,11 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText, NoObjectGeneratedError, Output } from "ai";
 import { z } from "zod";
 
-import type {
-  ExerciseCatalogItem,
-  WorkoutContext,
-  WorkoutPlan,
-} from "./exercise-catalog";
+import type { ExerciseCatalogItem, WorkoutContext, WorkoutPlan } from "./exercise-catalog";
 
 const ContextSchema = z.object({
   objective: z.enum(["emagrecer", "ganhar_massa", "condicionamento", "manter"]),
@@ -38,10 +34,7 @@ const PlanSchema = z.object({
 
 async function loadCatalog(): Promise<ExerciseCatalogItem[]> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("exercise_catalog")
-    .select("*")
-    .order("id");
+  const { data, error } = await supabaseAdmin.from("exercise_catalog").select("*").order("id");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as ExerciseCatalogItem[];
 }
@@ -58,16 +51,14 @@ function fallbackPlan(
     objective: ctx.objective,
     difficulty: ctx.level,
     estimatedMinutes: ctx.minutes,
-    intro:
-      "Vamos com um treino direto e seguro. Foque na execução antes da intensidade.",
+    intro: "Vamos com um treino direto e seguro. Foque na execução antes da intensidade.",
     exercises: picks.map((e) => ({
       exerciseId: e.id,
       sets: e.default_sets,
       reps: e.default_reps,
       durationSeconds: e.default_duration_s,
       restSeconds: e.default_rest_s,
-      voiceInstruction:
-        e.default_voice_instruction ?? "Foco na execução. Respire bem.",
+      voiceInstruction: e.default_voice_instruction ?? "Foco na execução. Respire bem.",
       personalNote: "",
     })),
   };
@@ -128,9 +119,7 @@ REGRAS OBRIGATÓRIAS:
       });
 
       // Validation layer — reject any exercise not in the catalog.
-      const validExercises = output.exercises.filter((ex) =>
-        allowedIds.includes(ex.exerciseId),
-      );
+      const validExercises = output.exercises.filter((ex) => allowedIds.includes(ex.exerciseId));
       if (validExercises.length < 2) {
         return { plan: fallbackPlan(data, catalog), source: "fallback" };
       }

@@ -19,9 +19,24 @@ export const Route = createFileRoute("/stats")({
 
 function StatsPage() {
   const stats = [
-    { icon: <Flame className="h-5 w-5" />, label: "Treinos", value: "12", color: "text-accent-orange" },
-    { icon: <TrendingUp className="h-5 w-5" />, label: "Sequência", value: "5 dias", color: "text-success" },
-    { icon: <Calendar className="h-5 w-5" />, label: "Este mês", value: "8", color: "text-accent-blue" },
+    {
+      icon: <Flame className="h-5 w-5" />,
+      label: "Treinos",
+      value: "12",
+      color: "text-accent-orange",
+    },
+    {
+      icon: <TrendingUp className="h-5 w-5" />,
+      label: "Sequência",
+      value: "5 dias",
+      color: "text-success",
+    },
+    {
+      icon: <Calendar className="h-5 w-5" />,
+      label: "Este mês",
+      value: "8",
+      color: "text-accent-blue",
+    },
   ];
 
   return (
@@ -33,9 +48,15 @@ function StatsPage() {
             {stats.map((s) => (
               <StaggerItem key={s.label}>
                 <Card variant="default" className="p-3.5 text-center">
-                  <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-surface-elevated ${s.color}`}>{s.icon}</div>
+                  <div
+                    className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-surface-elevated ${s.color}`}
+                  >
+                    {s.icon}
+                  </div>
                   <p className="font-display text-xl font-bold">{s.value}</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">{s.label}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">
+                    {s.label}
+                  </p>
                 </Card>
               </StaggerItem>
             ))}

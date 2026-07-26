@@ -21,7 +21,7 @@ export const listNvidiaApiKeys = createServerFn({ method: "GET" })
 export const createNvidiaApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({ name: z.string().min(1), api_key: z.string().min(1) }).parse(input)
+    z.object({ name: z.string().min(1), api_key: z.string().min(1) }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -46,7 +46,9 @@ export const deleteNvidiaApiKey = createServerFn({ method: "POST" })
 
 export const toggleNvidiaApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid(), is_active: z.boolean() }).parse(input))
+  .inputValidator((input) =>
+    z.object({ id: z.string().uuid(), is_active: z.boolean() }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase
@@ -107,7 +109,9 @@ export const listNvidiaModels = createServerFn({ method: "GET" })
 
 export const toggleNvidiaModel = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid(), is_enabled: z.boolean() }).parse(input))
+  .inputValidator((input) =>
+    z.object({ id: z.string().uuid(), is_enabled: z.boolean() }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase
@@ -153,9 +157,7 @@ export const getNvidiaSettings = createServerFn({ method: "GET" })
 
 export const updateNvidiaSetting = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ key: z.string(), value: z.any() }).parse(input)
-  )
+  .inputValidator((input) => z.object({ key: z.string(), value: z.any() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase
@@ -170,12 +172,14 @@ export const updateNvidiaSetting = createServerFn({ method: "POST" })
 export const nvidiaChat = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      model: z.string().optional(),
-      messages: z.array(z.object({ role: z.string(), content: z.string() })),
-      max_tokens: z.number().optional(),
-      temperature: z.number().optional(),
-    }).parse(input)
+    z
+      .object({
+        model: z.string().optional(),
+        messages: z.array(z.object({ role: z.string(), content: z.string() })),
+        max_tokens: z.number().optional(),
+        temperature: z.number().optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -196,7 +200,8 @@ export const nvidiaChat = createServerFn({ method: "POST" })
     const settings: Record<string, unknown> = {};
     for (const row of settingsRes.data ?? []) settings[row.key] = row.value;
 
-    const model = data.model ?? (settings.default_model as string) ?? "nvidia/llama-3.1-nemotron-70b-instruct";
+    const model =
+      data.model ?? (settings.default_model as string) ?? "nvidia/llama-3.1-nemotron-70b-instruct";
     const maxTokens = data.max_tokens ?? (settings.max_tokens_default as number) ?? 4096;
     const temperature = data.temperature ?? (settings.temperature_default as number) ?? 0.7;
 

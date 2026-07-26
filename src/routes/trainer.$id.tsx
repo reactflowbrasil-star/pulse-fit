@@ -26,7 +26,9 @@ function TrainerDetailPage() {
               <Star className="h-10 w-10 text-primary" />
             </div>
             <h2 className="font-display text-2xl font-bold">Personal Trainer</h2>
-            <p className="mt-2 text-sm text-text-tertiary">Seu treinador pessoal com IA avançada.</p>
+            <p className="mt-2 text-sm text-text-tertiary">
+              Seu treinador pessoal com IA avançada.
+            </p>
           </Card>
           <Button className="w-full" onClick={() => navigate({ to: "/coach" })}>
             <Play className="h-4 w-4" /> Iniciar sessão

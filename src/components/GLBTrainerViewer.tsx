@@ -1,5 +1,11 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Environment, ContactShadows, SoftShadows } from "@react-three/drei";
+import {
+  OrbitControls,
+  useGLTF,
+  Environment,
+  ContactShadows,
+  SoftShadows,
+} from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 

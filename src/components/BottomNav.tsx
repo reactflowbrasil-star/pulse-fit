@@ -16,7 +16,11 @@ export function BottomNav() {
 
   return (
     <>
-      <div aria-hidden="true" className="shrink-0" style={{ height: "calc(96px + env(safe-area-inset-bottom))" }} />
+      <div
+        aria-hidden="true"
+        className="shrink-0"
+        style={{ height: "calc(96px + env(safe-area-inset-bottom))" }}
+      />
 
       <motion.div
         initial={{ y: 80, opacity: 0 }}
@@ -33,7 +37,12 @@ export function BottomNav() {
             <NavItem key={item.to} {...item} active={pathname === item.to} />
           ))}
 
-          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={spring} className="-mt-7">
+          <motion.div
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            transition={spring}
+            className="-mt-7"
+          >
             <Link
               to="/coach"
               aria-label="Treinador IA"
@@ -52,7 +61,17 @@ export function BottomNav() {
   );
 }
 
-function NavItem({ to, icon: Icon, label, active }: { to: string; icon: typeof Home; label: string; active: boolean }) {
+function NavItem({
+  to,
+  icon: Icon,
+  label,
+  active,
+}: {
+  to: string;
+  icon: typeof Home;
+  label: string;
+  active: boolean;
+}) {
   return (
     <Link
       to={to}
@@ -68,7 +87,11 @@ function NavItem({ to, icon: Icon, label, active }: { to: string; icon: typeof H
           className="absolute -top-0.5 left-1/2 h-[2.5px] w-5 -translate-x-1/2 rounded-full bg-primary"
         />
       )}
-      <motion.span whileTap={{ scale: 0.85 }} transition={spring} className="flex flex-col items-center gap-0.5">
+      <motion.span
+        whileTap={{ scale: 0.85 }}
+        transition={spring}
+        className="flex flex-col items-center gap-0.5"
+      >
         <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={active ? 2.2 : 1.6} />
         <span className="max-w-full truncate">{label}</span>
       </motion.span>

@@ -22,9 +22,7 @@ export const getMe = createServerFn({ method: "GET" })
 /** Gera código de 6 dígitos e envia via WhatsApp. */
 export const requestWhatsappVerification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ phone: z.string().min(8).max(32) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ phone: z.string().min(8).max(32) }).parse(input))
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const [{ readEvolutionEnv, evolutionFetch, toJid, friendlyEvolutionError }, { supabaseAdmin }] =
@@ -75,9 +73,7 @@ export const requestWhatsappVerification = createServerFn({ method: "POST" })
 /** Confirma o código e marca o WhatsApp como verificado; envia boas-vindas. */
 export const confirmWhatsappVerification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ code: z.string().length(6) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ code: z.string().length(6) }).parse(input))
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const [{ readEvolutionEnv, evolutionFetch }, { supabaseAdmin }] = await Promise.all([
@@ -123,12 +119,14 @@ export const confirmWhatsappVerification = createServerFn({ method: "POST" })
           template_name: "boas-vindas",
           status: "sent",
         });
-        await supabaseAdmin
-          .from("whatsapp_sessions")
-          .upsert(
-            { remote_jid: row.whatsapp_number, display_name: row.full_name, last_message_at: new Date().toISOString() },
-            { onConflict: "remote_jid" },
-          );
+        await supabaseAdmin.from("whatsapp_sessions").upsert(
+          {
+            remote_jid: row.whatsapp_number,
+            display_name: row.full_name,
+            last_message_at: new Date().toISOString(),
+          },
+          { onConflict: "remote_jid" },
+        );
       } catch {
         /* segue mesmo se envio falhar */
       }
@@ -138,7 +136,10 @@ export const confirmWhatsappVerification = createServerFn({ method: "POST" })
 
 /* ============== ADMIN ============== */
 
-async function assertAdmin(supabase: import("@supabase/supabase-js").SupabaseClient, userId: string) {
+async function assertAdmin(
+  supabase: import("@supabase/supabase-js").SupabaseClient,
+  userId: string,
+) {
   const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (!data) throw new Error("Acesso restrito a administradores.");
 }
@@ -151,7 +152,9 @@ export const adminListUsers = createServerFn({ method: "GET" })
     const [{ data: users }, { data: roles }] = await Promise.all([
       supabaseAdmin
         .from("app_users")
-        .select("user_id, email, full_name, avatar_url, whatsapp_number, whatsapp_verified, created_at")
+        .select(
+          "user_id, email, full_name, avatar_url, whatsapp_number, whatsapp_verified, created_at",
+        )
         .order("created_at", { ascending: false }),
       supabaseAdmin.from("user_roles").select("user_id, role"),
     ]);
@@ -215,7 +218,8 @@ export const adminBroadcast = createServerFn({ method: "POST" })
       import("@/integrations/supabase/client.server"),
     ]);
     const env = await readEvolutionEnv();
-    if (!env) return { ok: false as const, error: "Evolution API não configurada.", sent: 0, failed: 0 };
+    if (!env)
+      return { ok: false as const, error: "Evolution API não configurada.", sent: 0, failed: 0 };
 
     const { data: targets } = await supabaseAdmin
       .from("app_users")

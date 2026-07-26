@@ -51,7 +51,9 @@ async function supabaseQuery(path, options = {}) {
     const ct = res.headers.get("content-type") || "";
     if (ct.includes("application/json")) return res.json();
     return null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 async function loadEvoConfig() {
@@ -62,14 +64,23 @@ async function loadEvoConfig() {
   // Ler do Supabase
   if (!SUPABASE_URL || !SUPABASE_KEY) return;
   try {
-    const data = await supabaseQuery("whatsapp_config?select=api_url,instance_name,webhook_token&singleton=eq.true&limit=1");
+    const data = await supabaseQuery(
+      "whatsapp_config?select=api_url,instance_name,webhook_token&singleton=eq.true&limit=1",
+    );
     const row = data?.[0];
     if (row?.api_url && row?.instance_name) {
       let apiKey = "";
-      try { const s = JSON.parse(row.webhook_token || "{}"); apiKey = s.api_key || ""; } catch { apiKey = row.webhook_token || ""; }
+      try {
+        const s = JSON.parse(row.webhook_token || "{}");
+        apiKey = s.api_key || "";
+      } catch {
+        apiKey = row.webhook_token || "";
+      }
       if (apiKey) evoConfig = { apiUrl: row.api_url, apiKey, instance: row.instance_name };
     }
-  } catch (e) { console.error("[bot] loadEvoConfig:", e.message); }
+  } catch (e) {
+    console.error("[bot] loadEvoConfig:", e.message);
+  }
 }
 
 async function evoFetch(path, init = {}) {
@@ -79,7 +90,9 @@ async function evoFetch(path, init = {}) {
   const res = await fetch(url, { ...init, headers });
   const text = await res.text();
   let json = null;
-  try { json = text ? JSON.parse(text) : null; } catch {}
+  try {
+    json = text ? JSON.parse(text) : null;
+  } catch {}
   if (!res.ok) throw new Error(`Evolution ${res.status}: ${text.slice(0, 200)}`);
   return json;
 }
@@ -95,7 +108,13 @@ function normalizeJid(phone) {
 app.get("/", (_req, res) => res.type("text/plain").send("Pulse Fit bot online"));
 
 app.get("/health", (_req, res) => {
-  json(res, { ok: true, uptime: process.uptime(), timestamp: new Date().toISOString(), version: "2.0.0", evoConfigured: !!evoConfig });
+  json(res, {
+    ok: true,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    version: "2.0.0",
+    evoConfigured: !!evoConfig,
+  });
 });
 
 // ─── Rotas protegidas ─────────────────────────────────────────────────
@@ -104,12 +123,26 @@ app.get("/health", (_req, res) => {
 app.get("/status", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
   if (!evoConfig) await loadEvoConfig();
-  if (!evoConfig) return json(res, { ok: false, configured: false, connectionState: "unknown", error: "Evolution não configurada" });
+  if (!evoConfig)
+    return json(res, {
+      ok: false,
+      configured: false,
+      connectionState: "unknown",
+      error: "Evolution não configurada",
+    });
   try {
-    const info = await evoFetch(`/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`);
+    const info = await evoFetch(
+      `/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`,
+    );
     const state = info?.instance?.state || "unknown";
     connectionState = state;
-    return json(res, { ok: true, configured: true, connectionState: state, instance: evoConfig.instance, phone: info?.instance?.owner?.split(":")[0] || null });
+    return json(res, {
+      ok: true,
+      configured: true,
+      connectionState: state,
+      instance: evoConfig.instance,
+      phone: info?.instance?.owner?.split(":")[0] || null,
+    });
   } catch (err) {
     return json(res, { ok: false, configured: true, connectionState: "error", error: err.message });
   }
@@ -137,7 +170,11 @@ app.post("/connect", async (req, res) => {
   if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
   try {
     const info = await evoFetch(`/instance/connect/${encodeURIComponent(evoConfig.instance)}`);
-    return json(res, { ok: true, state: info?.instance?.state || "connecting", qr: info?.base64 || null });
+    return json(res, {
+      ok: true,
+      state: info?.instance?.state || "connecting",
+      qr: info?.base64 || null,
+    });
   } catch (err) {
     return json(res, { ok: false, error: err.message });
   }
@@ -149,7 +186,9 @@ app.post("/disconnect", async (req, res) => {
   if (!evoConfig) await loadEvoConfig();
   if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
   try {
-    await evoFetch(`/instance/logout/${encodeURIComponent(evoConfig.instance)}`, { method: "DELETE" });
+    await evoFetch(`/instance/logout/${encodeURIComponent(evoConfig.instance)}`, {
+      method: "DELETE",
+    });
     return json(res, { ok: true, message: "Desconectado" });
   } catch (err) {
     return json(res, { ok: false, error: err.message });
@@ -160,12 +199,19 @@ app.post("/disconnect", async (req, res) => {
 app.get("/pair", async (req, res) => {
   if (!authBot(req)) return json(res, { ok: false, error: "unauthorized" }, 401);
   const phone = req.query.phone;
-  if (!phone || !/^\d{10,15}$/.test(phone)) return json(res, { ok: false, error: "Informe ?phone=55XXXXXXXXXXX" }, 400);
+  if (!phone || !/^\d{10,15}$/.test(phone))
+    return json(res, { ok: false, error: "Informe ?phone=55XXXXXXXXXXX" }, 400);
   if (!evoConfig) await loadEvoConfig();
   if (!evoConfig) return json(res, { ok: false, error: "Evolution não configurada" });
   try {
-    const info = await evoFetch(`/instance/connect/${encodeURIComponent(evoConfig.instance)}?number=${phone}`);
-    return json(res, { ok: true, code: info?.code || null, pairingCode: info?.pairingCode || null });
+    const info = await evoFetch(
+      `/instance/connect/${encodeURIComponent(evoConfig.instance)}?number=${phone}`,
+    );
+    return json(res, {
+      ok: true,
+      code: info?.code || null,
+      pairingCode: info?.pairingCode || null,
+    });
   } catch (err) {
     return json(res, { ok: false, error: err.message });
   }
@@ -182,9 +228,21 @@ app.post("/enviar-codigo", async (req, res) => {
   try {
     await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig.instance)}`, {
       method: "POST",
-      body: JSON.stringify({ number: jid, text: `🔐 *Código de verificação Pulse Fit*\n\nSeu código é: *${codigo}*\n\nExpira em 10 minutos.\nNão compartilhe.` }),
+      body: JSON.stringify({
+        number: jid,
+        text: `🔐 *Código de verificação Pulse Fit*\n\nSeu código é: *${codigo}*\n\nExpira em 10 minutos.\nNão compartilhe.`,
+      }),
     });
-    await supabaseQuery("whatsapp_messages", { method: "POST", body: JSON.stringify({ direction: "outbound", remote_jid: jid, content: "Código de verificação enviado", template_name: "verification_code", status: "sent" }) });
+    await supabaseQuery("whatsapp_messages", {
+      method: "POST",
+      body: JSON.stringify({
+        direction: "outbound",
+        remote_jid: jid,
+        content: "Código de verificação enviado",
+        template_name: "verification_code",
+        status: "sent",
+      }),
+    });
     return json(res, { ok: true, message: "Código enviado" });
   } catch (err) {
     return json(res, { ok: false, error: err.message }, 500);
@@ -219,15 +277,41 @@ app.post("/webhook", async (req, res) => {
     if (key && !key.fromMe) {
       const text = extractText(payload.data.message) || null;
       const jid = key.remoteJid || "unknown";
-      await supabaseQuery("whatsapp_messages", { method: "POST", body: JSON.stringify({ direction: "inbound", remote_jid: jid, message_id: key.id || null, content: text, status: "received", raw: payload.data }) });
+      await supabaseQuery("whatsapp_messages", {
+        method: "POST",
+        body: JSON.stringify({
+          direction: "inbound",
+          remote_jid: jid,
+          message_id: key.id || null,
+          content: text,
+          status: "received",
+          raw: payload.data,
+        }),
+      });
       // Bot auto-reply básico
       if (text) {
         const t = text.trim().toLowerCase();
         if (["oi", "olá", "ola"].includes(t)) {
-          try { await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, { method: "POST", body: JSON.stringify({ number: jid, text: "Oi! 👋 Bem-vindo ao *Pulse Fit*. Digite *menu* para ver opções." }) }); } catch {}
+          try {
+            await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, {
+              method: "POST",
+              body: JSON.stringify({
+                number: jid,
+                text: "Oi! 👋 Bem-vindo ao *Pulse Fit*. Digite *menu* para ver opções.",
+              }),
+            });
+          } catch {}
         }
         if (t === "menu" || t === "ajuda") {
-          try { await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, { method: "POST", body: JSON.stringify({ number: jid, text: "🏋️ *Pulse Fit*\n\n1️⃣ resumo\n2️⃣ passos\n3️⃣ água\n4️⃣ treinos\n5️⃣ ajuda" }) }); } catch {}
+          try {
+            await evoFetch(`/message/sendText/${encodeURIComponent(evoConfig?.instance || "")}`, {
+              method: "POST",
+              body: JSON.stringify({
+                number: jid,
+                text: "🏋️ *Pulse Fit*\n\n1️⃣ resumo\n2️⃣ passos\n3️⃣ água\n4️⃣ treinos\n5️⃣ ajuda",
+              }),
+            });
+          } catch {}
         }
       }
     }
@@ -259,10 +343,14 @@ server.listen(PORT, async () => {
   if (evoConfig) {
     console.log(`   Evolution: ${evoConfig.apiUrl} (${evoConfig.instance})`);
     try {
-      const info = await evoFetch(`/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`);
+      const info = await evoFetch(
+        `/instance/connectionState/${encodeURIComponent(evoConfig.instance)}`,
+      );
       connectionState = info?.instance?.state || "unknown";
       console.log(`   Estado: ${connectionState}`);
-    } catch { console.log("   Estado: erro ao consultar"); }
+    } catch {
+      console.log("   Estado: erro ao consultar");
+    }
   } else {
     console.log("   Evolution: não configurada (adicione BOT_URL ao .env do app)");
   }

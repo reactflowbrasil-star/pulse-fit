@@ -20,22 +20,19 @@ export const Route = createFileRoute("/api/tts")({
         }
         if (!text.trim()) return new Response("Empty text", { status: 400 });
 
-        const upstream = await fetch(
-          "https://ai.gateway.lovable.dev/v1/audio/speech",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: "openai/gpt-4o-mini-tts",
-              input: text,
-              voice,
-              response_format: "mp3",
-            }),
+        const upstream = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            model: "openai/gpt-4o-mini-tts",
+            input: text,
+            voice,
+            response_format: "mp3",
+          }),
+        });
 
         if (!upstream.ok) {
           const err = await upstream.text().catch(() => "");

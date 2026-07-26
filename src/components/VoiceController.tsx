@@ -40,8 +40,7 @@ export function VoiceController({ text, autoPlay = true, onEnd }: Props) {
       try {
         const AudioCtx =
           window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext })
-            .webkitAudioContext;
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         const ctx = new AudioCtx({ sampleRate: 24000 });
         ctxRef.current = ctx;
         if (ctx.state === "suspended") await ctx.resume().catch(() => {});
@@ -89,9 +88,7 @@ export function VoiceController({ text, autoPlay = true, onEnd }: Props) {
           while ((idx = buffer.indexOf("\n\n")) !== -1) {
             const evt = buffer.slice(0, idx);
             buffer = buffer.slice(idx + 2);
-            const line = evt
-              .split("\n")
-              .find((l) => l.startsWith("data:"));
+            const line = evt.split("\n").find((l) => l.startsWith("data:"));
             if (!line) continue;
             const dataStr = line.slice(5).trim();
             if (!dataStr) continue;

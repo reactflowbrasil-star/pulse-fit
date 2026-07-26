@@ -73,14 +73,8 @@ export function MetricCard({
         {label}
       </p>
       <div className="relative mt-1 flex items-baseline gap-1">
-        <span className="font-display text-3xl leading-none tabular-nums">
-          {formatted}
-        </span>
-        {unit && (
-          <span className="text-[11px] font-semibold text-text-tertiary">
-            {unit}
-          </span>
-        )}
+        <span className="font-display text-3xl leading-none tabular-nums">{formatted}</span>
+        {unit && <span className="text-[11px] font-semibold text-text-tertiary">{unit}</span>}
       </div>
       {pct !== null && (
         <div className="relative mt-3 h-1 w-full overflow-hidden rounded-full bg-white/5">

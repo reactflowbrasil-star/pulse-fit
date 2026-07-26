@@ -11,7 +11,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 
-
 export const Route = createFileRoute("/browse")({
   head: () => ({ meta: [{ title: "Treinos — Pulse Fit" }] }),
   component: BrowsePage,
@@ -22,7 +21,7 @@ function BrowsePage() {
   const [search, setSearch] = useState("");
 
   const filtered = (plans.data ?? []).filter((p: any) =>
-    p.name?.toLowerCase().includes(search.toLowerCase())
+    p.name?.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -46,18 +45,28 @@ function BrowsePage() {
                 <div key={i} className="rounded-2xl bg-surface-card border border-border p-4">
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 rounded-xl bg-surface-elevated skeleton" />
-                    <div className="flex-1 space-y-2"><div className="h-4 w-1/2 skeleton" /><div className="h-3 w-3/4 skeleton" /></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-1/2 skeleton" />
+                      <div className="h-3 w-3/4 skeleton" />
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <EmptyState icon={<Play className="h-6 w-6" />} title="Nenhum treino" description="Treinos disponíveis aparecerão aqui." />
+            <EmptyState
+              icon={<Play className="h-6 w-6" />}
+              title="Nenhum treino"
+              description="Treinos disponíveis aparecerão aqui."
+            />
           ) : (
             <StaggerContainer className="space-y-3">
               {filtered.map((plan: any) => (
                 <StaggerItem key={plan.id}>
-                  <Link to={`/workout/${plan.id}`} className="block rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
+                  <Link
+                    to={`/workout/${plan.id}`}
+                    className="block rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                         <Play className="h-5 w-5" fill="currentColor" />
@@ -65,8 +74,18 @@ function BrowsePage() {
                       <div className="flex-1 min-w-0">
                         <p className="font-display text-base font-semibold truncate">{plan.name}</p>
                         <div className="flex items-center gap-3 mt-1 text-[11px] text-text-tertiary">
-                          {plan.duration_min && <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{plan.duration_min} min</span>}
-                          {plan.difficulty && <span className="flex items-center gap-1"><Flame className="h-3 w-3" />{plan.difficulty}</span>}
+                          {plan.duration_min && (
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {plan.duration_min} min
+                            </span>
+                          )}
+                          {plan.difficulty && (
+                            <span className="flex items-center gap-1">
+                              <Flame className="h-3 w-3" />
+                              {plan.difficulty}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -81,5 +100,3 @@ function BrowsePage() {
     </MobileFrame>
   );
 }
-
-

@@ -10,9 +10,15 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const whatsappSchema = z
   .string()
   .trim()
-  .regex(/^\d{10,15}$/, "WhatsApp inválido. Use formato internacional, só dígitos (ex: 5562999999999).");
+  .regex(
+    /^\d{10,15}$/,
+    "WhatsApp inválido. Use formato internacional, só dígitos (ex: 5562999999999).",
+  );
 
-const codigoSchema = z.string().trim().regex(/^\d{6}$/, "Código deve ter 6 dígitos.");
+const codigoSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{6}$/, "Código deve ter 6 dígitos.");
 
 function gerarCodigo(): string {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -77,7 +83,10 @@ export const enviarCodigoWhatsapp = createServerFn({ method: "POST" })
 
     if (!BOT_URL) {
       console.error("[wa-link] Sem Evolution API e sem BOT_URL");
-      return { ok: false as const, error: "Serviço de envio indisponível. Contate o administrador." };
+      return {
+        ok: false as const,
+        error: "Serviço de envio indisponível. Contate o administrador.",
+      };
     }
 
     try {

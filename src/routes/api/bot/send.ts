@@ -29,11 +29,15 @@ export const Route = createFileRoute("/api/bot/send")({
 
         const { number, text } = body;
         if (!number || !text) {
-          return corsResponse({ ok: false, error: "missing_fields", message: "Envie number e text" }, 400);
+          return corsResponse(
+            { ok: false, error: "missing_fields", message: "Envie number e text" },
+            400,
+          );
         }
 
         try {
-          const { readEvolutionEnv, evolutionFetch, toJid } = await import("@/lib/evolution.server");
+          const { readEvolutionEnv, evolutionFetch, toJid } =
+            await import("@/lib/evolution.server");
           const env = await readEvolutionEnv();
 
           if (!env) {
@@ -41,14 +45,21 @@ export const Route = createFileRoute("/api/bot/send")({
           }
 
           const jid = toJid(number);
-          const result = (await evolutionFetch(env, `/message/sendText/${encodeURIComponent(env.instance)}`, {
-            method: "POST",
-            body: JSON.stringify({ number: jid, text }),
-          })) as { key?: { id?: string } } | null;
+          const result = (await evolutionFetch(
+            env,
+            `/message/sendText/${encodeURIComponent(env.instance)}`,
+            {
+              method: "POST",
+              body: JSON.stringify({ number: jid, text }),
+            },
+          )) as { key?: { id?: string } } | null;
 
           return corsResponse({ ok: true, messageId: result?.key?.id || null });
         } catch (err) {
-          return corsResponse({ ok: false, error: err instanceof Error ? err.message : "Falha ao enviar" }, 500);
+          return corsResponse(
+            { ok: false, error: err instanceof Error ? err.message : "Falha ao enviar" },
+            500,
+          );
         }
       },
     },

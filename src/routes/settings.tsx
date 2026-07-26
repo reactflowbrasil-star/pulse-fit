@@ -63,7 +63,9 @@ function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">Tema</p>
-                  <p className="text-[11px] text-text-tertiary">{theme === "dark" ? "Escuro" : "Claro"}</p>
+                  <p className="text-[11px] text-text-tertiary">
+                    {theme === "dark" ? "Escuro" : "Claro"}
+                  </p>
                 </div>
               </div>
               <ThemeToggle />
@@ -87,7 +89,13 @@ function SettingsPage() {
               onChange={(e) => setGlbUrl(e.target.value)}
             />
             <Button variant="secondary" size="sm" onClick={save} loading={false} className="w-full">
-              {saved ? <><Check className="h-3.5 w-3.5" /> Salvo!</> : "Salvar"}
+              {saved ? (
+                <>
+                  <Check className="h-3.5 w-3.5" /> Salvo!
+                </>
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </Card>
 
@@ -95,8 +103,13 @@ function SettingsPage() {
           <StaggerContainer className="space-y-2">
             {menuItems.map((item) => (
               <StaggerItem key={item.label}>
-                <a href={item.to} className="flex items-center gap-3 rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated text-text-tertiary">{item.icon}</div>
+                <a
+                  href={item.to}
+                  className="flex items-center gap-3 rounded-2xl bg-surface-card border border-border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated text-text-tertiary">
+                    {item.icon}
+                  </div>
                   <span className="flex-1 text-sm font-semibold">{item.label}</span>
                 </a>
               </StaggerItem>

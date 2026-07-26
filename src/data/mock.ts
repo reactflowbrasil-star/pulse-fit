@@ -74,8 +74,20 @@ export type Exercise = {
 export const exercises: Exercise[] = [
   { id: "push-ups", name: "Flexões", detail: "20 repetições", image: exercisePushup, seconds: 30 },
   { id: "hold-90", name: "Isometria 90°", detail: "20 seg", image: workoutChest, seconds: 20 },
-  { id: "circle-push", name: "Flexões em Círculo", detail: "12 repetições", image: workoutTotal, seconds: 40 },
-  { id: "diamond", name: "Flexão Diamante", detail: "15 repetições", image: workoutShoulder, seconds: 25 },
+  {
+    id: "circle-push",
+    name: "Flexões em Círculo",
+    detail: "12 repetições",
+    image: workoutTotal,
+    seconds: 40,
+  },
+  {
+    id: "diamond",
+    name: "Flexão Diamante",
+    detail: "15 repetições",
+    image: workoutShoulder,
+    seconds: 25,
+  },
 ];
 
 export type Trainer = {

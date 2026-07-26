@@ -3,8 +3,20 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Loader2, Key, Cpu, Settings, Plus, Trash2, RefreshCw,
-  ShieldCheck, ShieldX, Eye, EyeOff, Zap, ChevronDown, ChevronUp,
+  Loader2,
+  Key,
+  Cpu,
+  Settings,
+  Plus,
+  Trash2,
+  RefreshCw,
+  ShieldCheck,
+  ShieldX,
+  Eye,
+  EyeOff,
+  Zap,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { PageTransition } from "@/components/PageTransition";
@@ -13,10 +25,16 @@ import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/hooks/useAuth";
 import { getMe } from "@/lib/auth.functions";
 import {
-  listNvidiaApiKeys, createNvidiaApiKey, deleteNvidiaApiKey,
-  toggleNvidiaApiKey, validateNvidiaApiKey,
-  listNvidiaModels, toggleNvidiaModel, fetchNvidiaRemoteModels,
-  getNvidiaSettings, updateNvidiaSetting,
+  listNvidiaApiKeys,
+  createNvidiaApiKey,
+  deleteNvidiaApiKey,
+  toggleNvidiaApiKey,
+  validateNvidiaApiKey,
+  listNvidiaModels,
+  toggleNvidiaModel,
+  fetchNvidiaRemoteModels,
+  getNvidiaSettings,
+  updateNvidiaSetting,
 } from "@/lib/nvidia.functions";
 
 export const Route = createFileRoute("/admin/nvidia")({
@@ -43,7 +61,11 @@ function NvidiaAdminPage() {
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe(), enabled: !!session });
 
   if (loading || !session || me.isLoading) {
-    return <MobileFrame><Loader /></MobileFrame>;
+    return (
+      <MobileFrame>
+        <Loader />
+      </MobileFrame>
+    );
   }
   if (!me.data?.isAdmin) {
     return (
@@ -107,7 +129,12 @@ function KeysTab() {
 
   const createMut = useMutation({
     mutationFn: (d: { name: string; api_key: string }) => createFn({ data: d }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["nvidia", "keys"] }); setShowAdd(false); setNewName(""); setNewKey(""); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["nvidia", "keys"] });
+      setShowAdd(false);
+      setNewName("");
+      setNewKey("");
+    },
   });
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteFn({ data: { id } }),
@@ -154,11 +181,19 @@ function KeysTab() {
             type="password"
           />
           <button
-            onClick={() => newName.trim() && newKey.trim() && createMut.mutate({ name: newName.trim(), api_key: newKey.trim() })}
+            onClick={() =>
+              newName.trim() &&
+              newKey.trim() &&
+              createMut.mutate({ name: newName.trim(), api_key: newKey.trim() })
+            }
             disabled={createMut.isPending || !newName.trim() || !newKey.trim()}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-xs font-bold text-primary-foreground disabled:opacity-50"
           >
-            {createMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            {createMut.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
             Salvar chave
           </button>
         </div>
@@ -177,9 +212,13 @@ function KeysTab() {
                   <p className="text-sm font-semibold">{k.name}</p>
                   <p className="mt-0.5 flex items-center gap-1 text-[11px] text-text-tertiary">
                     {k.is_active ? (
-                      <><ShieldCheck className="h-3 w-3 text-green-400" /> Ativa</>
+                      <>
+                        <ShieldCheck className="h-3 w-3 text-green-400" /> Ativa
+                      </>
                     ) : (
-                      <><ShieldX className="h-3 w-3 text-text-tertiary" /> Inativa</>
+                      <>
+                        <ShieldX className="h-3 w-3 text-text-tertiary" /> Inativa
+                      </>
                     )}
                     {k.last_validated_at && (
                       <span className="ml-2">
@@ -207,7 +246,9 @@ function KeysTab() {
                     {k.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                   </button>
                   <button
-                    onClick={() => { if (confirm("Excluir esta chave?")) deleteMut.mutate(k.id); }}
+                    onClick={() => {
+                      if (confirm("Excluir esta chave?")) deleteMut.mutate(k.id);
+                    }}
                     className="rounded-full bg-surface-elevated p-2 text-text-tertiary hover:text-red-400"
                     title="Excluir"
                   >
@@ -256,7 +297,11 @@ function ModelsTab() {
           disabled={fetchRemoteMut.isPending}
           className="flex items-center gap-1 rounded-full bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-text-tertiary"
         >
-          {fetchRemoteMut.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+          {fetchRemoteMut.isPending ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <RefreshCw className="h-3 w-3" />
+          )}
           Sincronizar
         </button>
       </div>
@@ -272,28 +317,43 @@ function ModelsTab() {
               onClick={() => setExpanded(expanded === cat ? null : cat)}
               className="flex w-full items-center gap-2 py-2 text-xs font-semibold uppercase tracking-widest text-text-tertiary"
             >
-              {expanded === cat ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              {expanded === cat ? (
+                <ChevronUp className="h-3 w-3" />
+              ) : (
+                <ChevronDown className="h-3 w-3" />
+              )}
               {cat} ({models.data!.filter((m) => m.category === cat).length})
             </button>
             {(expanded === cat || expanded === null) && (
               <div className="space-y-1.5">
-                {models.data!.filter((m) => m.category === cat).map((m) => (
-                  <div key={m.id} className="flex items-center justify-between rounded-2xl bg-surface p-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold">{m.display_name}</p>
-                      <p className="truncate text-[11px] text-text-tertiary font-mono">{m.model_id}</p>
-                      {m.description && <p className="mt-0.5 text-[11px] text-text-tertiary">{m.description}</p>}
-                    </div>
-                    <button
-                      onClick={() => toggleMut.mutate({ id: m.id, is_enabled: !m.is_enabled })}
-                      className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${
-                        m.is_enabled ? "bg-green-500/20 text-green-400" : "bg-surface-elevated text-text-tertiary"
-                      }`}
+                {models
+                  .data!.filter((m) => m.category === cat)
+                  .map((m) => (
+                    <div
+                      key={m.id}
+                      className="flex items-center justify-between rounded-2xl bg-surface p-3"
                     >
-                      {m.is_enabled ? "ON" : "OFF"}
-                    </button>
-                  </div>
-                ))}
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{m.display_name}</p>
+                        <p className="truncate text-[11px] text-text-tertiary font-mono">
+                          {m.model_id}
+                        </p>
+                        {m.description && (
+                          <p className="mt-0.5 text-[11px] text-text-tertiary">{m.description}</p>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => toggleMut.mutate({ id: m.id, is_enabled: !m.is_enabled })}
+                        className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${
+                          m.is_enabled
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-surface-elevated text-text-tertiary"
+                        }`}
+                      >
+                        {m.is_enabled ? "ON" : "OFF"}
+                      </button>
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -307,7 +367,10 @@ function ModelsTab() {
 
 function SettingsTab() {
   const qc = useQueryClient();
-  const settings = useQuery({ queryKey: ["nvidia", "settings"], queryFn: () => getNvidiaSettings() });
+  const settings = useQuery({
+    queryKey: ["nvidia", "settings"],
+    queryFn: () => getNvidiaSettings(),
+  });
   const updateFn = useServerFn(updateNvidiaSetting);
 
   const updateMut = useMutation({
@@ -330,7 +393,9 @@ function SettingsTab() {
       <div className="rounded-2xl bg-surface p-4 space-y-4">
         {fields.map((f) => (
           <div key={f.key}>
-            <label className="text-xs font-semibold text-text-tertiary uppercase tracking-widest">{f.label}</label>
+            <label className="text-xs font-semibold text-text-tertiary uppercase tracking-widest">
+              {f.label}
+            </label>
             <input
               type={f.type}
               className="mt-1 w-full rounded-xl bg-surface-elevated px-3 py-2.5 text-sm font-mono outline-none"
@@ -343,7 +408,9 @@ function SettingsTab() {
           </div>
         ))}
       </div>
-      <p className="text-[11px] text-text-tertiary text-center">Alterações são salvas automaticamente.</p>
+      <p className="text-[11px] text-text-tertiary text-center">
+        Alterações são salvas automaticamente.
+      </p>
     </div>
   );
 }
