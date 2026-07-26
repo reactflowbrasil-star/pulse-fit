@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouterState, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -25,6 +25,7 @@ function AdminPage() {
   const navigate = useNavigate();
   useEffect(() => { if (!loading && !session) navigate({ to: "/auth" }); }, [loading, session, navigate]);
   const me = useQuery({ queryKey: ["me"], queryFn: () => getMe(), enabled: !!session });
+  const isChildRoute = useRouterState({ select: (s) => s.location.pathname }).startsWith("/admin/");
 
   if (loading || !session || me.isLoading) return <MobileFrame><div className="flex flex-1 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div></MobileFrame>;
   if (!me.data?.isAdmin) return (
@@ -39,7 +40,7 @@ function AdminPage() {
     </MobileFrame>
   );
 
-  return <AdminDashboard />;
+  return isChildRoute ? <Outlet /> : <AdminDashboard />;
 }
 
 function AdminDashboard() {
