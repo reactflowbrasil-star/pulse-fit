@@ -23,6 +23,7 @@ import {
   Volume2,
   RefreshCw,
   TrendingUp,
+  Star,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
