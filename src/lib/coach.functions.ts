@@ -74,14 +74,12 @@ export const generateWorkoutPlan = createServerFn({ method: "POST" })
     const catalog = await loadCatalog();
     const allowedIds = catalog.map((e) => e.id);
 
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) {
+    const { resolveChatModel } = await import("./nvidia.server");
+    const ai = await resolveChatModel({ structuredOutputs: true });
+    if (!ai) {
       return { plan: fallbackPlan(data, catalog), source: "fallback" };
     }
-
-    const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
-    const gateway = createLovableAiGatewayProvider(key, { structuredOutputs: true });
-    const model = gateway("openai/gpt-5.5");
+    const model = ai.model;
 
     const catalogSummary = catalog
       .map(
@@ -114,6 +112,7 @@ REGRAS OBRIGATÓRIAS:
     try {
       const { output } = await generateText({
         model,
+        temperature: ai.temperature,
         output: Output.object({ schema: PlanSchema }),
         prompt,
       });
