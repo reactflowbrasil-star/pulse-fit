@@ -15,6 +15,7 @@ import {
   ChevronRight,
   MessageSquare,
   Dumbbell,
+  User,
 } from "lucide-react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
